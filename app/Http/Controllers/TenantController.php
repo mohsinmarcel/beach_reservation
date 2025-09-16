@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Tenant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class TenantController extends Controller
@@ -58,5 +59,66 @@ class TenantController extends Controller
             ], 500);
         }
     }
+
+    public function tenantDashboard()
+    {
+        return view ('tenant.dashboard');
+    }
+
+     public function tenantLoginProcess(Request $request)
+    {
+        // dd($request->all());
+        $validator = Validator::make($request->all(), [
+            'login_email' => 'required',
+            'login_password' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Validation failed',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
+        // Try to find user by email OR username
+        $tenant = Tenant::where('email', $request->login_email)
+                    // ->orWhere('username', $request->login_email)
+                    ->first();
+
+        if (!$tenant || !Hash::check($request->login_password, $tenant->password)) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Invalid credentials'
+            ], 401);
+        }
+
+        // Try login with email if exists, otherwise username
+        if (auth('tenant')->attempt([
+            filter_var($request->login_email, FILTER_VALIDATE_EMAIL) ? 'email' : 'username' => $request->login_email,
+            'password' => $request->login_password
+        ])) {
+            session(['tenant' => auth('tenant')->user()]);
+            // $paymentCheck = auth('tenant')->user();
+
+            // if ($paymentCheck->is_register_payment_done == 0) {
+            //     return response()->json([
+            //         'status' => 'redirect',
+            //         'url'    => $paymentCheck->payment_invoice_url
+            //     ]);
+            // }
+
+            return response()->json([
+                'status'  => 'success',
+                'message' => 'Login successful'
+            ]);
+        }
+
+        return response()->json([
+            'status'  => 'error',
+            'message' => 'Login failed'
+        ], 401);
+    }
+
 
 }

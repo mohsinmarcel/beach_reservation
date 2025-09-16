@@ -35,13 +35,13 @@ Route::group(['middleware' => 'user.auth'], function () {
 });
 
 Route::group(['middleware' => 'tenant.guest'], function () {
-
-});
-
-Route::group(['middleware' => 'tenant.auth'], function () {
-
-});
-
 Route::get('/tenant/login', [TenantController::class, 'tenantLogin'])->name('tenant.login');
 Route::get('/tenant/register', [TenantController::class, 'tenantRegister'])->name('tenant.register');
 Route::post('/tenant/register/process', [TenantController::class, 'tenantRegisterProcess'])->name('tenant.register.process');
+Route::post('/tenant/login/process', [TenantController::class, 'tenantLoginProcess'])->name('tenant.login.process');
+});
+
+Route::group(['middleware' => 'tenant.auth'], function () {
+    Route::get('/tenant/dashboard', [TenantController::class, 'tenantDashboard'])->name('tenant.dashboard');
+});
+

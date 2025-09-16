@@ -7,6 +7,8 @@
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <title>Online Beach Seat Resservation Platform</title>
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <meta name="description" content="" />
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="../assets/img/favicon/favicon.ico" />
@@ -100,34 +102,31 @@
                         </div>
                         <h4 class="mb-2">Welcome to Online Beach Seat Reservation! 👋</h4>
                         <p class="mb-4">Please sign-in to your Tenant account</p>
-                        <form id="tenantLogin" class="mb-3" action="index.html" method="POST">
+                        <form id="tenantLogin" class="mb-3">
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
-                                <input type="text" class="form-control" id="email" name="email-username"
+                                <input type="text" class="form-control" id="email" name="login_email"
                                     placeholder="Enter your email" autofocus />
                             </div>
                             <div class="mb-3 form-password-toggle">
                                 <div class="d-flex justify-content-between">
                                     <label class="form-label" for="password">Password</label>
-                                    <a href="auth-forgot-password-basic.html">
-                                        <small>Forgot Password?</small>
-                                    </a>
+                                    {{-- <a href="auth-forgot-password-basic.html">
+                                        <small>Forgot Password?</small> --}}
+                                    {{-- </a> --}}
                                 </div>
-                                <div class="input-group input-group-merge">
-                                    <input type="password" id="password" class="form-control" name="password"
+                                <input type="password" id="password" class="form-control" name="login_password"
                                         placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                                         aria-describedby="password" />
-                                    <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
-                                </div>
                             </div>
-                            <div class="mb-3">
+                            {{-- <div class="mb-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="remember-me" />
                                     <label class="form-check-label" for="remember-me"> Remember Me </label>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="mb-3">
-                                <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
+                                <button type="button" class="btn btn-primary d-grid w-100"  onclick="signIn()">Sign in</button>
                             </div>
                         </form>
                         <p class="text-center">
@@ -150,6 +149,81 @@
     <script src="{{ asset('assets/assets/js/main.js') }}"></script>
     <script src="{{ asset('assets/assets/js/dashboards-analytics.js') }}"></script>
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+     <script>
+        function signIn() {
+            var form = $('#tenantLogin')[0];
+            var formData = new FormData(form);
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                url: '{{ route('tenant.login.process') }}', // Replace with your login route
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Login Successful!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            window.location.href = '{{ route('tenant.dashboard') }}';
+                        });
+                    }
+                    else if (response.status === 'redirect') {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Complete Your Payment',
+                            text: 'You will be redirected to the payment page.',
+                            showConfirmButton: true
+                        }).then(() => {
+                            window.location.href = response.url; // Go to NOWPayments invoice
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Remove old validation messages
+                    $('#tenantLogin .text-danger').remove();
+
+                    if (xhr.status === 422 && xhr.responseJSON?.errors) {
+                        // Laravel validation errors (missing email/password)
+                        const errors = xhr.responseJSON.errors;
+                        $.each(errors, function(fieldName, messages) {
+                            const input = $('#tenantLogin [name="' + fieldName + '"]');
+                            if (input.length > 0) {
+                                input.after('<small class="text-danger">' + messages[0] + '</small>');
+                            }
+                        });
+                    } else if (xhr.status === 401) {
+                        // Invalid credentials
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Invalid Credentials',
+                            text: 'The email or password you entered is incorrect.'
+                        });
+                    } else {
+                        // Other errors
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops!',
+                            text: 'Something went wrong. Please try again later.'
+                        });
+                    }
+                }
+            });
+        }
+    </script>
+
 </body>
 
 </html>
