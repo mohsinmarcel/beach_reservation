@@ -40,3 +40,13 @@ Route::group(['middleware' => 'tenant.guest'], function () {
 Route::group(['middleware' => 'tenant.auth'], function () {
 
 });
+
+
+Route::get('/tenant/login', function () {
+    return view('tenant.login');
+})->name('tenant.login');
+
+
+Route::get('/tenant/register', function () {
+    return view('tenant.register');
+})->name('tenant.register');
