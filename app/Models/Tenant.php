@@ -21,6 +21,7 @@ class Tenant extends Authenticatable
         'name',
         'email',
         'password',
+        'phone',
     ];
 
     /**

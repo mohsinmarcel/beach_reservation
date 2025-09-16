@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TenantController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -41,12 +42,6 @@ Route::group(['middleware' => 'tenant.auth'], function () {
 
 });
 
-
-Route::get('/tenant/login', function () {
-    return view('tenant.login');
-})->name('tenant.login');
-
-
-Route::get('/tenant/register', function () {
-    return view('tenant.register');
-})->name('tenant.register');
+Route::get('/tenant/login', [TenantController::class, 'tenantLogin'])->name('tenant.login');
+Route::get('/tenant/register', [TenantController::class, 'tenantRegister'])->name('tenant.register');
+Route::post('/tenant/register/process', [TenantController::class, 'tenantRegisterProcess'])->name('tenant.register.process');
