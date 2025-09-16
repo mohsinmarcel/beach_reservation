@@ -1,3 +1,5 @@
+
+
 <?php
 
 namespace App\Http;
@@ -63,5 +65,12 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+
+        'user.auth' => \App\Http\Middleware\UserAuthenticate::class,
+        'user.guest' => \App\Http\Middleware\UserRedirectIfAuthenticated::class,
+        'admin.auth' => \App\Http\Middleware\AdminAuthenticate::class,
+        'admin.guest' => \App\Http\Middleware\AdminRedirectIfAuthenticated::class,
+        'tenant.auth' => \App\Http\Middleware\TenantAuthenticate::class,
+        'tenant.guest' => \App\Http\Middleware\TenantRedirectIfAuthenticated::class,
     ];
 }
