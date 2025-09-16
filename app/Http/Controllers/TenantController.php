@@ -120,5 +120,9 @@ class TenantController extends Controller
         ], 401);
     }
 
+    public function tenantSeats()
+    {
+        return view ('tenant.seats');
+    }
 
 }

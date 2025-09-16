@@ -43,5 +43,6 @@ Route::group(['middleware' => 'tenant.guest'], function () {
 
 Route::group(['middleware' => 'tenant.auth'], function () {
     Route::get('/tenant/dashboard', [TenantController::class, 'tenantDashboard'])->name('tenant.dashboard');
+    Route::get('/tenant/seats', [TenantController::class, 'tenantSeats'])->name('tenant.seats');
 });
 
