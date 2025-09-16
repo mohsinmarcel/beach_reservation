@@ -15073,7 +15073,7 @@ html:not(.layout-menu-fixed) .menu-inner-shadow {
 .menu-vertical .menu-block,
 .menu-vertical .menu-inner > .menu-item,
 .menu-vertical .menu-inner > .menu-header {
-  width: 16.25rem;
+  width: 20rem;
 }
 .menu-vertical .menu-inner {
   flex-direction: column;
@@ -15207,7 +15207,7 @@ html:not(.layout-menu-fixed) .menu-inner-shadow {
 }
 
 .layout-container {
-  min-height: 100vh;
+  min-height: calc(100vh - 48px);
 }
 
 .layout-wrapper,
