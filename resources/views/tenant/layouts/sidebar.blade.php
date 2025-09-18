@@ -45,7 +45,7 @@
                                 </g>
                             </svg>
                         </span>
-                        <span class="app-brand-text demo menu-text fw-bolder ms-2 text-capitalize">Bech Sitting</span>
+                        <span class="app-brand-text demo menu-text fw-bolder ms-2 text-capitalize">Beach Seats</span>
                     </a>
 
                     <a href="javascript:void(0);"
@@ -58,10 +58,16 @@
 
                 <ul class="menu-inner py-1">
 
-                        <li class="menu-item active">
+                        <li class="menu-item">
                         <a href="{{route('tenant.seats')}}" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-home-circle"></i>
                             <div data-i18n="Analytics">Seats</div>
+                        </a>
+                        </li>
+                        <li class="menu-item">
+                        <a href="{{route('tenant.logout')}}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                            <div data-i18n="Analytics">Logout</div>
                         </a>
                         </li>
                         {{-- <li class="menu-item">

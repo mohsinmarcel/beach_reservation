@@ -156,7 +156,7 @@
     <script src="{{ asset('assets/assets/js/dashboards-analytics.js') }}"></script>
     <script async defer src="https://buttons.github.io/buttons.js"></script>
 
-        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
      <script>
          function registerTenant() {

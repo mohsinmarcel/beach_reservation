@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Tenant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class TenantController extends Controller
@@ -123,6 +124,18 @@ class TenantController extends Controller
     public function tenantSeats()
     {
         return view ('tenant.seats');
+    }
+
+    public function tenantSeatsStore(Request $request)
+    {
+        dd($request->all());
+    }
+
+    public function tenantLogout()
+    {
+        auth('tenant')->logout();
+        Session::flush('tenant');
+        return redirect()->route('tenant.login');
     }
 
 }
