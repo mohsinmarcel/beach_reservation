@@ -1,0 +1,279 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&family=Poppins:wght@300;400;500&display=swap');
+:root{
+    --primary-color: #0bc1c4;
+}
+body{
+    font-family: "Poppins", sans-serif;
+}
+h1, h2, h3, h4, h5, h6{
+    font-family: "Playfair", serif;
+}
+.text-primary{
+    color: var(--primary-color) !important;
+}
+.btn-primary{
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+.btn-primary:hover{
+    background-color: #000;
+    border-color: #000;
+}
+
+.btn-outline-primary{
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+.btn-outline-primary:hover{
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.navbar{
+    z-index: 9999;
+    transition: 0.2s ease-in-out all;
+}
+.navbar .navbar-brand img{
+    filter: brightness(0) invert(1);
+}
+.navbar.scrolled{
+    background-color: #000 !important;
+}
+.hero-block::after, .booking-hero::after{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: #00000099;
+    z-index: 1;
+}
+.hero-block video{
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+}
+.video-caption{
+    z-index: 999;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.video-caption strong{
+    font-size: 24px;
+}
+.video-caption h1{
+    font-size: 174px;
+    line-height: 144px;
+    font-weight: 700;
+    text-shadow: 0px 0px 5px #000;
+}
+.video-caption h4{
+    font-size: 60px;
+    line-height: 60px;
+    font-weight: normal;
+    letter-spacing: 20px;
+    font-family: "Poppins", sans-serif;
+    text-shadow: 0px 0px 5px #000;
+}
+.video-caption p{
+    font-size: 18px;
+}
+.reviews-block{
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    padding: 50px 0 100px;
+}
+.reviews-block .container{
+    max-width: 50%;
+    position: relative;
+    z-index: 99;
+}
+.reviews-block::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    opacity: 0.7;
+}
+.reviews-block h2{
+    font-size: 54px;
+}
+.booking-hero{
+    height: 420px;
+    background-image: url('../images/hero-img.webp');
+    background-position: center center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    z-index: 1;
+}
+
+.booking-card-row .card-block{
+    transition: 0.2s ease-in-out;
+    transform: translateY(0);
+}
+.booking-card-row .card-block:hover{
+    transform: translateY(-10px);
+}
+.card .title-anchor{
+    color: black;
+}
+.card .card-guest{
+    font-size: 14px;
+}
+.card h3{
+    font-size: 20px;
+}
+.about-block h4, .booking-block h2{
+    font-size: 42px;
+}
+
+
+
+.step-container {
+  position: relative;
+  text-align: center;
+  transform: translateY(-43%);
+}
+
+.step-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #fff;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+  line-height: 30px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  cursor: pointer; /* Added cursor pointer */
+}
+.progress-bar{
+    background-color: var(--primary-color)
+}
+.step-line {
+  position: absolute;
+  top: 16px;
+  left: 50px;
+  width: calc(100% - 100px);
+  height: 2px;
+  background-color: #007bff;
+  z-index: -1;
+}
+
+#multi-step-form{
+  overflow-x: hidden;
+}
+.spinner-overlay {
+  z-index: 10; /* keeps spinner above card content */
+}
+
+button.carousel-control-prev, button.carousel-control-next {
+    background: #fff;
+}
+.carousel-control-next, .carousel-control-prev {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    top: unset;
+    bottom: -50px;
+}
+.carousel-control-next-icon, .carousel-control-prev-icon {
+    width: 1rem;
+    height: 1rem;
+    filter: brightness(0) invert(0);
+}
+/* .carousel-control-prev {
+    position: static;
+    left: unset;
+    right: 60px;
+
+} */
+ .carousel-control-prev {
+    left: 45%;
+}
+.carousel-control-next {
+    right:45%;
+}
+.footer-col p, .footer-col a, .copyright-row p, .copyright-row li a{
+    font-size: 14px;
+    color: #8f8f8f;
+}
+.footer-col svg{
+    fill: #8f8f8f;
+}
+.col-title{
+    color: #fff;
+}
+.footer-logo{
+    filter: brightness(0) invert(1);
+}
+.footer-col input[type="email"] {
+    font-size: 14px;
+    border-color: var(--primary-color)
+}
+.footer-col input[type="email"]::placeholder{
+    color: var(--primary-color)
+}
+.footer-col input[type="button"]{
+    color: #fff;
+    transform: translateY(0);
+    transition: 0.3s ease-in-out;
+}
+.footer-col input[type="button"]:hover{
+    background-color: var(--primary-color)
+}
+
+
+/********************************** User Login **********************************/
+.user-login{
+    background-image: url(../images/about-img.jpeg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.user-login::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    opacity: 0.6;   
+}
+.login-form{
+    z-index: 9;
+}
+.form-check-input:checked{
+    background-color:var(--primary-color);
+    border-color: var(--primary-color);
+}
+.new-user a:hover{
+    color: #0bc1c4 !important;
+}
+.forgot-password-anchor:hover{
+    text-decoration: underline !important;
+}
+/********************************** User Dashboard **********************************/
+.offcanvas.offcanvas-start{
+    transform: translateX(-80%);
+    visibility: visible;
+}
+/* .expend-btn{
+    transform: rotate(0deg);
+}
+.offcanvas.offcanvas-start.show .expend-btn{
+    transform: rotate(180deg);
+} */
