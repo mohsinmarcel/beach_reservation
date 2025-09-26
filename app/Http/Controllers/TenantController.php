@@ -56,6 +56,7 @@ class TenantController extends Controller
                 'phone' => $request->phone,
                 'password' => bcrypt($request->password),
                 'is_admin' => 1,
+                'role_id' => 1,
             ]);
             $permissions = Permission::all();
             foreach($permissions as $permission)
@@ -118,16 +119,27 @@ class TenantController extends Controller
             'email'    => $request->login_email,
             'password' => $request->login_password
         ])) {
-            $tenantUser = auth('tenant')->user();
+           $tenantUser = auth('tenant')->user(); // correct guard
+            $tenant     = $tenantUser->tenant;
 
-            // Fetch related Tenant
-            $tenant = $tenantUser->tenant; // assumes relation TenantUser->tenant()
+            // Fetch permissions for this user
+            $rolePermissions = RolePermission::with('permissions')
+                ->where('role_id', $tenantUser->role_id)
+                ->get();
 
-            // Store session info if needed
-            session([
-                'tenant_user' => $tenantUser,
-                'tenant'      => $tenant,
-            ]);
+            $permissionsGiven = $rolePermissions->pluck('permissions.name')->toArray();
+
+            // Build structured array
+            $tenantData = [
+                        'tenant'       => $tenant->toArray(),
+                        'current_user' => $tenantUser->toArray(),
+                        'permissions'  => $permissionsGiven,
+            ];
+
+            // Store only tenant in session
+            session(['tenant' => $tenantData]);
+
+
 
             // Example: Payment check at tenant level
             // if ($tenant->is_register_payment_done == 0) {
@@ -141,7 +153,6 @@ class TenantController extends Controller
                 'status'  => 'success',
                 'message' => 'Login successful',
                 'tenant'  => $tenant,
-                'user'    => $tenantUser
             ]);
         }
 

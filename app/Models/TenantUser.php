@@ -19,7 +19,8 @@ class TenantUser extends Authenticatable
         'password',
         'phone',
         'status',
-        'is_admin'
+        'is_admin',
+        'role_id',
     ];
 
     protected $hidden = [
