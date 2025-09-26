@@ -18,6 +18,37 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('test-route', function () {
+    $routes = Route::getRoutes();
+
+    $middlewaresToCheck = ['user.guest', 'user.auth', 'tenant.guest', 'tenant.auth'];
+    foreach ($routes as $route) {
+        $uri = $route->uri();
+        $name = $route->getName();
+        $middlewares = $route->middleware();
+        // Check if any of the specified middlewares are applied
+        foreach ($middlewaresToCheck as $mw) {
+            if (in_array($mw, $middlewares)) {
+                dd($name);
+                // Insert into permissions table if not exists
+                DB::table('permissions')->updateOrInsert(
+                    ['name' => $name ?? $uri], // Use route name if exists, else URI
+                    [
+                        'route' => $uri,
+                        'middleware' => $mw,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]
+                );
+
+                $this->info("✅ Added/Updated: {$name} ({$uri}) with {$mw}");
+            }
+        }
+    }
+});
+
+
+
 Route::group(['middleware' => 'admin.guest'], function () {
 
 });
@@ -46,6 +77,7 @@ Route::group(['middleware' => 'tenant.auth'], function () {
     Route::get('/tenant/seats', [TenantController::class, 'tenantSeats'])->name('tenant.seats');
     Route::post('/tenant/seats/store', [TenantController::class, 'tenantSeatsStore'])->name('tenant.seats.store');
     Route::get('/tenant/logout', [TenantController::class, 'tenantLogout'])->name('tenant.logout');
+    Route::get('/tenant/users/list', [TenantController::class, 'tenantUsersList'])->name('tenant.users.list');
 
 });
 

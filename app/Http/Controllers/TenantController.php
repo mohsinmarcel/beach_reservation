@@ -138,4 +138,9 @@ class TenantController extends Controller
         return redirect()->route('tenant.login');
     }
 
+    public function tenantUsersList()
+    {
+        return view ('tenant.tenant_users.list');
+    }
+
 }
