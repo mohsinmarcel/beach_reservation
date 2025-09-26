@@ -64,7 +64,7 @@
                             <div data-i18n="Analytics">Seats</div>
                         </a>
                         </li>
-                         <li class="menu-item">
+                        <li class="menu-item">
                             <a href="{{route('tenant.users.list')}}" class="menu-link">
                                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                                 <div data-i18n="">Users</div>
