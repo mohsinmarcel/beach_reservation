@@ -29,19 +29,18 @@ Route::get('test-route', function () {
         // Check if any of the specified middlewares are applied
         foreach ($middlewaresToCheck as $mw) {
             if (in_array($mw, $middlewares)) {
-                dd($name);
+                $groupName = explode('.', $name)[0] ?? null;
                 // Insert into permissions table if not exists
                 DB::table('permissions')->updateOrInsert(
                     ['name' => $name ?? $uri], // Use route name if exists, else URI
                     [
                         'route' => $uri,
-                        'middleware' => $mw,
+                        'group' => $groupName,
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]
                 );
 
-                $this->info("✅ Added/Updated: {$name} ({$uri}) with {$mw}");
             }
         }
     }
