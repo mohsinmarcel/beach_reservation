@@ -5,19 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{asset('userside_assets/assets/css/custom.css')}}">
-    <title>Sitting</title>
+    <title>Beach Chair Reservation</title>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg shadow position-fixed w-100">
         <div class="container">
             <a class="navbar-brand" href="index.html"><img src="{{asset('userside_assets/assets/images/logo.png')}}" width="200" alt="logo"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+                <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-3">
                     <li class="nav-item">
-                    <a class="nav-link text-white active" aria-current="page" href="#">Home</a>
+                    <a class="nav-link text-white active" aria-current="page" href="index.html">Home</a>
                     </li>
                     <li class="nav-item"><a class="nav-link text-white" href="#">About Us</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="#">Services</a></li>
@@ -25,7 +25,46 @@
                     <li class="nav-item"><a class="nav-link text-white" href="#">Contact Us</a></li>
                 </ul>
             </div>
-            <a href="booking.html" class="btn btn-lg btn-outline-light rounded-pill">Book Now</a>
+            <!-- <div class="dropdown">
+                <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    John Cena
+                </button>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a href="booking.html" class="dropdown-item">Booking</a></li>
+                    <li class="nav-item"><a href="cancellation.html" class="dropdown-item">Cancellation</a></li>
+                    <li class="nav-item"><a href="#" class="dropdown-item">Reminder</a></li>
+                </ul>
+            </div> -->
+            <button type="button" class="btn btn-outline-light rounded-pill" data-bs-toggle="modal" data-bs-target="#userModal">Login</button>
+            <!-- Modal -->
+            <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="">
+                            <div class="modal-body">
+                                <div class="mb-4">
+                                    <h1 class="modal-title text-black fs-1 fw-bold lh-sm mb-2" id="userModalLabel">Login</h1>
+                                    <p class="text-secondary fs-6 sw-normal lh-sm">Welcome Back! Please login to your account.</p>
+                                </div>
+                                    <div class="mb-3">
+                                        <label for="secret_code" class="form-label fw-semibold lh-sm" style="font-size: 14px;">Code</label>
+                                        <input type="number" class="form-control" id="secret_code">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="user_password" class="form-label fw-semibold lh-sm" style="font-size: 14px;">Password</label>
+                                        <input type="password" class="form-control" id="user_password">
+                                    </div>
+                            </div>
+                            <div class="modal-footer">
+                                <input type="button" class="btn btn-lg btn-primary" value="Login">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </nav>
     <main>
@@ -51,7 +90,7 @@
                 <div class="row align-items-center">
                     <div class="col-lg-5">
                         <div class="about-img">
-                            <img src="{{asset('userside_assets/assets/images/about-img.webp')}}" class="img-fluid rounded-5" alt="">
+                            <img src="{{asset('userside_assets/assets/images/about-img.jpeg')}}" class="img-fluid rounded-5" alt="">
                         </div>
                     </div>
                     <div class="col-lg-7">
@@ -118,7 +157,7 @@
                 <!-- Filters End -->
                 <!-- Card Rows Start -->
                 <div class="booking-card-row row mt-5" id="cardRow">
-                    <div class="col-lg-3 card-block mb-3" data-guests="2" data-time="12pm-to-1pm" data-date="21/09/2025">
+                    <div class="col-lg-4 card-block mb-3" data-guests="2" data-time="12pm-to-1pm" data-date="21/09/2025">
                         <div class="card border-0 bg-white shadow">
                             <a href="#" class="img-anchor pt-2 px-2 text-decoration-none d-inline-block">
                                 <img src="{{asset('userside_assets/assets/images/img-1.webp')}}" class="img-fluid rounded" alt="image">
@@ -135,7 +174,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 card-block mb-3" data-guests="4" data-time="11am-to-12pm" data-date="21/09/2025">
+                    <div class="col-lg-4 card-block mb-3" data-guests="4" data-time="11am-to-12pm" data-date="21/09/2025">
                         <div class="card border-0 bg-white shadow">
                             <a href="#" class="img-anchor pt-2 px-2 text-decoration-none d-inline-block">
                                 <img src="{{asset('userside_assets/assets/images/img-1.webp')}}" class="img-fluid rounded" alt="image">
@@ -153,97 +192,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 card-block mb-3" data-guests="4" data-time="11am-to-12pm" data-date="21/09/2025">
-                        <div class="card border-0 bg-white shadow">
-                            <a href="#" class="img-anchor pt-2 px-2 text-decoration-none d-inline-block">
-                                <img src="{{asset('userside_assets/assets/images/img-1.webp')}}" class="img-fluid rounded" alt="image">
-                            </a>
-                            <div class="card-content p-3">
-                                <a href="#" class="title-anchor text-decoration-none d-inline-block">
-                                    <h3 class="card-title fw-bold lh-sm">Title Gose Here</h3>
-                                </a>
-                                <p class="card-guest fw-normal lh-sm mb-2 text-black">Guests Limit: <span class="fw-semibold">5</span></p>
-                                <p class="card-price fs-6 fw-normal lh-sm mb-4 text-black">From <span class="currency">30</span><span class="currency-symbol">$</span></p>
-                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                    Book Now
-                                </button>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 card-block mb-3" data-guests="8" data-time="3pm-to-4pm" data-date="4">
-                        <div class="card border-0 bg-white shadow">
-                            <a href="#" class="img-anchor pt-2 px-2 text-decoration-none d-inline-block">
-                                <img src="{{asset('userside_assets/assets/images/img-1.webp')}}" class="img-fluid rounded" alt="image">
-                            </a>
-                            <div class="card-content p-3">
-                                <a href="#" class="title-anchor text-decoration-none d-inline-block">
-                                    <h3 class="card-title fw-bold lh-sm">Title Gose Here</h3>
-                                </a>
-                                <p class="card-guest fw-normal lh-sm mb-2 text-black">Guests Limit: <span class="fw-semibold">8</span></p>
-                                <p class="card-price fs-6 fw-normal lh-sm mb-4 text-black">From <span class="currency">30</span><span class="currency-symbol">$</span></p>
-                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                    Book Now
-                                </button>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 card-block mb-3" data-guests="12" data-time="9am-to-10am" data-date="26/09/2025">
-                        <div class="card border-0 bg-white shadow">
-                            <a href="#" class="img-anchor pt-2 px-2 text-decoration-none d-inline-block">
-                                <img src="{{asset('userside_assets/assets/images/img-1.webp')}}" class="img-fluid rounded" alt="image">
-                            </a>
-                            <div class="card-content p-3">
-                                <a href="#" class="title-anchor text-decoration-none d-inline-block">
-                                    <h3 class="card-title fw-bold lh-sm">Title Gose Here</h3>
-                                </a>
-                                <p class="card-guest fw-normal lh-sm mb-2 text-black">Guests Limit: <span class="fw-semibold">12</span></p>
-                                <p class="card-price fs-6 fw-normal lh-sm mb-4 text-black">From <span class="currency">30</span><span class="currency-symbol">$</span></p>
-                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                    Book Now
-                                </button>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 card-block mb-3" data-guests="8" data-time="10am-to-11am" data-date="25/09/2025">
-                        <div class="card border-0 bg-white shadow">
-                            <a href="#" class="img-anchor pt-2 px-2 text-decoration-none d-inline-block">
-                                <img src="{{asset('userside_assets/assets/images/img-1.webp')}}" class="img-fluid rounded" alt="image">
-                            </a>
-                            <div class="card-content p-3">
-                                <a href="#" class="title-anchor text-decoration-none d-inline-block">
-                                    <h3 class="card-title fw-bold lh-sm">Title Gose Here</h3>
-                                </a>
-                                <p class="card-guest fw-normal lh-sm mb-2 text-black">Guests Limit: <span class="fw-semibold">8</span></p>
-                                <p class="card-price fs-6 fw-normal lh-sm mb-4 text-black">From <span class="currency">30</span><span class="currency-symbol">$</span></p>
-                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                    Book Now
-                                </button>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 card-block mb-3" data-guests="6" data-time="5pm-to-6pm" data-date="28/09/2025">
-                        <div class="card border-0 bg-white shadow">
-                            <a href="#" class="img-anchor pt-2 px-2 text-decoration-none d-inline-block">
-                                <img src="{{asset('userside_assets/assets/images/img-1.webp')}}" class="img-fluid rounded" alt="image">
-                            </a>
-                            <div class="card-content p-3">
-                                <a href="#" class="title-anchor text-decoration-none d-inline-block">
-                                    <h3 class="card-title fw-bold lh-sm">Title Gose Here</h3>
-                                </a>
-                                <p class="card-guest fw-normal lh-sm mb-2 text-black">Guests Limit: <span class="fw-semibold">6</span></p>
-                                <p class="card-price fs-6 fw-normal lh-sm mb-4 text-black">From <span class="currency">30</span><span class="currency-symbol">$</span></p>
-                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                    Book Now
-                                </button>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 card-block mb-3" data-guests="4" data-time="4pm-to-5pm" data-date="29/09/2025">
+                    <div class="col-lg-4 card-block mb-3" data-guests="4" data-time="11am-to-12pm" data-date="21/09/2025">
                         <div class="card border-0 bg-white shadow">
                             <a href="#" class="img-anchor pt-2 px-2 text-decoration-none d-inline-block">
                                 <img src="{{asset('userside_assets/assets/images/img-1.webp')}}" class="img-fluid rounded" alt="image">
@@ -267,7 +216,7 @@
         </section>
         <!-- Booking End -->
         <!-- Review Start -->
-        <section class="reviews-block position-relative" style="background-image: url(./assets/images/about-img.jpeg);">
+        {{-- <section class="reviews-block position-relative" style="background-image: url({{asset('userside_assets/assets/images/img-1.webp')}});">
             <div class="container">
                 <h2 class="fw-semibold text-white text-center">Reviews</h2>
                 <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
@@ -320,7 +269,7 @@
                             <span class="carousel-control-next-icon"></span>
                         </button>
             </div>
-        </section>
+        </section> --}}
         <!-- Review End -->
     </main>
     <!-- Modal Start -->
@@ -540,8 +489,7 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/SplitText.min.js"></script> -->
+    <script src="{{asset('userside_assets/assets/js/card-modal.js')}}"></script>
     <script src="{{asset('userside_assets/assets/js/custom.js')}}"></script>
 </body>
 </html>
