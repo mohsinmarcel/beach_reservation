@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{asset('userside_assets/assets/css/custom.css')}}">
+    <title>Caneellations</title>
+</head>
+<body>
+      <nav class="navbar navbar-expand-lg shadow position-fixed w-100">
+        <div class="container">
+            <a class="navbar-brand" href="index.html"><img src="{{ asset('userside_assets/assets/images/logo.png') }}"
+                    width="200" alt="logo"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-3">
+                    <li class="nav-item">
+                        <a class="nav-link text-white active" aria-current="page" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link text-white" href="#">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="#">Services</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="#">Blogs</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <!-- <div class="dropdown">
+                <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    John Cena
+                </button>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a href="booking.html" class="dropdown-item">Booking</a></li>
+                    <li class="nav-item"><a href="cancellation.html" class="dropdown-item">Cancellation</a></li>
+                    <li class="nav-item"><a href="#" class="dropdown-item">Reminder</a></li>
+                </ul>
+            </div> -->
+            {{-- @dd(session('user')) --}}
+            @if (!empty(session('user')))
+                <div class="dropdown">
+                    <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Welcome, {{ucWords(session('user')->name)}}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li class="nav-item"><a href="{{route('user.bookings')}}" class="dropdown-item">Booking</a></li>
+                        <li class="nav-item"><a href="{{route('user.cancellations')}}" class="dropdown-item">Cancellation</a></li>
+                        <li class="nav-item"><a href="{{route('user.reminders')}}" class="dropdown-item">Reminder</a></li>
+                        <li class="nav-item"><a href="{{route('user.logout')}}" class="dropdown-item">Logout</a></li>
+                    </ul>
+                </div>
+            @else
+                <button type="button" class="btn btn-outline-light rounded-pill" data-bs-toggle="modal" data-bs-target="#userModal">Login</button>
+            @endif
+            <!-- Modal -->
+            <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <form id="loginForm">
+                            @csrf
+                            <div class="modal-body">
+                                <div class="mb-4">
+                                    <h1 class="modal-title text-black fs-1 fw-bold lh-sm mb-2" id="userModalLabel">Login
+                                    </h1>
+                                    <p class="text-secondary fs-6 sw-normal lh-sm">Welcome Back! Please login to your
+                                        account.</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="secret_code" class="form-label fw-semibold lh-sm"
+                                        style="font-size: 14px;">Code</label>
+                                    <input type="text" class="form-control" id="secret_code" name="unique_code">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="user_password" class="form-label fw-semibold lh-sm"
+                                        style="font-size: 14px;">Password</label>
+                                    <input type="password" class="form-control" id="user_password"
+                                        name="login_password">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <input type="button" class="btn btn-lg btn-primary" value="Login"
+                                    onclick="signIn()">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <main class="booking-page">
+        <section class="page-header-block position-relative d-flex align-items-center justify-content-center" style="background-image: url({{asset('userside_assets/assets/images/about-img.jpeg')}});">
+            <div class="text-center page-header-content mt-5">
+                <h1 class="position-relative text-white fs-1 fw-bold text-uppercase">Your Cancellation</h1>
+                <p class="text-white fs-6 fw-normal">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quod suscipit tempore nam quas deserunt eum dolor, aliquam, maiores quasi voluptatibus sint.</p>
+            </div>
+        </section>
+        <section class="booking-list-block py-5">
+            <div class="container w-50 mw-100">
+                <div class="row">
+                    <div class="col-12 alert alert-danger rounded-3 shadow mb-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                <img src="{{asset('userside_assets/assets/images/img-1.webp')}}" class="w-100 rounded" style="height: 220px;" alt="card-img">
+                            </div>
+                            <div class="col-md-8 p-3">
+                                <h3 class="card-title fw-bold lh-sm mb-2">Title Gose Here</h3>
+                                <p class="card-guest fw-normal lh-sm mb-2">Guests Limit: <span class="fw-semibold">2</span></p>
+                                <p class="card-price fs-6 fw-normal lh-sm mb-2">Price <span class="currency fw-semibold">130</span><span class="currency-symbol fw-semibold">$</span></p>
+                                <p class="card-description fw-normal lh-sm mb-4k">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga iste a omnis, quaerat recusandae aut exercitationem incidunt, nobis, neque voluptatibus velit reiciendis temporibus saepe commodi natus.</p>
+                                <div class="d-flex gap-2">
+                                    <a href="#" class="btn btn-outline-success">Restore</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="pt-5 bg-black">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="footer-col">
+                        <a href="index.html"><img src="{{asset('userside_assets/assets/images/logo.png')}}" class="footer-logo" width="200" alt="logo"></a>
+                        <ul class="list-unstyled mt-4 d-flex justify-content-start gap-2">
+                            <li>
+                                <a href="#" target="_blank">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 640 640"><path d="M240 363.3L240 576L356 576L356 363.3L442.5 363.3L460.5 265.5L356 265.5L356 230.9C356 179.2 376.3 159.4 428.7 159.4C445 159.4 458.1 159.8 465.7 160.6L465.7 71.9C451.4 68 416.4 64 396.2 64C289.3 64 240 114.5 240 223.4L240 265.5L174 265.5L174 363.3L240 363.3z"/></svg>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" target="_blank">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 640 640"><path d="M320.3 205C256.8 204.8 205.2 256.2 205 319.7C204.8 383.2 256.2 434.8 319.7 435C383.2 435.2 434.8 383.8 435 320.3C435.2 256.8 383.8 205.2 320.3 205zM319.7 245.4C360.9 245.2 394.4 278.5 394.6 319.7C394.8 360.9 361.5 394.4 320.3 394.6C279.1 394.8 245.6 361.5 245.4 320.3C245.2 279.1 278.5 245.6 319.7 245.4zM413.1 200.3C413.1 185.5 425.1 173.5 439.9 173.5C454.7 173.5 466.7 185.5 466.7 200.3C466.7 215.1 454.7 227.1 439.9 227.1C425.1 227.1 413.1 215.1 413.1 200.3zM542.8 227.5C541.1 191.6 532.9 159.8 506.6 133.6C480.4 107.4 448.6 99.2 412.7 97.4C375.7 95.3 264.8 95.3 227.8 97.4C192 99.1 160.2 107.3 133.9 133.5C107.6 159.7 99.5 191.5 97.7 227.4C95.6 264.4 95.6 375.3 97.7 412.3C99.4 448.2 107.6 480 133.9 506.2C160.2 532.4 191.9 540.6 227.8 542.4C264.8 544.5 375.7 544.5 412.7 542.4C448.6 540.7 480.4 532.5 506.6 506.2C532.8 480 541 448.2 542.8 412.3C544.9 375.3 544.9 264.5 542.8 227.5zM495 452C487.2 471.6 472.1 486.7 452.4 494.6C422.9 506.3 352.9 503.6 320.3 503.6C287.7 503.6 217.6 506.2 188.2 494.6C168.6 486.8 153.5 471.7 145.6 452C133.9 422.5 136.6 352.5 136.6 319.9C136.6 287.3 134 217.2 145.6 187.8C153.4 168.2 168.5 153.1 188.2 145.2C217.7 133.5 287.7 136.2 320.3 136.2C352.9 136.2 423 133.6 452.4 145.2C472 153 487.1 168.1 495 187.8C506.7 217.3 504 287.3 504 319.9C504 352.5 506.7 422.6 495 452z"/></svg>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" target="_blank">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 640 640"><path d="M544.5 273.9C500.5 274 457.5 260.3 421.7 234.7L421.7 413.4C421.7 446.5 411.6 478.8 392.7 506C373.8 533.2 347.1 554 316.1 565.6C285.1 577.2 251.3 579.1 219.2 570.9C187.1 562.7 158.3 545 136.5 520.1C114.7 495.2 101.2 464.1 97.5 431.2C93.8 398.3 100.4 365.1 116.1 336C131.8 306.9 156.1 283.3 185.7 268.3C215.3 253.3 248.6 247.8 281.4 252.3L281.4 342.2C266.4 337.5 250.3 337.6 235.4 342.6C220.5 347.6 207.5 357.2 198.4 369.9C189.3 382.6 184.4 398 184.5 413.8C184.6 429.6 189.7 444.8 199 457.5C208.3 470.2 221.4 479.6 236.4 484.4C251.4 489.2 267.5 489.2 282.4 484.3C297.3 479.4 310.4 469.9 319.6 457.2C328.8 444.5 333.8 429.1 333.8 413.4L333.8 64L421.8 64C421.7 71.4 422.4 78.9 423.7 86.2C426.8 102.5 433.1 118.1 442.4 131.9C451.7 145.7 463.7 157.5 477.6 166.5C497.5 179.6 520.8 186.6 544.6 186.6L544.6 274z"/></svg>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="text-start w-75">
+                            <h4 class="fs-5 fw-medium mb-3 col-title">Newsletter</h4>
+                            <form action="" >
+                            <div class="">
+                                <input type="email" class="form-control bg-transparent text-white p-2 mb-3 subscribe-input" name="newsletter_email" placeholder="Enter your email...">
+                                <input type="button" class="btn btn-primary w-100 text-center" id="subscribeBtn" value="Subscribe">
+                            </div>
+                        </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="footer-col">
+                        <h3 class="col-title fs-3 fw-semibold mb-3">Contact</h3>
+                        <p class="address fw-normal lh-sm">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
+                        <div class="contact-block-item mt-4">
+                            <h4 class="fs-5 fw-medium mb-3 col-title">For Call/Email</h4>
+                            <ul class="list-unstyled">
+                                <li class="d-flex align-items-center gap-1 pb-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 640 640">
+                                        <path d="M176.8 74.9C204.1 65.8 233.8 78.8 245.7 104.9L285.4 192.2C296 215.6 289.4 243.2 269.4 259.3L245.2 278.6C270.7 328.6 310.7 370 359.6 397.4L380.8 370.8C396.9 350.7 424.5 344.1 447.9 354.8L535.2 394.5C561.4 406.4 574.3 436.1 565.2 463.4C544.5 525.7 481.5 579.6 404.3 566C230.6 535.4 104.7 409.5 74.1 235.8C60.5 158.6 114.5 95.7 176.7 74.9zM202 124.8C200.3 121 196 119.1 192 120.4C146.8 135.5 112.9 179 121.5 227.4C148.6 381.2 258.9 491.6 412.7 518.7C461.1 527.2 504.6 493.4 519.7 448.2C521 444.2 519.1 439.9 515.3 438.2L428 398.4C424.6 396.9 420.6 397.8 418.3 400.7L384.8 442.6C377.8 451.3 365.8 454.1 355.8 449.3C283.3 414.9 225.3 355 193.4 281.1C189.1 271.2 192 259.6 200.4 252.9L239.3 221.8C242.2 219.5 243.2 215.5 241.6 212.1L201.9 124.7z"/>
+                                    </svg>
+                                    <a href="tel:+10000000000" class="text-decoration-none">+10000000000</a>
+                                </li>
+                                <li class="d-flex align-items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 640 640">
+                                        <path d="M125.4 128C91.5 128 64 155.5 64 189.4C64 190.3 64 191.1 64.1 192L64 192L64 448C64 483.3 92.7 512 128 512L512 512C547.3 512 576 483.3 576 448L576 192L575.9 192C575.9 191.1 576 190.3 576 189.4C576 155.5 548.5 128 514.6 128L125.4 128zM528 256.3L528 448C528 456.8 520.8 464 512 464L128 464C119.2 464 112 456.8 112 448L112 256.3L266.8 373.7C298.2 397.6 341.7 397.6 373.2 373.7L528 256.3zM112 189.4C112 182 118 176 125.4 176L514.6 176C522 176 528 182 528 189.4C528 193.6 526 197.6 522.7 200.1L344.2 335.5C329.9 346.3 310.1 346.3 295.8 335.5L117.3 200.1C114 197.6 112 193.6 112 189.4z"/>
+                                    </svg>
+                                    <a href="mailto:info@example.com" class="text-decoration-none">info@example.com</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="footer-col">
+                        <h3 class="col-title fs-3 fw-semibold mb-3">Opening Hours</h3>
+                        <p class="address fw-normal lh-sm">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
+                        <div class="contact-block-item mt-4">
+                            <h4 class="fs-5 fw-medium mb-3 col-title">Availability</h4>
+                            <ul class="list-unstyled">
+                                <li class="d-flex align-items-center gap-1 pb-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 640 640">
+                                        <path d="M256 120L256 160L384 160L384 120C384 115.6 380.4 112 376 112L264 112C259.6 112 256 115.6 256 120zM208 160L208 120C208 89.1 233.1 64 264 64L376 64C406.9 64 432 89.1 432 120L432 160L512 160C547.3 160 576 188.7 576 224L576 289.4C560.9 282.5 544.8 277.5 528 274.6L528 223.9C528 215.1 520.8 207.9 512 207.9L128 207.9C119.2 207.9 112 215.1 112 223.9L112 319.9L369 319.9C340.7 344.9 319.8 378.2 310 415.9L288 415.9C270.3 415.9 256 401.6 256 383.9L256 367.9L112 367.9L112 479.9C112 488.7 119.2 495.9 128 495.9L306.7 495.9C309.5 512.7 314.5 528.8 321.5 543.9L128 544C92.7 544 64 515.3 64 480L64 224C64 188.7 92.7 160 128 160L208 160zM352 464C352 384.5 416.5 320 496 320C575.5 320 640 384.5 640 464C640 543.5 575.5 608 496 608C416.5 608 352 543.5 352 464zM496 384C487.2 384 480 391.2 480 400L480 464C480 472.8 487.2 480 496 480L544 480C552.8 480 560 472.8 560 464C560 455.2 552.8 448 544 448L512 448L512 400C512 391.2 504.8 384 496 384z"/>
+                                    </svg>
+                                    <p class="mb-0">
+                                        <span>9 AM</span> to <span>6 PM</span>
+                                    </p>
+                                </li>
+                                <li class="d-flex align-items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 640 640">
+                                        <path d="M216 64C229.3 64 240 74.7 240 88L240 128L400 128L400 88C400 74.7 410.7 64 424 64C437.3 64 448 74.7 448 88L448 128L480 128C515.3 128 544 156.7 544 192L544 480C544 515.3 515.3 544 480 544L160 544C124.7 544 96 515.3 96 480L96 192C96 156.7 124.7 128 160 128L192 128L192 88C192 74.7 202.7 64 216 64zM480 496C488.8 496 496 488.8 496 480L496 416L408 416L408 496L480 496zM496 368L496 288L408 288L408 368L496 368zM360 368L360 288L280 288L280 368L360 368zM232 368L232 288L144 288L144 368L232 368zM144 416L144 480C144 488.8 151.2 496 160 496L232 496L232 416L144 416zM280 416L280 496L360 496L360 416L280 416zM216 176L160 176C151.2 176 144 183.2 144 192L144 240L496 240L496 192C496 183.2 488.8 176 480 176L216 176z"/>
+                                    </svg>
+                                    <p class="mb-0">
+                                        <span>Monday</span> to <span>Sunday</span>
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <hr>
+        <div class="container">
+            <div class="row copyright-row">
+                <div class="col-8">
+                    <p class="fw-light lh-sm">Copyright © 2025 Beach Sitting. All rights reserved.</p>
+                </div>
+                <div class="col-lg-4">
+                    <ul class="list-unstyled d-flex align-items-center justify-content-end gap-2">
+                        <li><a href="#" class="text-decoration-none">Privacy Policy</a></li>
+                        <li><a href="#" class="text-decoration-none">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{asset('userside_assets/assets/js/custom.js')}}"></script>
+</body>
+</html>

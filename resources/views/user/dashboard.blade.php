@@ -49,9 +49,9 @@
                         Welcome, {{ucWords(session('user')->name)}}
                     </button>
                     <ul class="dropdown-menu">
-                        <li class="nav-item"><a href="booking.html" class="dropdown-item">Booking</a></li>
-                        <li class="nav-item"><a href="cancellation.html" class="dropdown-item">Cancellation</a></li>
-                        <li class="nav-item"><a href="#" class="dropdown-item">Reminder</a></li>
+                        <li class="nav-item"><a href="{{route('user.bookings')}}" class="dropdown-item">Booking</a></li>
+                        <li class="nav-item"><a href="{{route('user.cancellations')}}" class="dropdown-item">Cancellation</a></li>
+                        <li class="nav-item"><a href="{{route('user.reminders')}}" class="dropdown-item">Reminder</a></li>
                         <li class="nav-item"><a href="{{route('user.logout')}}" class="dropdown-item">Logout</a></li>
                     </ul>
                 </div>

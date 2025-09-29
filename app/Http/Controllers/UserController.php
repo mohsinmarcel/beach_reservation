@@ -156,4 +156,23 @@ class UserController extends Controller
         session()->forget('user');
         return redirect()->back();
     }
+
+    public function userCancellations()
+    {
+        $user = session('user');
+        $cancellations = null;
+        return view('user.cancellations', compact('cancellations'));
+    }
+    public function userReminders()
+    {
+        $user = session('user');
+        $reminders = null;
+        return view('user.reminders', compact('reminders'));
+    }
+    public function userBookings()
+    {
+        $user = session('user');
+        $bookings = null;
+        return view('user.booking', compact('bookings'));
+    }
 }

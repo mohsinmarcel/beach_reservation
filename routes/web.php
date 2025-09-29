@@ -18,9 +18,14 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('user.dashboard');
 });
+
+
 Route::post('/user/reserve/booking', [UserController::class, 'userReserveBookingLogin'])->name('user.reserve.booking.login');
 Route::post('/user/login', [UserController::class, 'userLoginProcess'])->name('user.login.process');
 Route::get('/user/logout', [UserController::class, 'userLogout'])->name('user.logout');
+Route::get('/user/cancellations', [UserController::class, 'userCancellations'])->name('user.cancellations');
+Route::get('/user/reminders', [UserController::class, 'userReminders'])->name('user.reminders');
+Route::get('/user/bookings', [UserController::class, 'userBookings'])->name('user.bookings');
 
 
 Route::get('test-route', function () {
@@ -82,6 +87,5 @@ Route::group(['middleware' => 'tenant.auth'], function () {
     Route::post('/tenant/seats/store', [TenantController::class, 'tenantSeatsStore'])->name('tenant.seats.store');
     Route::get('/tenant/logout', [TenantController::class, 'tenantLogout'])->name('tenant.logout');
     Route::get('/tenant/users/list', [TenantController::class, 'tenantUsersList'])->name('tenant.users.list');
-
 });
 
