@@ -185,4 +185,9 @@ class TenantController extends Controller
         return view ('tenant.tenant_users.list');
     }
 
+    public function tenantUsersCreate()
+    {
+        return view ('tenant.tenant_users.create');
+    }
+
 }
