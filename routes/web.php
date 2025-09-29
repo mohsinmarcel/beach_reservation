@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\TenantController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,6 +18,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('user.dashboard');
 });
+Route::post('/user/reserve/booking/login', [UserController::class, 'userReserveBookingLogin'])->name('user.reserve.booking.login');
+
 
 Route::get('test-route', function () {
     $routes = Route::getRoutes();

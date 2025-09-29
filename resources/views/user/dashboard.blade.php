@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{asset('userside_assets/assets/css/custom.css')}}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>Beach Chair Reservation</title>
 </head>
 <body>
@@ -111,7 +113,7 @@
                 <!-- Filters Start -->
                 <div id="filterContainer" class="row position-relative bg-white shadow p-4 rounded">
                     <div class="col-lg-4">
-                        <select id="filterGuests" class="form-select">
+                        <select id="#filterGuests" class="form-select">
                             <option selected>Guests</option>
                             <option value="2">2</option>
                             <option value="4">4</option>
@@ -123,7 +125,7 @@
                         </select>
                     </div>
                     <div class="col-lg-4">
-                        <select id="filterTime" class="form-select">
+                        <select id="#filterTime" class="form-select">
                             <option selected>Time</option>
                             <option value="9am-to-10am">9 AM to 10 AM</option>
                             <option value="10am-to-11am">10 AM to 11 AM</option>
@@ -138,7 +140,7 @@
                         </select>
                     </div>
                     <div class="col-lg-4">
-                        <select id="filterDate" class="form-select">
+                        <select id="#filterDate" class="form-select">
                             <option selected>Date</option>
                             <option value="20/09/2025">20/09/2025</option>
                             <option value="21/09/2025">21/09/2025</option>
@@ -164,30 +166,11 @@
                             </a>
                             <div class="card-content p-3">
                                 <a href="#" class="title-anchor text-decoration-none d-inline-block">
-                                    <h3 class="card-title fw-bold lh-sm">Title Gose Here</h3>
+                                    <h3 class="card-title fw-bold lh-sm">Chairs</h3>
                                 </a>
-                                <p class="card-guest fw-normal lh-sm mb-2 text-black">Guests Limit: <span class="fw-semibold">2</span></p>
-                                <p class="card-price fs-6 fw-normal lh-sm mb-4 text-black">From <span class="currency">30</span><span class="currency-symbol">$</span></p>
-                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                    Book Now
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 card-block mb-3" data-guests="4" data-time="11am-to-12pm" data-date="21/09/2025">
-                        <div class="card border-0 bg-white shadow">
-                            <a href="#" class="img-anchor pt-2 px-2 text-decoration-none d-inline-block">
-                                <img src="{{asset('userside_assets/assets/images/img-1.webp')}}" class="img-fluid rounded" alt="image">
-                            </a>
-                            <div class="card-content p-3">
-                                <a href="#" class="title-anchor text-decoration-none d-inline-block">
-                                    <h3 class="card-title fw-bold lh-sm">Title Gose Here</h3>
-                                </a>
-                                <p class="card-guest fw-normal lh-sm mb-2 text-black">Guests Limit: <span class="fw-semibold">4</span></p>
-                                <p class="card-price fs-6 fw-normal lh-sm mb-4 text-black">From <span class="currency">30</span><span class="currency-symbol">$</span></p>
-                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                    Book Now
-                                </button>
+                                {{-- <p class="card-guest fw-normal lh-sm mb-2 text-black">Guests Limit: <span class="fw-semibold">2</span></p> --}}
+                                {{-- <p class="card-price fs-6 fw-normal lh-sm mb-4 text-black">From <span class="currency">30</span><span class="currency-symbol">$</span></p> --}}
+                                <br><br><button type="button" class="btn btn-outline-primary" onclick="bookNow('chairs')">Book Now</button>
 
                             </div>
                         </div>
@@ -199,13 +182,28 @@
                             </a>
                             <div class="card-content p-3">
                                 <a href="#" class="title-anchor text-decoration-none d-inline-block">
-                                    <h3 class="card-title fw-bold lh-sm">Title Gose Here</h3>
+                                    <h3 class="card-title fw-bold lh-sm">Chair With Umbrella</h3>
                                 </a>
-                                <p class="card-guest fw-normal lh-sm mb-2 text-black">Guests Limit: <span class="fw-semibold">4</span></p>
-                                <p class="card-price fs-6 fw-normal lh-sm mb-4 text-black">From <span class="currency">30</span><span class="currency-symbol">$</span></p>
-                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                    Book Now
-                                </button>
+                                {{-- <p class="card-guest fw-normal lh-sm mb-2 text-black">Guests Limit: <span class="fw-semibold">4</span></p>
+                                <p class="card-price fs-6 fw-normal lh-sm mb-4 text-black">From <span class="currency">30</span><span class="currency-symbol">$</span></p> --}}
+                                <br><br><button type="button" class="btn btn-outline-primary" onclick="bookNow('chair_with_umbrella')">Book Now</button>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 card-block mb-3" data-guests="4" data-time="11am-to-12pm" data-date="21/09/2025">
+                        <div class="card border-0 bg-white shadow">
+                            <a href="#" class="img-anchor pt-2 px-2 text-decoration-none d-inline-block">
+                                <img src="{{asset('userside_assets/assets/images/img-1.webp')}}" class="img-fluid rounded" alt="image">
+                            </a>
+                            <div class="card-content p-3">
+                                <a href="#" class="title-anchor text-decoration-none d-inline-block">
+                                    <h3 class="card-title fw-bold lh-sm">Combos</h3>
+                                </a>
+                                {{-- <p class="card-guest fw-normal lh-sm mb-2 text-black">Guests Limit: <span class="fw-semibold">4</span></p>
+                                <p class="card-price fs-6 fw-normal lh-sm mb-4 text-black">From <span class="currency">30</span><span class="currency-symbol">$</span></p> --}}
+                                <br><br><button type="button" class="btn btn-outline-primary" onclick="bookNow('combos')">Book Now</button>
 
                             </div>
                         </div>
@@ -290,12 +288,13 @@
                     <div class="step-circle" onclick="displayStep(3)">3</div>
                 </div>
                 <form id="multi-step-form">
+                    @csrf
                     <div class="step step-1">
                     <!-- Step 1 form fields here -->
                     <div class="mb-3">
                         <img src="{{asset('userside_assets/assets/images/img-1.webp')}}" class="img-fluid mb-3" alt="img">
                         <div class="berif-content">
-                            <h3 class="fs-6 fw-bold">Berif Title</h3>
+                            <h3 class="fs-6 fw-bold"> Title</h3>
                             <p style="font-size: 14px;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae blanditiis optio autem adipisci est, nihil inventore impedit aspernatur minus qui? Nam enim expedita repellat possimus, quod fugit, quis sapiente est impedit reprehenderit aperiam ea amet quam nihil deserunt fuga non ex repudiandae necessitatibus recusandae tempora veritatis, maiores inventore corporis? Voluptas?</p>
                         </div>
                     </div>
@@ -309,31 +308,31 @@
                         <div class="row">
                             <div class="col-lg-6 mb-3">
                                 <label for="fname" class="form-label fw-semibold mb-1" style="font-size: 13px;">First Name:</label>
-                                <input type="text" class="form-control" id="fname" name="field2">
+                                <input type="text" class="form-control" id="fname" name="first_name">
                             </div>
                             <div class="col-lg-6 mb-3">
                                 <label for="lname" class="form-label fw-semibold mb-1" style="font-size: 13px;">Last Name:</label>
-                                <input type="text" class="form-control" id="lname" name="field2">
+                                <input type="text" class="form-control" id="lname" name="last_name">
                             </div>
                             <div class="col-lg-6 mb-3">
                                 <label for="email" class="form-label fw-semibold mb-1" style="font-size: 13px;">Email:</label>
-                                <input type="email" class="form-control" id="email" name="field2">
+                                <input type="email" class="form-control" id="email" name="email">
                             </div>
                             <div class="col-lg-6 mb-3">
                                 <label for="phoneNum" class="form-label fw-semibold mb-1" style="font-size: 13px;">Phone Number:</label>
-                                <input type="number" class="form-control" id="phoneNum" name="field2">
+                                <input type="number" class="form-control" id="phoneNum" name="phone">
                             </div>
                             <div class="col-lg-6 mb-3">
                                 <label for="city" class="form-label fw-semibold mb-1" style="font-size: 13px;">City:</label>
-                                <input type="text" class="form-control" id="city" name="field2">
+                                <input type="text" class="form-control" id="city" name="city">
                             </div>
                             <div class="col-lg-6 mb-3">
                                 <label for="state" class="form-label fw-semibold mb-1" style="font-size: 13px;">State:</label>
-                                <input type="text" class="form-control" id="state" name="field2">
+                                <input type="text" class="form-control" id="state" name="state">
                             </div>
                             <div class="col-12 mb-3">
                                 <label for="address" class="form-label fw-semibold mb-1" style="font-size: 13px;">Address:</label>
-                                <textarea class="form-control" rows="3"></textarea>
+                                <textarea class="form-control" rows="3" name="address"></textarea>
                             </div>
                         </div>
                         <div class="text-end">
@@ -347,33 +346,28 @@
                     <div class="row">
                         <div class="col-12 mb-3">
                             <label for="cardNum" class="form-label fw-semibold mb-1" style="font-size: 13px;">Card Number</label>
-                            <input type="text" class="form-control" id="cardNum" name="cardNum">
+                            <input type="text" class="form-control" id="cardNum" name="card_number">
                         </div>
                         <div class="col-lg-6 mb-3">
-                            <label for="expDate" class="form-label fw-semibold mb-1" style="font-size: 13px;">Expiration date</label>
-                            <input type="text" class="form-control" id="expDate" name="expDate">
+                            <label for="expDate" class="form-label fw-semibold mb-1" style="font-size: 13px;">Name On Card</label>
+                            <input type="text" class="form-control" id="nameOnCard" name="name_on_card">
                         </div>
                         <div class="col-lg-6 mb-3">
-                            <label for="securityCode" class="form-label fw-semibold mb-1" style="font-size: 13px;">Security code</label>
-                            <input type="number" class="form-control" id="securityCode" name="securityCode">
+                            <label for="expDate" class="form-label fw-semibold mb-1" style="font-size: 13px;">Expiration Month</label>
+                            <input type="text" class="form-control" id="expire_month" name="expire_month">
                         </div>
-                        <div class="col-12 mb-3">
-                            <label for="country" class="form-label fw-semibold mb-1" style="font-size: 13px;">Country</label>
-                            <input type="text" class="form-control" id="country" name="country">
+                        <div class="col-lg-6 mb-3">
+                            <label for="securityCode" class="form-label fw-semibold mb-1" style="font-size: 13px;">Expiration Year</label>
+                            <input type="number" class="form-control" id="expire_year" name="expire_year">
                         </div>
-                        <hr>
-                        <div class="col-9 mb-3">
-                            <label for="promoCode" class="form-label fw-semibold mb-1" style="font-size: 13px;">Promo Code</label>
-                            <input type="text" class="form-control" id="promoCode" name="promoCode">
-                        </div>
-                        <div class="col-3 mb-3 d-flex align-items-end">
-                            <button class="btn btn-primary w-100 mt-auto d-block">Apply</button>
-                            <!-- <input type="button" class="btn btn-primary w-100 mt-auto" id="applyPromoCodeBtn" value="Apply"> -->
+                        <div class="col-lg-6 mb-3">
+                            <label for="country" class="form-label fw-semibold mb-1" style="font-size: 13px;">CVC</label>
+                            <input type="text" class="form-control" id="cvc" name="cvc">
                         </div>
                     </div>
                     <div class="text-end">
                         <button type="button" class="btn btn-primary prev-step">Previous</button>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="button" class="btn btn-primary" onclick="reserve(this)">Reserve</button>
                     </div>
                     </div>
                 </form>
@@ -491,5 +485,79 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{asset('userside_assets/assets/js/card-modal.js')}}"></script>
     <script src="{{asset('userside_assets/assets/js/custom.js')}}"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function bookNow(itemType) {
+            const modalTitle = document.getElementById('exampleModalLabel');
+            modalTitle.textContent = `Book Now - ${itemType.replace(/_/g, ' ').toUpperCase()}`;
+            const form = document.getElementById('multi-step-form');
+            form.reset();
+            displayStep(1);
+            const myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+            myModal.show();
+        }
+
+        function reserve() {
+            var form = $('#multi-step-form')[0];
+            var formData = new FormData(form);
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                url: '{{ route('user.reserve.booking.login') }}', // Replace with your login route
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Login Successful!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Remove old validation messages
+                    $('#multi-step-form .text-danger').remove();
+
+                    if (xhr.status === 422 && xhr.responseJSON?.errors) {
+                        // Laravel validation errors (missing email/password)
+                        const errors = xhr.responseJSON.errors;
+                        $.each(errors, function(fieldName, messages) {
+                            const input = $('#multi-step-form [name="' + fieldName + '"]');
+                            if (input.length > 0) {
+                                input.after('<small class="text-danger">' + messages[0] + '</small>');
+                            }
+                        });
+                    } else if (xhr.status === 401) {
+                        // Invalid credentials
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Invalid Credentials',
+                            text: 'The email or password you entered is incorrect.'
+                        });
+                    } else {
+                        // Other errors
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops!',
+                            text: 'Something went wrong. Please try again later.'
+                        });
+                    }
+                }
+            });
+        }
+
+    </script>
 </body>
 </html>
