@@ -55,10 +55,9 @@ class UserController extends Controller
             'amount' => (int)$price * 100,
             'currency' => 'usd',
             'customer' => $customerId,
-            'description' => 'Payment Recieved For '.$request['first_name'],
+            'description' => 'Payment Recieved For ' . $request['first_name'],
         ]);
-        if($plan)
-        {
+        if ($plan) {
             $user = User::create([
                 'name' => $request->first_name . ' ' . $request->last_name,
                 'email' => $request->email,
@@ -69,8 +68,7 @@ class UserController extends Controller
                 'address' => $request->address,
                 'unique_code' => strtoupper(Str::random(6)),
             ]);
-            if(!empty($user))
-            {
+            if (!empty($user)) {
                 $userReservation = UserReservation::create([
                     'user_id' => $user->id,
                     'category_booked' => $request->category_selected,
@@ -80,8 +78,7 @@ class UserController extends Controller
                     'booking_end_time' => $request->end_time ?? null,
                     'total_price' => $price,
                 ]);
-                if(!empty($userReservation))
-                {
+                if (!empty($userReservation)) {
                     $userPayment = UserPayment::create([
                         'user_id' => $user->id,
                         'card_number' => $request->card_number,
@@ -89,27 +86,21 @@ class UserController extends Controller
                         'user_reservation_id' => $userReservation->id,
                         'amount' => $price,
                     ]);
-                    if(!empty($userPayment))
-                    {
+                    if (!empty($userPayment)) {
 
                         return response()->json(['status' => 'success', 'message' => 'User Created Successfully'], 200);
                     }
-                }
-                else{
+                } else {
                     return response()->json(['status' => 'error', 'errors' => 'Reservation Not Created'], 422);
                 }
-            }
-            else{
+            } else {
                 return response()->json(['status' => 'error', 'errors' => 'User Not Created'], 422);
             }
-
-
         }
     }
 
     public function userLoginProcess(Request $request)
     {
-        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'unique_code'    => 'required',
             'login_password' => 'required',
@@ -123,37 +114,46 @@ class UserController extends Controller
             ], 422);
         }
 
-        // Find TenantUser by email
         $reservedUser = User::where('unique_code', $request->unique_code)->first();
-        if(!$reservedUser) {
+
+        if (!$reservedUser) {
             return response()->json([
                 'status'  => 'error',
                 'message' => 'User not found'
-            ], 404);
+            ], 401);
         }
-        if (!$reservedUser || !Hash::check($request->login_password, $reservedUser->password)) {
+
+        if (!Hash::check($request->login_password, $reservedUser->password)) {
             return response()->json([
                 'status'  => 'error',
                 'message' => 'Invalid credentials'
             ], 401);
         }
 
-        // Authenticate TenantUser using guard
         if (auth('user')->attempt([
-            'unique_code'    => $request->unique_code,
-            'password' => $request->login_password
+            'unique_code' => $request->unique_code,
+            'password'    => $request->login_password
         ])) {
-           $reservedUser = auth('user')->user(); // correct guard
+            $reservedUser = auth('user')->user();
             session(['user' => $reservedUser]);
+
             return response()->json([
                 'status'  => 'success',
                 'message' => 'Login successful',
-                'user'  => $user,
-            ]);
+                'user'    => $reservedUser,
+            ], 200);
         }
+
         return response()->json([
             'status'  => 'error',
             'message' => 'Login failed'
         ], 401);
+    }
+
+    public function userLogout(Request $request)
+    {
+        auth('user')->logout();
+        session()->forget('user');
+        return redirect()->back();
     }
 }
