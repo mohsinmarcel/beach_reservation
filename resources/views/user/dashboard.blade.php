@@ -45,7 +45,8 @@
                         <div class="modal-header">
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <form action="">
+                        <form id="loginForm">
+                            @csrf
                             <div class="modal-body">
                                 <div class="mb-4">
                                     <h1 class="modal-title text-black fs-1 fw-bold lh-sm mb-2" id="userModalLabel">Login</h1>
@@ -53,15 +54,15 @@
                                 </div>
                                     <div class="mb-3">
                                         <label for="secret_code" class="form-label fw-semibold lh-sm" style="font-size: 14px;">Code</label>
-                                        <input type="number" class="form-control" id="secret_code">
+                                        <input type="text" class="form-control" id="secret_code" name="unique_code">
                                     </div>
                                     <div class="mb-3">
                                         <label for="user_password" class="form-label fw-semibold lh-sm" style="font-size: 14px;">Password</label>
-                                        <input type="password" class="form-control" id="user_password">
+                                        <input type="password" class="form-control" id="user_password" name="login_password">
                                     </div>
                             </div>
                             <div class="modal-footer">
-                                <input type="button" class="btn btn-lg btn-primary" value="Login">
+                                <input type="button" class="btn btn-lg btn-primary" value="Login" onclick="signIn()">
                             </div>
                         </form>
                     </div>
@@ -537,6 +538,67 @@
                         const errors = xhr.responseJSON.errors;
                         $.each(errors, function(fieldName, messages) {
                             const input = $('#multi-step-form [name="' + fieldName + '"]');
+                            if (input.length > 0) {
+                                input.after('<small class="text-danger">' + messages[0] + '</small>');
+                            }
+                        });
+                    } else if (xhr.status === 401) {
+                        // Invalid credentials
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Invalid Credentials',
+                            text: 'The email or password you entered is incorrect.'
+                        });
+                    } else {
+                        // Other errors
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops!',
+                            text: 'Something went wrong. Please try again later.'
+                        });
+                    }
+                }
+            });
+        }
+
+          function signIn() {
+            var form = $('#loginForm')[0];
+            var formData = new FormData(form);
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                url: '{{ route('user.login.process') }}', // Replace with your login route
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Login Successful!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // $('#userModal').modal('hide');
+                    // Remove old validation messages
+                    $('#loginForm .text-danger').remove();
+
+                    if (xhr.status === 422 && xhr.responseJSON?.errors) {
+                        // Laravel validation errors (missing email/password)
+                        const errors = xhr.responseJSON.errors;
+                        $.each(errors, function(fieldName, messages) {
+                            const input = $('#loginForm [name="' + fieldName + '"]');
                             if (input.length > 0) {
                                 input.after('<small class="text-danger">' + messages[0] + '</small>');
                             }

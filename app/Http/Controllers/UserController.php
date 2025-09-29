@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Models\UserPayment;
 use App\Models\UserReservation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class UserController extends Controller
@@ -103,11 +105,55 @@ class UserController extends Controller
 
 
         }
+    }
 
+    public function userLoginProcess(Request $request)
+    {
+        // dd($request->all());
+        $validator = Validator::make($request->all(), [
+            'unique_code'    => 'required',
+            'login_password' => 'required',
+        ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Validation failed',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
 
+        // Find TenantUser by email
+        $reservedUser = User::where('unique_code', $request->unique_code)->first();
+        if(!$reservedUser) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'User not found'
+            ], 404);
+        }
+        if (!$reservedUser || !Hash::check($request->login_password, $reservedUser->password)) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Invalid credentials'
+            ], 401);
+        }
 
-
-
+        // Authenticate TenantUser using guard
+        if (auth('user')->attempt([
+            'unique_code'    => $request->unique_code,
+            'password' => $request->login_password
+        ])) {
+           $reservedUser = auth('user')->user(); // correct guard
+            session(['user' => $reservedUser]);
+            return response()->json([
+                'status'  => 'success',
+                'message' => 'Login successful',
+                'user'  => $user,
+            ]);
+        }
+        return response()->json([
+            'status'  => 'error',
+            'message' => 'Login failed'
+        ], 401);
     }
 }

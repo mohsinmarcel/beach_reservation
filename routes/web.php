@@ -18,7 +18,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('user.dashboard');
 });
-Route::post('/user/reserve/booking/login', [UserController::class, 'userReserveBookingLogin'])->name('user.reserve.booking.login');
+Route::post('/user/reserve/booking', [UserController::class, 'userReserveBookingLogin'])->name('user.reserve.booking.login');
+Route::post('/user/login', [UserController::class, 'userLoginProcess'])->name('user.login.process');
 
 
 Route::get('test-route', function () {
