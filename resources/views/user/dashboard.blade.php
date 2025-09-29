@@ -364,6 +364,7 @@
                             <label for="country" class="form-label fw-semibold mb-1" style="font-size: 13px;">CVC</label>
                             <input type="text" class="form-control" id="cvc" name="cvc">
                         </div>
+                        <input type="hidden" id="category_selected" name="category_selected">
                     </div>
                     <div class="text-end">
                         <button type="button" class="btn btn-primary prev-step">Previous</button>
@@ -496,6 +497,7 @@
             displayStep(1);
             const myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
             myModal.show();
+            document.getElementById('category_selected').value = itemType;
         }
 
         function reserve() {
@@ -518,7 +520,7 @@
                     if (response.status === 'success') {
                         Swal.fire({
                             icon: 'success',
-                            title: 'Login Successful!',
+                            title: 'Reservation Successful!',
                             showConfirmButton: false,
                             timer: 1500
                         }).then(() => {
