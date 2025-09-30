@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Permission;
+use App\Models\Role;
 use App\Models\RolePermission;
 use App\Models\Tenant;
 use App\Models\TenantUser;
@@ -187,7 +188,8 @@ class TenantController extends Controller
 
     public function tenantUsersCreate()
     {
-        return view ('tenant.tenant_users.create');
+        $roles = Role::all();
+        return view ('tenant.tenant_users.create',compact('roles'));
     }
 
 }
