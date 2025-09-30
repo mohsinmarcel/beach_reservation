@@ -293,4 +293,53 @@ class TenantController extends Controller
         ], 200);
     }
 
+    public function tenantUserEdit($id)
+    {
+        $tenantUser = TenantUser::find($id);
+        $roles = Role::all();
+        if (!$tenantUser) {
+            return redirect()->back()->with('error', 'Tenant user not found');
+        }
+        return view ('tenant.tenant_users.update',compact('tenantUser','roles'));
+    }
+
+    public function tenantUserUpdate(Request $request, $id)
+    {
+        // dd($request->all());
+        $tenantUser = TenantUser::find($id);
+        if (!$tenantUser) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Tenant user not found',
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'phone' => 'required|digits_between:10,15|unique:tenant_users,phone,'.$id,
+            'password' => 'nullable|min:6',
+            'role_id' => 'required|exists:roles,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $tenantUser->name = $request->name;
+        $tenantUser->phone = $request->phone;
+        if (!empty($request->password)) {
+            $tenantUser->password = bcrypt($request->password);
+        }
+        $tenantUser->role_id = $request->role_id;
+        $tenantUser->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Tenant user updated successfully',
+        ], 200);
+    }
+
 }

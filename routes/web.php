@@ -93,6 +93,8 @@ Route::group(['middleware' => 'tenant.auth'], function () {
     Route::post('/tenant/role/create', [TenantController::class, 'tenantRoleCreate'])->name('tenant.role.create');
     Route::get('/tenant/set/permissions/{roleId}', [TenantController::class, 'tenantSetPermissions'])->name('tenant.set.permissions');
     Route::post('/tenant/set/permissions/process', [TenantController::class, 'tenantSetPermissionsProcess'])->name('tenant.set.permissions.process');
+    Route::get('/tenant/user/edit/{id}', [TenantController::class, 'tenantUserEdit'])->name('tenant.user.edit');
+    Route::post('/tenant/user/update/{id}', [TenantController::class, 'tenantUserUpdate'])->name('tenant.user.update');
 
 });
 

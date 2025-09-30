@@ -37,10 +37,9 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#editModal">Edit</button>
-                                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                            data-bs-target="#editDelete">Delete</button>
+                                        <button type="button" class="btn btn-primary" onclick="window.location.href='{{route('tenant.user.edit',$user->id)}}'">Edit</button>
+                                        {{-- <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                            data-bs-target="#editDelete">Delete</button> --}}
                                     </td>
                                 </tr>
                             @endforeach

@@ -19,14 +19,17 @@
                     <tbody class="table-group-divider">
                         @if (!empty($roles) && $roles->count() > 0)
                             @foreach ($roles as $index => $user)
+                                @if ($user->name === 'owner' )
+                                    @continue
+                                @endif
                                 <tr>
                                     <th scope="row">{{ $index + 1 }}</th>
 
                                     <td>{{ ucwords($user->name) ?? 'N/A' }}</td>
                                     <td class="text-center">
                                         <button type="button" class="btn btn-primary" onclick="window.location.href='{{route('tenant.set.permissions',$user->id)}}'">Set Permissions</button>
-                                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                            data-bs-target="#editDelete">Delete</button>
+                                        {{-- <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                            data-bs-target="#editDelete">Delete</button> --}}
                                     </td>
                                 </tr>
                             @endforeach
