@@ -71,6 +71,13 @@
                             </a>
                         </li>
                         <li class="menu-item">
+                        <a href="{{route('tenant.roles')}}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                            <div data-i18n="Analytics">Roles</div>
+                        </a>
+                        </li>
+
+                        <li class="menu-item">
                         <a href="{{route('tenant.logout')}}" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-home-circle"></i>
                             <div data-i18n="Analytics">Logout</div>

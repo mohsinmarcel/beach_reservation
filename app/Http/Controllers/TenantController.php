@@ -238,4 +238,22 @@ class TenantController extends Controller
         }
     }
 
+    public function tenantRoles()
+    {
+        $roles = Role::all();
+        return view ('tenant.roles.list',compact('roles'));
+    }
+
+    public function tenantRoleCreate(Request $request)
+    {
+        // dd($request->all());
+        Role::create([
+            'name' => $request->role_name,
+        ]);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Role created successfully',
+        ], 200);
+    }
+
 }
