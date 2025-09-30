@@ -75,26 +75,26 @@ Route::group(['middleware' => 'admin.auth'], function () {
 
 
 Route::group(['middleware' => 'tenant.guest'], function () {
-    Route::get('/tenant/login', [TenantController::class, 'tenantLogin'])->name('tenant.login');
-    Route::get('/tenant/register', [TenantController::class, 'tenantRegister'])->name('tenant.register');
-    Route::post('/tenant/register/process', [TenantController::class, 'tenantRegisterProcess'])->name('tenant.register.process');
-    Route::post('/tenant/login/process', [TenantController::class, 'tenantLoginProcess'])->name('tenant.login.process');
+    Route::get('/company/login', [TenantController::class, 'tenantLogin'])->name('tenant.login');
+    Route::get('/company/register', [TenantController::class, 'tenantRegister'])->name('tenant.register');
+    Route::post('/company/register/process', [TenantController::class, 'tenantRegisterProcess'])->name('tenant.register.process');
+    Route::post('/company/login/process', [TenantController::class, 'tenantLoginProcess'])->name('tenant.login.process');
 });
 
 Route::group(['middleware' => 'tenant.auth'], function () {
-    Route::get('/tenant/dashboard', [TenantController::class, 'tenantDashboard'])->name('tenant.dashboard');
-    Route::get('/tenant/seats', [TenantController::class, 'tenantSeats'])->name('tenant.seats');
-    Route::post('/tenant/seats/store', [TenantController::class, 'tenantSeatsStore'])->name('tenant.seats.store');
-    Route::get('/tenant/logout', [TenantController::class, 'tenantLogout'])->name('tenant.logout');
-    Route::get('/tenant/users/list', [TenantController::class, 'tenantUsersList'])->name('tenant.users.list');
-    Route::get('/tenant/users/create', [TenantController::class, 'tenantUsersCreate'])->name('tenant.users.create');
-    Route::post('/tenant/users/create/process', [TenantController::class, 'tenantUsersCreateProcess'])->name('tenant.users.create.process');
-    Route::get('/tenant/roles', [TenantController::class, 'tenantRoles'])->name('tenant.roles');
-    Route::post('/tenant/role/create', [TenantController::class, 'tenantRoleCreate'])->name('tenant.role.create');
-    Route::get('/tenant/set/permissions/{roleId}', [TenantController::class, 'tenantSetPermissions'])->name('tenant.set.permissions');
-    Route::post('/tenant/set/permissions/process', [TenantController::class, 'tenantSetPermissionsProcess'])->name('tenant.set.permissions.process');
-    Route::get('/tenant/user/edit/{id}', [TenantController::class, 'tenantUserEdit'])->name('tenant.user.edit');
-    Route::post('/tenant/user/update/{id}', [TenantController::class, 'tenantUserUpdate'])->name('tenant.user.update');
+    Route::get('/company/dashboard', [TenantController::class, 'tenantDashboard'])->name('tenant.dashboard');
+    Route::get('/company/seats', [TenantController::class, 'tenantSeats'])->name('tenant.seats');
+    Route::post('/company/seats/store', [TenantController::class, 'tenantSeatsStore'])->name('tenant.seats.store');
+    Route::get('/company/logout', [TenantController::class, 'tenantLogout'])->name('tenant.logout');
+    Route::get('/company/users/list', [TenantController::class, 'tenantUsersList'])->name('tenant.users.list');
+    Route::get('/company/users/create', [TenantController::class, 'tenantUsersCreate'])->name('tenant.users.create');
+    Route::post('/company/users/create/process', [TenantController::class, 'tenantUsersCreateProcess'])->name('tenant.users.create.process');
+    Route::get('/company/roles', [TenantController::class, 'tenantRoles'])->name('tenant.roles');
+    Route::post('/company/role/create', [TenantController::class, 'tenantRoleCreate'])->name('tenant.role.create');
+    Route::get('/company/set/permissions/{roleId}', [TenantController::class, 'tenantSetPermissions'])->name('tenant.set.permissions');
+    Route::post('/company/set/permissions/process', [TenantController::class, 'tenantSetPermissionsProcess'])->name('tenant.set.permissions.process');
+    Route::get('/company/user/edit/{id}', [TenantController::class, 'tenantUserEdit'])->name('tenant.user.edit');
+    Route::post('/company/user/update/{id}', [TenantController::class, 'tenantUserUpdate'])->name('tenant.user.update');
 
 });
 

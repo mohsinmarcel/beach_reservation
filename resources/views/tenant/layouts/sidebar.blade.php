@@ -57,26 +57,31 @@
                 <div class="menu-inner-shadow"></div>
 
                 <ul class="menu-inner py-1">
-
-                        <li class="menu-item">
-                        <a href="{{route('tenant.seats')}}" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                            <div data-i18n="Analytics">Seats</div>
-                        </a>
-                        </li>
+                        {{-- @dd(session('tenant')) --}}
+                        @if (in_array('tenant.seats.store', session('tenant')['permissions']))
+                            <li class="menu-item">
+                            <a href="{{route('tenant.seats')}}" class="menu-link">
+                                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                                <div data-i18n="Analytics">Seats</div>
+                            </a>
+                            </li>
+                        @endif
+                        @if (in_array('tenant.users.list', session('tenant')['permissions']))
                         <li class="menu-item">
                             <a href="{{route('tenant.users.list')}}" class="menu-link">
                                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                                 <div data-i18n="">Users</div>
                             </a>
                         </li>
+                        @endif
+                        @if (in_array('tenant.roles', session('tenant')['permissions']))
                         <li class="menu-item">
                         <a href="{{route('tenant.roles')}}" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-home-circle"></i>
                             <div data-i18n="Analytics">Roles</div>
                         </a>
                         </li>
-
+                        @endif
                         <li class="menu-item">
                         <a href="{{route('tenant.logout')}}" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-home-circle"></i>
