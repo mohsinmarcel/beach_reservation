@@ -33,4 +33,9 @@ class TenantUser extends Authenticatable
     {
         return $this->belongsTo(Tenant::class);
     }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
 }

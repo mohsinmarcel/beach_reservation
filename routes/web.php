@@ -88,5 +88,6 @@ Route::group(['middleware' => 'tenant.auth'], function () {
     Route::get('/tenant/logout', [TenantController::class, 'tenantLogout'])->name('tenant.logout');
     Route::get('/tenant/users/list', [TenantController::class, 'tenantUsersList'])->name('tenant.users.list');
     Route::get('/tenant/users/create', [TenantController::class, 'tenantUsersCreate'])->name('tenant.users.create');
+    Route::post('/tenant/users/create/process', [TenantController::class, 'tenantUsersCreateProcess'])->name('tenant.users.create.process');
 });
 

@@ -183,13 +183,59 @@ class TenantController extends Controller
 
     public function tenantUsersList()
     {
-        return view ('tenant.tenant_users.list');
+        $tenantUsers = TenantUser::where('tenant_id',session('tenant')['current_user']['tenant_id'])->get();
+        return view ('tenant.tenant_users.list',compact('tenantUsers'));
     }
 
     public function tenantUsersCreate()
     {
         $roles = Role::all();
         return view ('tenant.tenant_users.create',compact('roles'));
+    }
+
+    public function tenantUsersCreateProcess(Request $request)
+    {
+        // dd($request->all());
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:tenant_users,email',
+            'phone' => 'required|digits_between:10,15|unique:tenant_users,phone',
+            'password' => 'required|min:6',
+            'role_id' => 'required|exists:roles,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $tenantUser = TenantUser::create([
+            'tenant_id' => $request->tenant_id,
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'password' => bcrypt($request->password),
+            'is_admin' => 0,
+            'role_id' => $request->role_id,
+            'status' => 1,
+        ]);
+
+        if(!empty($tenantUser))
+        {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Tenant user created successfully',
+            ], 200);
+        }
+        else
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Tenant user creation failed',
+            ], 500);
+        }
     }
 
 }
