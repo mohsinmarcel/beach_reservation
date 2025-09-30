@@ -24,8 +24,7 @@
 
                                     <td>{{ ucwords($user->name) ?? 'N/A' }}</td>
                                     <td class="text-center">
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#editModal">Set Permissions</button>
+                                        <button type="button" class="btn btn-primary" onclick="window.location.href='{{route('tenant.set.permissions',$user->id)}}'">Set Permissions</button>
                                         <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                                             data-bs-target="#editDelete">Delete</button>
                                     </td>

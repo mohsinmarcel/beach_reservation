@@ -256,4 +256,41 @@ class TenantController extends Controller
         ], 200);
     }
 
+    public function tenantSetPermissions(Request $request, $roleId)
+    {
+        // Validate role ID
+        $role = Role::find($roleId);
+        $permissions = Permission::all();
+        $rolePermissions = RolePermission::where('role_id', $roleId)->pluck('permission_id')->toArray();
+        return view ('tenant.roles.set_permissions',compact('role','permissions','rolePermissions'));
+
+    }
+
+    public function tenantSetPermissionsProcess(Request $request)
+    {
+        // dd($request->all());
+        $roleId = $request->role_id;
+        $permissions = $request->permissions;
+        $role = Role::find($roleId);
+        if (!$role) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid role ID',
+            ], 400);
+        }
+        RolePermission::where('role_id', $roleId)->delete();
+        if (!empty($permissions) && is_array($permissions)) {
+            foreach ($permissions as $permissionId) {
+                RolePermission::create([
+                    'role_id' => $roleId,
+                    'permission_id' => $permissionId,
+                ]);
+            }
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Permissions updated successfully',
+        ], 200);
+    }
+
 }
