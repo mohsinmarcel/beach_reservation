@@ -45,18 +45,23 @@
             {{-- @dd(session('user')) --}}
             @if (!empty(session('user')))
                 <div class="dropdown">
-                    <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Welcome, {{ucWords(session('user')->name)}}
+                    <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        Welcome, {{ ucWords(session('user')->name) }}
                     </button>
                     <ul class="dropdown-menu">
-                        <li class="nav-item"><a href="{{route('user.bookings')}}" class="dropdown-item">Booking</a></li>
-                        <li class="nav-item"><a href="{{route('user.cancellations')}}" class="dropdown-item">Cancellation</a></li>
-                        <li class="nav-item"><a href="{{route('user.reminders')}}" class="dropdown-item">Reminder</a></li>
-                        <li class="nav-item"><a href="{{route('user.logout')}}" class="dropdown-item">Logout</a></li>
+                        <li class="nav-item"><a href="{{ route('user.bookings') }}" class="dropdown-item">Booking</a>
+                        </li>
+                        <li class="nav-item"><a href="{{ route('user.cancellations') }}"
+                                class="dropdown-item">Cancellation</a></li>
+                        <li class="nav-item"><a href="{{ route('user.reminders') }}" class="dropdown-item">Reminder</a>
+                        </li>
+                        <li class="nav-item"><a href="{{ route('user.logout') }}" class="dropdown-item">Logout</a></li>
                     </ul>
                 </div>
             @else
-                <button type="button" class="btn btn-outline-light rounded-pill" data-bs-toggle="modal" data-bs-target="#userModal">Login</button>
+                <button type="button" class="btn btn-outline-light rounded-pill" data-bs-toggle="modal"
+                    data-bs-target="#userModal">Login</button>
             @endif
             <!-- Modal -->
             <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
@@ -153,7 +158,7 @@
             <h2 class="text-center mb-4">Book Your Slot</h2>
             <div class="container">
                 <!-- Filters Start -->
-                <div id="filterContainer" class="row position-relative bg-white shadow p-4 rounded">
+                {{-- <div id="filterContainer" class="row position-relative bg-white shadow p-4 rounded">
                     <div class="col-lg-4">
                         <select id="#filterGuests" class="form-select">
                             <option selected>Guests</option>
@@ -197,11 +202,11 @@
                             <option value="30/09/2025">30/09/2025</option>
                         </select>
                     </div>
-                </div>
+                </div> --}}
                 <!-- Filters End -->
                 <!-- Card Rows Start -->
                 <div class="booking-card-row row mt-5" id="cardRow">
-                    <div class="col-lg-4 card-block mb-3" data-guests="2" data-time="12pm-to-1pm"
+                    <div class="col-lg-6 card-block mb-3" data-guests="2" data-time="12pm-to-1pm"
                         data-date="21/09/2025">
                         <div class="card border-0 bg-white shadow">
                             <a href="#" class="img-anchor pt-2 px-2 text-decoration-none d-inline-block">
@@ -220,7 +225,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 card-block mb-3" data-guests="4" data-time="11am-to-12pm"
+                    <div class="col-lg-6 card-block mb-3" data-guests="4" data-time="11am-to-12pm"
                         data-date="21/09/2025">
                         <div class="card border-0 bg-white shadow">
                             <a href="#" class="img-anchor pt-2 px-2 text-decoration-none d-inline-block">
@@ -236,25 +241,6 @@
                                 <br><br><button type="button" class="btn btn-outline-primary"
                                     onclick="bookNow('chair_with_umbrella')">Book Now</button>
 
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 card-block mb-3" data-guests="4" data-time="11am-to-12pm"
-                        data-date="21/09/2025">
-                        <div class="card border-0 bg-white shadow">
-                            <a href="#" class="img-anchor pt-2 px-2 text-decoration-none d-inline-block">
-                                <img src="{{ asset('userside_assets/assets/images/img-1.webp') }}"
-                                    class="img-fluid rounded" alt="image">
-                            </a>
-                            <div class="card-content p-3">
-                                <a href="#" class="title-anchor text-decoration-none d-inline-block">
-                                    <h3 class="card-title fw-bold lh-sm">Combos</h3>
-                                </a>
-                                {{-- <p class="card-guest fw-normal lh-sm mb-2 text-black">Guests Limit: <span class="fw-semibold">4</span></p>
-                                <p class="card-price fs-6 fw-normal lh-sm mb-4 text-black">From <span class="currency">30</span><span class="currency-symbol">$</span></p> --}}
-                                <br><br><button type="button" class="btn btn-outline-primary"
-                                    onclick="bookNow('combos')">Book Now</button>
 
                             </div>
                         </div>
@@ -399,6 +385,39 @@
                                     <label for="address" class="form-label fw-semibold mb-1"
                                         style="font-size: 13px;">Address:</label>
                                     <textarea class="form-control" rows="3" name="address"></textarea>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="seats" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">Number of Seats:</label>
+                                    <input type="number" class="form-control" id="seats"
+                                        name="number_of_seats">
+                                </div>
+                                <div class="col-lg-6 mb-3 d-none umbrellasInputDiv" >
+                                    <label for="umbrellas" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">Number of Umbrellas:</label>
+                                    <input type="number" class="form-control" id="umbrellas"
+                                        name="number_of_umbrellas">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="category" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">Select Category:</label>
+                                    <select class="form-select" id="category" name="category">
+                                        <option value="" selected disabled>Select Category</option>
+                                        <option value="normal">Normal</option>
+                                        <option value="executive">Executive</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="row" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">Select Row Preference:</label>
+                                    <select class="form-select" id="row" name="row">
+                                        <option value="" selected disabled>Select Row</option>
+                                        <option value="first">First Row</option>
+                                        <option value="second">Second Row</option>
+                                        <option value="third">Third Row</option>
+                                        <option value="fourth">Fourth Row</option>
+                                        <option value="fifth">Fifth Row</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="text-end">
@@ -591,7 +610,11 @@
             const myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
             myModal.show();
             document.getElementById('category_selected').value = itemType;
-        }
+            if(itemType === 'chair_with_umbrella' ){
+                $('.umbrellasInputDiv').removeClass('d-none');
+            } else {
+                $('.umbrellasInputDiv').addClass('d-none');
+        }}
 
         function reserve() {
             var form = $('#multi-step-form')[0];
