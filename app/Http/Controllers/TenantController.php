@@ -6,6 +6,7 @@ use App\Models\Permission;
 use App\Models\Role;
 use App\Models\RolePermission;
 use App\Models\Tenant;
+use App\Models\TenantInventory;
 use App\Models\TenantUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -16,12 +17,12 @@ class TenantController extends Controller
 {
     public function tenantLogin()
     {
-        return view ('tenant.login');
+        return view('tenant.login');
     }
 
     public function tenantRegister()
     {
-        return view ('tenant.register');
+        return view('tenant.register');
     }
 
     public function tenantRegisterProcess(Request $request)
@@ -48,8 +49,7 @@ class TenantController extends Controller
             'phone' => $request->phone,
             'password' => bcrypt($request->password),
         ]);
-        if(!empty($tenant))
-        {
+        if (!empty($tenant)) {
             $tenantUser = TenantUser::create([
                 'tenant_id' => $tenant->id,
                 'name' => $request->name,
@@ -60,8 +60,7 @@ class TenantController extends Controller
                 'role_id' => 1,
             ]);
             $permissions = Permission::all();
-            foreach($permissions as $permission)
-            {
+            foreach ($permissions as $permission) {
                 RolePermission::create([
                     'role_id' => 1,
                     'permission_id' => $permission->id,
@@ -69,15 +68,12 @@ class TenantController extends Controller
             }
         }
 
-        if(!empty($tenant))
-        {
+        if (!empty($tenant)) {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Registered successfully',
             ], 200);
-        }
-        else
-        {
+        } else {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Registration failed',
@@ -87,7 +83,7 @@ class TenantController extends Controller
 
     public function tenantDashboard()
     {
-        return view ('tenant.dashboard');
+        return view('tenant.dashboard');
     }
 
     public function tenantLoginProcess(Request $request)
@@ -120,7 +116,7 @@ class TenantController extends Controller
             'email'    => $request->login_email,
             'password' => $request->login_password
         ])) {
-           $tenantUser = auth('tenant')->user(); // correct guard
+            $tenantUser = auth('tenant')->user(); // correct guard
             $tenant     = $tenantUser->tenant;
 
             // Fetch permissions for this user
@@ -132,9 +128,9 @@ class TenantController extends Controller
 
             // Build structured array
             $tenantData = [
-                        'tenant'       => $tenant->toArray(),
-                        'current_user' => $tenantUser->toArray(),
-                        'permissions'  => $permissionsGiven,
+                'tenant'       => $tenant->toArray(),
+                'current_user' => $tenantUser->toArray(),
+                'permissions'  => $permissionsGiven,
             ];
 
             // Store only tenant in session
@@ -166,12 +162,86 @@ class TenantController extends Controller
 
     public function tenantSeats()
     {
-        return view ('tenant.seats');
+        $tenantInventorySeats = TenantInventory::where('tenant_id', session('tenant')['current_user']['tenant_id'])->where('type', 'seat')->get();
+        $tenantInventoryUmbrellas = TenantInventory::where('tenant_id', session('tenant')['current_user']['tenant_id'])->where('type', 'umbrella')->get();
+        // dd($tenantInventoryUmbrellas);
+        return view('tenant.seats', compact('tenantInventorySeats', 'tenantInventoryUmbrellas'));
     }
 
     public function tenantSeatsStore(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
+        // dd(session('tenant'));
+        $validator = Validator::make($request->all(), [
+            'seats'                  => 'required|array',
+            'seats.*.code'           => 'required|string|max:255',
+            'seats.*.row'            => 'required|string|max:255',
+            // Validate category as a string
+            'seats.*.category'       => 'required|string|max:255',
+            // Validate price as a number (integer or decimal)
+            'seats.*.price'          => 'required|numeric',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Validation failed',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
+        if ($request->has('seats')) {
+            foreach ($request->seats as $seat) {
+                // Ensure $seat is treated as an array to access its keys
+                TenantInventory::create([
+                    'tenant_id'      => session('tenant')['current_user']['tenant_id'],
+                    'tenant_user_id' => session('tenant')['current_user']['id'],
+                    'serial_no'           => $seat['code'],
+                    'row'            => $seat['row'],
+                    'category'       => $seat['category'],
+                    'price'          => $seat['price'], // Store the price field
+                    'status'         => 'available',
+                    'type' => 'seat',
+                ]);
+            }
+        }
+       return redirect()->back()->with('success', 'Seats added successfully');
+    }
+
+    public function tenantumbrellasStore(Request $request)
+    {
+        // dd($request->all());
+        // dd(session('tenant'));
+        $validator = Validator::make($request->all(), [
+            'umbrellas'                  => 'required|array',
+            // Validate price as a number (integer or decimal)
+            'umbrellas.*.price'          => 'required|numeric',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Validation failed',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
+        if ($request->has('umbrellas')) {
+            foreach ($request->umbrellas as $seat) {
+                // Ensure $seat is treated as an array to access its keys
+                TenantInventory::create([
+                    'tenant_id'      => session('tenant')['current_user']['tenant_id'],
+                    'tenant_user_id' => session('tenant')['current_user']['id'],
+                    'serial_no'      => $seat['umbrella_number'],
+                    'row'            => $seat['row'] ?? null,
+                    'category'       => $seat['category'] ?? null,
+                    'price'          => $seat['price'] ?? null, // Store the price field
+                    'status'         => 'available',
+                    'type' => 'umbrella',
+                ]);
+            }
+        }
+       return redirect()->back()->with('success', 'Seats added successfully');
     }
 
     public function tenantLogout()
@@ -183,14 +253,14 @@ class TenantController extends Controller
 
     public function tenantUsersList()
     {
-        $tenantUsers = TenantUser::where('tenant_id',session('tenant')['current_user']['tenant_id'])->get();
-        return view ('tenant.tenant_users.list',compact('tenantUsers'));
+        $tenantUsers = TenantUser::where('tenant_id', session('tenant')['current_user']['tenant_id'])->get();
+        return view('tenant.tenant_users.list', compact('tenantUsers'));
     }
 
     public function tenantUsersCreate()
     {
         $roles = Role::all();
-        return view ('tenant.tenant_users.create',compact('roles'));
+        return view('tenant.tenant_users.create', compact('roles'));
     }
 
     public function tenantUsersCreateProcess(Request $request)
@@ -222,15 +292,12 @@ class TenantController extends Controller
             'status' => 1,
         ]);
 
-        if(!empty($tenantUser))
-        {
+        if (!empty($tenantUser)) {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Tenant user created successfully',
             ], 200);
-        }
-        else
-        {
+        } else {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Tenant user creation failed',
@@ -241,7 +308,7 @@ class TenantController extends Controller
     public function tenantRoles()
     {
         $roles = Role::all();
-        return view ('tenant.roles.list',compact('roles'));
+        return view('tenant.roles.list', compact('roles'));
     }
 
     public function tenantRoleCreate(Request $request)
@@ -262,8 +329,7 @@ class TenantController extends Controller
         $role = Role::find($roleId);
         $permissions = Permission::all();
         $rolePermissions = RolePermission::where('role_id', $roleId)->pluck('permission_id')->toArray();
-        return view ('tenant.roles.set_permissions',compact('role','permissions','rolePermissions'));
-
+        return view('tenant.roles.set_permissions', compact('role', 'permissions', 'rolePermissions'));
     }
 
     public function tenantSetPermissionsProcess(Request $request)
@@ -300,7 +366,7 @@ class TenantController extends Controller
         if (!$tenantUser) {
             return redirect()->back()->with('error', 'Tenant user not found');
         }
-        return view ('tenant.tenant_users.update',compact('tenantUser','roles'));
+        return view('tenant.tenant_users.update', compact('tenantUser', 'roles'));
     }
 
     public function tenantUserUpdate(Request $request, $id)
@@ -316,7 +382,7 @@ class TenantController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'phone' => 'required|digits_between:10,15|unique:tenant_users,phone,'.$id,
+            'phone' => 'required|digits_between:10,15|unique:tenant_users,phone,' . $id,
             'password' => 'nullable|min:6',
             'role_id' => 'required|exists:roles,id',
         ]);
@@ -341,5 +407,4 @@ class TenantController extends Controller
             'message' => 'Tenant user updated successfully',
         ], 200);
     }
-
 }

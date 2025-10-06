@@ -85,6 +85,7 @@ Route::group(['middleware' => 'tenant.auth'], function () {
     Route::get('/company/dashboard', [TenantController::class, 'tenantDashboard'])->name('tenant.dashboard');
     Route::get('/company/seats', [TenantController::class, 'tenantSeats'])->name('tenant.seats');
     Route::post('/company/seats/store', [TenantController::class, 'tenantSeatsStore'])->name('tenant.seats.store');
+    Route::post('/company/umbrellas/store', [TenantController::class, 'tenantumbrellasStore'])->name('tenant.umbrellas.store');
     Route::get('/company/logout', [TenantController::class, 'tenantLogout'])->name('tenant.logout');
     Route::get('/company/users/list', [TenantController::class, 'tenantUsersList'])->name('tenant.users.list');
     Route::get('/company/users/create', [TenantController::class, 'tenantUsersCreate'])->name('tenant.users.create');

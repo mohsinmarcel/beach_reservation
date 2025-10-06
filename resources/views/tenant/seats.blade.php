@@ -1,356 +1,269 @@
-{{-- @extends('tenant.layouts.master')
-
-@section('main-content')
-<div class="container mt-4">
-    <button id="addSeatBtn" class="btn btn-primary mb-3">➕ Add Seat</button>
-    <div id="canvas"></div>
-
-    <!-- Hidden input for color selection -->
-    <form id="seatForm">
-        @csrf
-        <input type="hidden" id="selectedColor" name="seat_color">
-        <input type="button" onclick="saveSeatings()" value="Save Seatings" class="btn btn-primary mt-3">
-    </form>
-</div>
-
-<style>
-    #canvas {
-        width: 103%;             /* full width */
-        height: 700px;           /* fixed height */
-        border: 2px dashed #ccc;
-        position: relative;
-        overflow: auto;          /* allow scroll if overflow */
-        background: #f9f9f9;
-        padding: 20px;
-    }
-
-    .seat {
-        width: 60px;   /* bigger seat */
-        height: 60px;
-        background: #3498db;
-        position: absolute;
-        border-radius: 6px;
-        cursor: move;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        font-size: 14px;
-        font-weight: bold;
-    }
-
-    /* Context menu */
-    #contextMenu {
-        display: none;
-        position: absolute;
-        background: #fff;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        box-shadow: 0px 2px 6px rgba(0,0,0,0.2);
-        z-index: 1000;
-        min-width: 120px;
-    }
-
-    #contextMenu ul {
-        list-style: none;
-        margin: 0;
-        padding: 5px 0;
-    }
-
-    #contextMenu ul li {
-        padding: 8px 12px;
-        cursor: pointer;
-    }
-
-    #contextMenu ul li:hover {
-        background: #f0f0f0;
-    }
-</style>
-
-<!-- Interact.js -->
-<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
-<script>
-    let seatCounter = 1;
-    const canvas = document.getElementById('canvas');
-    const contextMenu = document.createElement('div');
-    contextMenu.id = 'contextMenu';
-    contextMenu.innerHTML = `
-        <ul>
-            <li data-color="red">Red</li>
-            <li data-color="orange">Orange</li>
-            <li data-color="blue">Blue</li>
-        </ul>
-    `;
-    document.body.appendChild(contextMenu);
-
-    let activeSeat = null;
-
-    const seatSize = 60;  // seat size
-    const seatGap = 10;   // small gap
-    let nextX = 20;       // X for next seat
-    let nextY = 20;       // Y for next seat
-    const maxSeatsPerRow = 20; // limit per row
-    let seatInRow = 0;
-
-    // Add new seat
-    document.getElementById('addSeatBtn').addEventListener('click', () => {
-        const seat = document.createElement('div');
-        seat.classList.add('seat');
-        seat.textContent = seatCounter++;
-        seat.style.top = nextY + "px";
-        seat.style.left = nextX + "px";
-
-        // Right click seat → open menu
-        seat.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            activeSeat = seat;
-            showContextMenu(e.clientX, e.clientY);
-        });
-
-        canvas.appendChild(seat);
-        makeDraggable(seat);
-
-        // Move X for next seat
-        nextX += seatSize + seatGap;
-        seatInRow++;
-
-        // Wrap to next row if reached max
-        if (seatInRow >= maxSeatsPerRow) {
-            nextX = 20;
-            nextY += seatSize + seatGap;
-            seatInRow = 0;
-        }
-    });
-
-    // Context menu actions
-    contextMenu.addEventListener('click', (e) => {
-        if (e.target.dataset.color && activeSeat) {
-            const color = e.target.dataset.color;
-            activeSeat.style.backgroundColor = color;
-            document.getElementById('selectedColor').value = color;
-            hideContextMenu();
-        }
-    });
-
-    // Hide context menu on click elsewhere
-    document.addEventListener('click', () => hideContextMenu());
-
-    function showContextMenu(x, y) {
-        contextMenu.style.display = "block";
-        contextMenu.style.left = x + "px";
-        contextMenu.style.top = y + "px";
-    }
-
-    function hideContextMenu() {
-        contextMenu.style.display = "none";
-    }
-
-    // Make draggable with interact.js
-    function makeDraggable(el) {
-        interact(el).draggable({
-            listeners: {
-                move(event) {
-                    const target = event.target;
-                    const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-                    const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-
-                    target.style.transform = `translate(${x}px, ${y}px)`;
-                    target.setAttribute('data-x', x);
-                    target.setAttribute('data-y', y);
-                }
-            }
-        });
-    }
-</script>
-@endsection --}}
-
 @extends('tenant.layouts.master')
 
 @section('main-content')
 <div class="container mt-4">
-    <button id="addSeatBtn" class="btn btn-primary mb-3">➕ Add Seat</button>
-    <div id="canvas"></div>
 
-    <!-- Hidden form for submission -->
-    <form id="seatForm">
+    <!-- ========== Seat Form ========== -->
+    <h4>🎟 Manage Seats</h4>
+    <!-- Success/Error Message Display (Add this for feedback) -->
+    <div id="seatFormMessages" class="alert d-none"></div>
+
+    <button type="button" class="btn btn-success mt-3 mb-3 addSeatRow">➕ Add Seat</button>
+    <form id="seatForm" method="POST" action="{{route('tenant.seats.store')}}">
         @csrf
-        <input type="hidden" id="seatsData" name="seats">  {{-- all seats array will go here --}}
-        <input type="button" onclick="saveSeatings()" value="Save Seatings" class="btn btn-primary mt-3">
+        <div id="seatRows">
+            <!-- Initial Seat Row (Used for cloning) -->
+            <div class="row g-2 seatRow mt-2">
+                <div class="col-md-2">
+                    <!-- The value will be set by JS on page load based on existing records -->
+                    <input type="text" name="seats[0][code]" class="form-control seatCode"
+                           value="" readonly placeholder="S-{{session('tenant')['tenant']['id']}}-001">
+                </div>
+
+                <div class="col-md-2">
+                    <select name="seats[0][row]" class="form-control">
+                        <option value="">-- Select Row --</option>
+                        <option value="first">First Row</option>
+                        <option value="second">Second Row</option>
+                        <option value="third">Third Row</option>
+                        <option value="fourth">Fourth Row</option>
+                        <option value="fifth">Fifth Row</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <select name="seats[0][category]" class="form-control">
+                        <option value="">-- Select Category --</option>
+                        <option value="normal">Normal</option>
+                        <option value="executive">Executive</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <input type="number" step="0.01" name="seats[0][price]" class="form-control" placeholder="Price">
+                </div>
+
+                <div class="col-md-2 d-flex align-items-center">
+                    <button type="button" class="btn btn-danger ms-1 removeSeatRow d-none">❌</button>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Save Seats</button>
     </form>
+
+    <hr class="my-5">
+
+    <!-- ========== Existing Seats List ========== -->
+    <h4>📊 Existing Seats ({{ count($tenantInventorySeats ?? []) }})</h4>
+    @if (!empty($tenantInventorySeats))
+    <div class="table-responsive">
+        <table class="table table-striped table-hover mt-3">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Row</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($tenantInventorySeats as $seat)
+                <tr>
+                    <td>{{ $seat->serial_no }}</td>
+                    <td>{{ ucfirst($seat->row) }}</td>
+                    <td>{{ ucfirst($seat->category) }}</td>
+                    <td>${{ number_format($seat->price, 2) }}</td>
+                    <td><span class="badge bg-{{ $seat->status == 'available' ? 'success' : 'danger' }}">{{ ucfirst($seat->status) }}</span></td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    @else
+    <p class="mt-3">No seats have been added yet.</p>
+    @endif
+
+    <hr class="my-5">
+
+    <!-- ========== Umbrella Form ========== -->
+    <h4>🌂 Manage Umbrellas</h4>
+    <!-- Success/Error Message Display (Add this for feedback) -->
+    <div id="umbrellaFormMessages" class="alert d-none"></div>
+
+    <button type="button" class="btn btn-success mt-2 mb-3 addUmbrellaRow">➕ Add Umbrella</button>
+    <form id="umbrellaForm" method="POST" action="{{route('tenant.umbrellas.store')}}">
+        @csrf
+        <div id="umbrellaRows">
+            <!-- Initial Umbrella Row (Used for cloning) -->
+            <div class="row g-2 umbrellaRow mt-2">
+                <div class="col-md-2">
+                    <!-- The value will be set by JS on page load based on existing records -->
+                    <input type="text" name="umbrellas[0][umbrella_number]" class="form-control umbrellaNumber"
+                           value="" readonly placeholder="UM-{{session('tenant')['tenant']['id']}}-001">
+                </div>
+                <div class="col-md-2">
+                    <select name="umbrellas[0][category]" class="form-control">
+                        <option value="">-- Select Category --</option>
+                        <option value="normal">Normal</option>
+                        <option value="executive">Executive</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" step="0.01" name="umbrellas[0][price]" class="form-control" placeholder="Price">
+                </div>
+                <div class="col-md-2 d-flex align-items-center">
+                    <button type="button" class="btn btn-danger ms-1 removeUmbrellaRow d-none">❌</button>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Save Umbrellas</button>
+    </form>
+
+    <hr class="my-5">
+
+    <!-- ========== Existing Umbrellas List ========== -->
+    <h4>📊 Existing Umbrellas ({{ count($tenantInventoryUmbrellas ?? []) }})</h4>
+    @if (!empty($tenantInventoryUmbrellas))
+    <div class="table-responsive">
+        <table class="table table-striped table-hover mt-3">
+            <thead>
+                <tr>
+                    <th>Number</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($tenantInventoryUmbrellas as $umbrella)
+                <tr>
+                    <td>{{ $umbrella->serial_no }}</td>
+                    <td>{{ ucfirst($umbrella->category) }}</td>
+                    <td>${{ number_format($umbrella->price, 2) }}</td>
+                    <td><span class="badge bg-{{ $umbrella->status == 'available' ? 'success' : 'danger' }}">{{ ucfirst($umbrella->status) }}</span></td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    @else
+    <p class="mt-3">No umbrellas have been added yet.</p>
+    @endif
 </div>
 
-<style>
-    #canvas {
-        width: 103%;
-        height: 700px;
-        border: 2px dashed #ccc;
-        position: relative;
-        overflow: auto;
-        background: #f9f9f9;
-        padding: 20px;
-    }
-
-    .seat {
-        width: 60px;
-        height: 60px;
-        background: #3498db;
-        position: absolute;
-        border-radius: 6px;
-        cursor: move;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        font-size: 14px;
-        font-weight: bold;
-    }
-
-    #contextMenu {
-        display: none;
-        position: absolute;
-        background: #fff;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        box-shadow: 0px 2px 6px rgba(0,0,0,0.2);
-        z-index: 1000;
-        min-width: 120px;
-    }
-
-    #contextMenu ul {
-        list-style: none;
-        margin: 0;
-        padding: 5px 0;
-    }
-
-    #contextMenu ul li {
-        padding: 8px 12px;
-        cursor: pointer;
-    }
-
-    #contextMenu ul li:hover {
-        background: #f0f0f0;
-    }
-</style>
-
-<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
 <script>
-    let seatCounter = 1;
-    const canvas = document.getElementById('canvas');
-    const contextMenu = document.createElement('div');
-    contextMenu.id = 'contextMenu';
-    contextMenu.innerHTML = `
-        <ul>
-            <li data-color="red">Red</li>
-            <li data-color="orange">Orange</li>
-            <li data-color="blue">Blue</li>
-        </ul>
-    `;
-    document.body.appendChild(contextMenu);
+    // --- Data Initialization from PHP ---
+    const tenantId = "{{ session('tenant')['tenant']['id'] }}";
+    const existingSeats = @json($tenantInventorySeats ?? []);
+    const existingUmbrellas = @json($tenantInventoryUmbrellas ?? []);
 
-    let activeSeat = null;
-    const seatSize = 60;
-    const seatGap = 10;
-    let nextX = 20;
-    let nextY = 20;
-    const maxSeatsPerRow = 20;
-    let seatInRow = 0;
-
-    // Add new seat
-    document.getElementById('addSeatBtn').addEventListener('click', () => {
-        const seat = document.createElement('div');
-        seat.classList.add('seat');
-        seat.textContent = seatCounter;
-        seat.dataset.seatNumber = seatCounter;   // store seat number
-        seat.dataset.color = "blue";             // default color
-        seat.style.top = nextY + "px";
-        seat.style.left = nextX + "px";
-
-        // Right-click to change color
-        seat.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            activeSeat = seat;
-            showContextMenu(e.clientX, e.clientY);
-        });
-
-        canvas.appendChild(seat);
-        makeDraggable(seat);
-
-        seatCounter++;
-        nextX += seatSize + seatGap;
-        seatInRow++;
-
-        if (seatInRow >= maxSeatsPerRow) {
-            nextX = 20;
-            nextY += seatSize + seatGap;
-            seatInRow = 0;
-        }
-    });
-
-    // Context menu actions
-    contextMenu.addEventListener('click', (e) => {
-        if (e.target.dataset.color && activeSeat) {
-            const color = e.target.dataset.color;
-            activeSeat.style.backgroundColor = color;
-            activeSeat.dataset.color = color; // save selected color
-            hideContextMenu();
-        }
-    });
-
-    document.addEventListener('click', () => hideContextMenu());
-
-    function showContextMenu(x, y) {
-        contextMenu.style.display = "block";
-        contextMenu.style.left = x + "px";
-        contextMenu.style.top = y + "px";
-    }
-
-    function hideContextMenu() {
-        contextMenu.style.display = "none";
-    }
-
-    // Draggable seats
-    function makeDraggable(el) {
-        interact(el).draggable({
-            listeners: {
-                move(event) {
-                    const target = event.target;
-                    const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-                    const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-
-                    target.style.transform = `translate(${x}px, ${y}px)`;
-                    target.setAttribute('data-x', x);
-                    target.setAttribute('data-y', y);
+    function calculateStartingIndex(existingItems, prefix) {
+        let maxSerial = 0;
+        const regex = new RegExp(`^${prefix}-\\d+-(\\d{3})$`);
+        existingItems.forEach(item => {
+            const code = item.serial_no; // <-- use serial_no from DB
+            const match = code.match(regex);
+            if (match && match[1]) {
+                const serial = parseInt(match[1], 10);
+                if (serial > maxSerial) {
+                    maxSerial = serial;
                 }
             }
         });
+        return maxSerial;
     }
 
-    // Collect all seats and submit
-    function saveSeatings() {
-        const seats = [];
-        document.querySelectorAll('.seat').forEach(seat => {
-            seats.push({
-                seat_number: seat.dataset.seatNumber,
-                seat_color: seat.dataset.color
+    function generateNewCode(prefix, index) {
+        return prefix + "-" + tenantId + "-" + String(index).padStart(3, '0');
+    }
+
+    // --- Initialize next available indexes ---
+    let seatIndex = calculateStartingIndex(existingSeats, 'S') + 1;
+    let umbrellaIndex = calculateStartingIndex(existingUmbrellas, 'UM') + 1;
+
+    // --- Set initial codes on page load ---
+    document.addEventListener('DOMContentLoaded', () => {
+        const initialSeatCodeInput = document.querySelector('.seatRow .seatCode');
+        if (initialSeatCodeInput) {
+            initialSeatCodeInput.value = generateNewCode('S', seatIndex++);
+        }
+        const initialUmbrellaCodeInput = document.querySelector('.umbrellaRow .umbrellaNumber');
+        if (initialUmbrellaCodeInput) {
+            initialUmbrellaCodeInput.value = generateNewCode('UM', umbrellaIndex++);
+        }
+    });
+
+    // --- Seats Event Listeners ---
+    document.addEventListener("click", function(e) {
+        if (e.target.classList.contains("addSeatRow")) {
+            const firstRow = document.querySelector(".seatRow");
+            if (!firstRow) return;
+
+            const row = firstRow.cloneNode(true);
+
+            row.querySelectorAll("input, select").forEach(el => {
+                let name = el.getAttribute("name");
+                if (name) {
+                    name = name.replace(/\[\d+\]/, "[" + seatIndex + "]");
+                    el.setAttribute("name", name);
+                }
+
+                if (el.classList.contains("seatCode")) {
+                    el.value = generateNewCode('S', seatIndex++);
+                } else if (el.tagName === "INPUT") {
+                    el.value = "";
+                } else if (el.tagName === "SELECT") {
+                    el.selectedIndex = 0;
+                }
             });
-        });
 
-        document.getElementById('seatsData').value = JSON.stringify(seats);
+            row.querySelector(".removeSeatRow").classList.remove("d-none");
+            document.getElementById("seatRows").appendChild(row);
+        }
 
-        // Example: submit via AJAX
-        fetch("{{ route('tenant.seats.store') }}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value
-            },
-            body: JSON.stringify({ seats })
-        })
-        .then(res => res.json())
-        .then(data => {
-            alert("Seats saved successfully!");
-        })
-        .catch(err => console.error(err));
-    }
+        if (e.target.classList.contains("removeSeatRow")) {
+            const rows = document.querySelectorAll(".seatRow");
+            if (rows.length > 1) {
+                e.target.closest(".seatRow").remove();
+            }
+        }
+    });
+
+    // --- Umbrellas Event Listeners ---
+    document.addEventListener("click", function(e) {
+        if (e.target.classList.contains("addUmbrellaRow")) {
+            const firstRow = document.querySelector(".umbrellaRow");
+            if (!firstRow) return;
+
+            const row = firstRow.cloneNode(true);
+
+            row.querySelectorAll("input, select").forEach(el => {
+                let name = el.getAttribute("name");
+                if (name) {
+                    name = name.replace(/\[\d+\]/, "[" + umbrellaIndex + "]");
+                    el.setAttribute("name", name);
+                }
+                if (el.classList.contains("umbrellaNumber")) {
+                    el.value = generateNewCode('UM', umbrellaIndex++);
+                } else if (el.tagName === "INPUT") {
+                    el.value = "";
+                } else if (el.tagName === "SELECT") {
+                    el.selectedIndex = 0;
+                }
+            });
+
+            row.querySelector(".removeUmbrellaRow").classList.remove("d-none");
+            document.getElementById("umbrellaRows").appendChild(row);
+        }
+
+        if (e.target.classList.contains("removeUmbrellaRow")) {
+            const rows = document.querySelectorAll(".umbrellaRow");
+            if (rows.length > 1) {
+                e.target.closest(".umbrellaRow").remove();
+            }
+        }
+    });
 </script>
+
 @endsection
