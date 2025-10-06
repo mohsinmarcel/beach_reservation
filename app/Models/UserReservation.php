@@ -17,5 +17,8 @@ class UserReservation extends Model
         'booking_start_time',
         'booking_end_time',
         'total_price',
+        'number_of_umbrellas',
+        'number_of_seats',
+        'provider_tenant_id',
     ];
 }

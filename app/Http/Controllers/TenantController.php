@@ -171,23 +171,23 @@ class TenantController extends Controller
     {
         // dd($request->all());
         // dd(session('tenant'));
-        $validator = Validator::make($request->all(), [
-            'seats'                  => 'required|array',
-            'seats.*.code'           => 'required|string|max:255',
-            'seats.*.row'            => 'required|string|max:255',
-            // Validate category as a string
-            'seats.*.category'       => 'required|string|max:255',
-            // Validate price as a number (integer or decimal)
-            'seats.*.price'          => 'required|numeric',
-        ]);
+        // $validator = Validator::make($request->all(), [
+        //     'seats'                  => 'required|array',
+        //     'seats.*.code'           => 'required|string|max:255',
+        //     'seats.*.row'            => 'required|string|max:255',
+        //     // Validate category as a string
+        //     'seats.*.category'       => 'required|string|max:255',
+        //     // Validate price as a number (integer or decimal)
+        //     'seats.*.price'          => 'required|numeric',
+        // ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status'  => 'error',
-                'message' => 'Validation failed',
-                'errors'  => $validator->errors()
-            ], 422);
-        }
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'status'  => 'error',
+        //         'message' => 'Validation failed',
+        //         'errors'  => $validator->errors()
+        //     ], 422);
+        // }
 
         if ($request->has('seats')) {
             foreach ($request->seats as $seat) {

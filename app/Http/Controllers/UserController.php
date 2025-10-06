@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TenantInventory;
 use App\Models\User;
 use App\Models\UserPayment;
 use App\Models\UserReservation;
@@ -12,92 +13,385 @@ use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
+    // public function userReserveBookingLogin(Request $request)
+    // {
+    //     dd($request->all());
+    //     $validatedData = $request->validate([
+    //         'first_name' => 'required|string|max:255',
+    //         'last_name' => 'required|string|max:255',
+    //         'email' => 'required|email|max:255',
+    //         'phone' => 'required|string|max:20',
+    //         'city' => 'required|string|max:100',
+    //         'state' => 'required|string|max:100',
+    //         'address' => 'required|string|max:500',
+    //         'card_number' => 'required|string|max:20',
+    //         'name_on_card' => 'required|string|max:255',
+    //         'expire_month' => 'required|min:1|max:12',
+    //         'expire_year' => 'required|integer|min:' . date('Y') . '|max:' . (date('Y') + 20),
+    //         'cvc' => 'required|string|max:4',
+    //     ]);
+
+    //     $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
+    //     $customerId = null;
+    //     // $price = $request['amount'];
+    //     $price = 100;
+    //     $token = $stripe->tokens->create([
+    //         'card' => [
+    //             'number' => $request['card_number'],
+    //             'exp_month' => $request['expire_month'],
+    //             'exp_year' => $request['expire_year'],
+    //             'cvc' => $request['cvc'],
+    //         ],
+    //     ]);
+    //     if (!isset($token['id'])) {
+    //         return response()->json(['status' => 'error', 'errors' => 'Token not created'], 422);
+    //     }
+    //     $customer = $stripe->customers->create([
+    //         'email' => $request['email'],
+    //         'name' => $request['first_name'] . ' ' . $request['last_name'],
+    //         'source' => $token['id']
+    //     ]);
+    //     $customerId = $customer->id;
+
+    //     $plan = $stripe->charges->create([
+    //         'amount' => (int)$price * 100,
+    //         'currency' => 'usd',
+    //         'customer' => $customerId,
+    //         'description' => 'Payment Recieved For ' . $request['first_name'],
+    //     ]);
+    //     if ($plan) {
+    //         $user = User::create([
+    //             'name' => $request->first_name . ' ' . $request->last_name,
+    //             'email' => $request->email,
+    //             'phone' => $request->phone,
+    //             'password' => bcrypt(12345678),
+    //             'city' => $request->city,
+    //             'state' => $request->state,
+    //             'address' => $request->address,
+    //             'unique_code' => strtoupper(Str::random(6)),
+    //         ]);
+    //         if (!empty($user)) {
+    //             $userReservation = UserReservation::create([
+    //                 'user_id' => $user->id,
+    //                 'category_booked' => $request->category_selected,
+    //                 'reservations' => json_encode($request->all()),
+    //                 'booking_date' => date('Y-m-d', strtotime($request->booking_date)),
+    //                 'booking_start_time' => $request->start_time ?? null,
+    //                 'booking_end_time' => $request->end_time ?? null,
+    //                 'total_price' => $price,
+    //             ]);
+    //             if (!empty($userReservation)) {
+    //                 $userPayment = UserPayment::create([
+    //                     'user_id' => $user->id,
+    //                     'card_number' => $request->card_number,
+    //                     'name_on_card' => $request->name_on_card,
+    //                     'user_reservation_id' => $userReservation->id,
+    //                     'amount' => $price,
+    //                 ]);
+    //                 if (!empty($userPayment)) {
+
+    //                     return response()->json(['status' => 'success', 'message' => 'User Created Successfully'], 200);
+    //                 }
+    //             } else {
+    //                 return response()->json(['status' => 'error', 'errors' => 'Reservation Not Created'], 422);
+    //             }
+    //         } else {
+    //             return response()->json(['status' => 'error', 'errors' => 'User Not Created'], 422);
+    //         }
+    //     }
+    // }
+
+    // public function userReserveBookingLogin(Request $request)
+    // {
+    //     // dd($request->all());
+    //     // Step 1: Validate request
+    //     $validatedData = $request->validate([
+    //         'first_name' => 'required|string|max:255',
+    //         'last_name' => 'required|string|max:255',
+    //         'email' => 'required|email|max:255',
+    //         'phone' => 'required|string|max:20',
+    //         'city' => 'required|string|max:100',
+    //         'state' => 'required|string|max:100',
+    //         'address' => 'required|string|max:500',
+    //         'card_number' => 'required|string|max:20',
+    //         'name_on_card' => 'required|string|max:255',
+    //         'expire_month' => 'required|min:1|max:12',
+    //         'expire_year' => 'required|integer|min:' . date('Y') . '|max:' . (date('Y') + 20),
+    //         'cvc' => 'required|string|max:4',
+    //         'number_of_seats' => 'required|integer|min:1',
+    //         'category' => 'required|string',
+    //         'row' => 'required|string',
+    //     ]);
+
+    //     if($validatedData->fails()){
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'errors' => $validatedData->errors()
+    //         ], 422);
+    //     }
+
+    //     $numberOfSeats = $request->number_of_seats;
+    //     // dd($numberOfSeats);
+    //     $category = $request->category;
+    //     $row = $request->row;
+
+    //     // Step 2: Find valid tenant with enough matching seats
+    //     $tenantInventories = TenantInventory::where('type', 'seat')
+    //         ->where('category', $category)
+    //         ->where('row', $row)
+    //         ->get()
+    //         ->groupBy('tenant_id');
+
+    //     $validTenant = null;
+    //     $totalPrice = 0;
+
+    //     foreach ($tenantInventories as $tenantId => $items) {
+    //         // if tenant has enough seats
+    //         if ($items->count() >= $numberOfSeats) {
+    //             // pick first N seats
+    //             $selectedSeats = $items->take($numberOfSeats);
+    //             $totalPrice = $selectedSeats->sum('price');
+    //             $validTenant = $tenantId;
+    //             break;
+    //         }
+    //     }
+
+    //     if (!$validTenant) {
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'errors' => 'No tenant has sufficient inventory matching your selection.'
+    //         ], 422);
+    //     }
+
+    //     dd($validTenant
+    //     );
+
+
+    //     // Step 3: Proceed with payment (Stripe)
+    //     $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
+
+    //     $token = $stripe->tokens->create([
+    //         'card' => [
+    //             'number' => $request['card_number'],
+    //             'exp_month' => $request['expire_month'],
+    //             'exp_year' => $request['expire_year'],
+    //             'cvc' => $request['cvc'],
+    //         ],
+    //     ]);
+
+    //     if (!isset($token['id'])) {
+    //         return response()->json(['status' => 'error', 'errors' => 'Token not created'], 422);
+    //     }
+
+    //     $customer = $stripe->customers->create([
+    //         'email' => $request['email'],
+    //         'name' => $request['first_name'] . ' ' . $request['last_name'],
+    //         'source' => $token['id']
+    //     ]);
+
+    //     $charge = $stripe->charges->create([
+    //         'amount' => (int)$totalPrice * 100,
+    //         'currency' => 'usd',
+    //         'customer' => $customer->id,
+    //         'description' => 'Seat Booking for ' . $request['first_name'],
+    //     ]);
+
+    //     if ($charge) {
+    //         // Step 4: Create user and booking
+    //         $user = User::create([
+    //             'name' => $request->first_name . ' ' . $request->last_name,
+    //             'email' => $request->email,
+    //             'phone' => $request->phone,
+    //             'password' => bcrypt(12345678),
+    //             'city' => $request->city,
+    //             'state' => $request->state,
+    //             'address' => $request->address,
+    //             'unique_code' => strtoupper(Str::random(6)),
+    //         ]);
+
+    //         if ($user) {
+    //             $userReservation = UserReservation::create([
+    //                 'user_id' => $user->id,
+    //                 'tenant_id' => $validTenant,
+    //                 'category_booked' => $category,
+    //                 'reservations' => json_encode($request->all()),
+    //                 'booking_date' => date('Y-m-d', strtotime($request->booking_date)),
+    //                 'booking_start_time' => $request->start_time ?? null,
+    //                 'booking_end_time' => $request->end_time ?? null,
+    //                 'total_price' => $totalPrice,
+    //             ]);
+
+    //             if ($userReservation) {
+    //                 UserPayment::create([
+    //                     'user_id' => $user->id,
+    //                     'card_number' => $request->card_number,
+    //                     'name_on_card' => $request->name_on_card,
+    //                     'user_reservation_id' => $userReservation->id,
+    //                     'amount' => $totalPrice,
+    //                 ]);
+
+    //                 return response()->json([
+    //                     'status' => 'success',
+    //                     'message' => 'Booking created successfully!',
+    //                     'total_price' => $totalPrice,
+    //                     'tenant_id' => $validTenant
+    //                 ], 200);
+    //             }
+    //         }
+    //     }
+    // }
+
     public function userReserveBookingLogin(Request $request)
-    {
-        $validatedData = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:20',
-            'city' => 'required|string|max:100',
-            'state' => 'required|string|max:100',
-            'address' => 'required|string|max:500',
-            'card_number' => 'required|string|max:20',
-            'name_on_card' => 'required|string|max:255',
-            'expire_month' => 'required|min:1|max:12',
-            'expire_year' => 'required|integer|min:' . date('Y') . '|max:' . (date('Y') + 20),
-            'cvc' => 'required|string|max:4',
-        ]);
+{
+    // Step 1: Validate request manually so we can return JSON
+    $validator = Validator::make($request->all(), [
+        'first_name' => 'required|string|max:255',
+        'last_name' => 'required|string|max:255',
+        'email' => 'required|email|max:255',
+        'phone' => 'required|string|max:20',
+        'city' => 'required|string|max:100',
+        'state' => 'required|string|max:100',
+        'address' => 'required|string|max:500',
+        'card_number' => 'required|string|max:20',
+        'name_on_card' => 'required|string|max:255',
+        'expire_month' => 'required',
+        'expire_year' => 'required|integer|min:' . date('Y') . '|max:' . (date('Y') + 20),
+        'cvc' => 'required|string|max:4',
+        'number_of_seats' => 'required|integer|min:1',
+        'category' => 'required|string',
+        'row' => 'required|string',
+    ]);
 
-        $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
-        $customerId = null;
-        // $price = $request['amount'];
-        $price = 100;
-        $token = $stripe->tokens->create([
-            'card' => [
-                'number' => $request['card_number'],
-                'exp_month' => $request['expire_month'],
-                'exp_year' => $request['expire_year'],
-                'cvc' => $request['cvc'],
-            ],
-        ]);
-        if (!isset($token['id'])) {
-            return response()->json(['status' => 'error', 'errors' => 'Token not created'], 422);
-        }
-        $customer = $stripe->customers->create([
-            'email' => $request['email'],
-            'name' => $request['first_name'] . ' ' . $request['last_name'],
-            'source' => $token['id']
-        ]);
-        $customerId = $customer->id;
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => 'error',
+            'errors' => $validator->errors(),
+            'message' => 'Validation failed'
+        ], 422);
+    }
 
-        $plan = $stripe->charges->create([
-            'amount' => (int)$price * 100,
-            'currency' => 'usd',
-            'customer' => $customerId,
-            'description' => 'Payment Recieved For ' . $request['first_name'],
-        ]);
-        if ($plan) {
-            $user = User::create([
-                'name' => $request->first_name . ' ' . $request->last_name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'password' => bcrypt(12345678),
-                'city' => $request->city,
-                'state' => $request->state,
-                'address' => $request->address,
-                'unique_code' => strtoupper(Str::random(6)),
-            ]);
-            if (!empty($user)) {
-                $userReservation = UserReservation::create([
-                    'user_id' => $user->id,
-                    'category_booked' => $request->category_selected,
-                    'reservations' => json_encode($request->all()),
-                    'booking_date' => date('Y-m-d', strtotime($request->booking_date)),
-                    'booking_start_time' => $request->start_time ?? null,
-                    'booking_end_time' => $request->end_time ?? null,
-                    'total_price' => $price,
-                ]);
-                if (!empty($userReservation)) {
-                    $userPayment = UserPayment::create([
-                        'user_id' => $user->id,
-                        'card_number' => $request->card_number,
-                        'name_on_card' => $request->name_on_card,
-                        'user_reservation_id' => $userReservation->id,
-                        'amount' => $price,
-                    ]);
-                    if (!empty($userPayment)) {
+    // Step 2: Extract validated data
+    $data = $validator->validated();
 
-                        return response()->json(['status' => 'success', 'message' => 'User Created Successfully'], 200);
-                    }
-                } else {
-                    return response()->json(['status' => 'error', 'errors' => 'Reservation Not Created'], 422);
-                }
-            } else {
-                return response()->json(['status' => 'error', 'errors' => 'User Not Created'], 422);
-            }
+    $numberOfSeats = $data['number_of_seats'];
+    $category = $data['category'];
+    $numberOfUmbrellas = $data['number_of_umbrellas'] ?? 0;
+
+    $row = $data['row'];
+
+    // Step 3: Find valid tenant with enough matching seats
+    $tenantInventories = TenantInventory::where('type', 'seat')
+        ->where('category', $category)
+        ->where('row', $row)
+        ->get()
+        ->groupBy('tenant_id');
+
+    $validTenant = null;
+    $totalPrice = 0;
+
+    foreach ($tenantInventories as $tenantId => $items) {
+        if ($items->count() >= $numberOfSeats) {
+            $selectedSeats = $items->take($numberOfSeats);
+            $totalPrice = $selectedSeats->sum('price');
+            $validTenant = $tenantId;
+            break;
         }
     }
+
+    if (!$validTenant) {
+        return response()->json([
+            'status' => 'error',
+            'errors' => 'No tenant has sufficient inventory matching your selection.',
+                        'message' => 'tenant-failed'
+
+        ], 403);
+    }
+
+    // Step 4: Stripe Payment
+    // try {
+    //     $stripe = new StripeClient(env('STRIPE_SECRET'));
+
+    //     $token = $stripe->tokens->create([
+    //         'card' => [
+    //             'number' => $data['card_number'],
+    //             'exp_month' => $data['expire_month'],
+    //             'exp_year' => $data['expire_year'],
+    //             'cvc' => $data['cvc'],
+    //         ],
+    //     ]);
+
+    //     if (!isset($token['id'])) {
+    //         return response()->json(['status' => 'error', 'errors' => 'Token not created'], 422);
+    //     }
+
+    //     $customer = $stripe->customers->create([
+    //         'email' => $data['email'],
+    //         'name' => $data['first_name'] . ' ' . $data['last_name'],
+    //         'source' => $token['id']
+    //     ]);
+
+    //     $charge = $stripe->charges->create([
+    //         'amount' => (int)$totalPrice * 100,
+    //         'currency' => 'usd',
+    //         'customer' => $customer->id,
+    //         'description' => 'Seat Booking for ' . $data['first_name'],
+    //     ]);
+    // } catch (\Exception $e) {
+    //     return response()->json([
+    //         'status' => 'error',
+    //         'errors' => 'Payment failed: ' . $e->getMessage(),
+    //     ], 500);
+    // }
+
+    // Step 5: Create User and Booking
+    try {
+        $user = User::create([
+            'name' => $data['first_name'] . ' ' . $data['last_name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'],
+            'password' => bcrypt(12345678),
+            'city' => $data['city'],
+            'state' => $data['state'],
+            'address' => $data['address'],
+            'unique_code' => strtoupper(Str::random(6)),
+        ]);
+
+        $userReservation = UserReservation::create([
+            'user_id' => $user->id,
+            'provider_tenant_id' => $validTenant,
+            'category_booked' => $category,
+            'reservations' => json_encode($data),
+            'booking_date' => date('Y-m-d', strtotime($request->booking_date)),
+            'booking_start_time' => $request->start_time ?? null,
+            'booking_end_time' => $request->end_time ?? null,
+            'total_price' => $totalPrice,
+            'number_of_umbrellas' => $numberOfUmbrellas ?? 0,
+            'number_of_seats' => $numberOfSeats,
+        ]);
+
+        UserPayment::create([
+            'user_id' => $user->id,
+            'card_number' => $data['card_number'],
+            'name_on_card' => $data['name_on_card'],
+            'user_reservation_id' => $userReservation->id,
+            'amount' => $totalPrice,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Booking created successfully!',
+            'tenant_id' => $validTenant,
+            'total_price' => $totalPrice,
+        ], 200);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'errors' => 'Database error: ' . $e->getMessage(),
+        ], 500);
+    }
+}
+
 
     public function userLoginProcess(Request $request)
     {

@@ -392,6 +392,18 @@
                                     <input type="number" class="form-control" id="seats"
                                         name="number_of_seats">
                                 </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="date" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">Booking Date:</label>
+                                    <input type="date" class="form-control" id="booking_date"
+                                        name="booking_date">
+                                </div>
+                                 <div class="col-lg-6 mb-3">
+                                    <label for="time" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">Booking Time:</label>
+                                    <input type="time" class="form-control" id="booking_time"
+                                        name="booking_time">
+                                </div>
                                 <div class="col-lg-6 mb-3 d-none umbrellasInputDiv" >
                                     <label for="umbrellas" class="form-label fw-semibold mb-1"
                                         style="font-size: 13px;">Number of Umbrellas:</label>
@@ -616,65 +628,145 @@
                 $('.umbrellasInputDiv').addClass('d-none');
         }}
 
+        // function reserve() {
+        //     var form = $('#multi-step-form')[0];
+        //     var formData = new FormData(form);
+
+        //     $.ajaxSetup({
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         }
+        //     });
+
+        //     $.ajax({
+        //         url: '{{ route('user.reserve.booking.login') }}', // Replace with your login route
+        //         type: 'POST',
+        //         data: formData,
+        //         processData: false,
+        //         contentType: false,
+        //         success: function(response) {
+        //             if (response.status === 'success') {
+        //                 Swal.fire({
+        //                     icon: 'success',
+        //                     title: 'Reservation Successful!',
+        //                     showConfirmButton: false,
+        //                     timer: 1500
+        //                 }).then(() => {
+        //                     window.location.reload();
+        //                 });
+        //             }
+        //         },
+        //         error: function(xhr, status, error) {
+        //             // Remove old validation messages
+        //             $('#multi-step-form .text-danger').remove();
+
+        //             if (xhr.status === 422 && xhr.responseJSON?.errors) {
+        //                 // Laravel validation errors (missing email/password)
+        //                 const errors = xhr.responseJSON.errors;
+        //                 $.each(errors, function(fieldName, messages) {
+        //                     const input = $('#multi-step-form [name="' + fieldName + '"]');
+        //                     if (input.length > 0) {
+        //                         input.after('<small class="text-danger">' + messages[0] + '</small>');
+        //                     }
+        //                 });
+        //             } else if (xhr.status === 401) {
+        //                 // Invalid credentials
+        //                 Swal.fire({
+        //                     icon: 'error',
+        //                     title: 'Invalid Credentials',
+        //                     text: 'The email or password you entered is incorrect.'
+        //                 });
+        //             } else {
+        //                 // Other errors
+        //                 Swal.fire({
+        //                     icon: 'error',
+        //                     title: 'Oops!',
+        //                     text: 'Something went wrong. Please try again later.'
+        //                 });
+        //             }
+        //         }
+        //     });
+        // }
+
         function reserve() {
-            var form = $('#multi-step-form')[0];
-            var formData = new FormData(form);
+    var form = $('#multi-step-form')[0];
+    var formData = new FormData(form);
 
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            $.ajax({
-                url: '{{ route('user.reserve.booking.login') }}', // Replace with your login route
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    if (response.status === 'success') {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Reservation Successful!',
-                            showConfirmButton: false,
-                            timer: 1500
-                        }).then(() => {
-                            window.location.reload();
-                        });
-                    }
-                },
-                error: function(xhr, status, error) {
-                    // Remove old validation messages
-                    $('#multi-step-form .text-danger').remove();
-
-                    if (xhr.status === 422 && xhr.responseJSON?.errors) {
-                        // Laravel validation errors (missing email/password)
-                        const errors = xhr.responseJSON.errors;
-                        $.each(errors, function(fieldName, messages) {
-                            const input = $('#multi-step-form [name="' + fieldName + '"]');
-                            if (input.length > 0) {
-                                input.after('<small class="text-danger">' + messages[0] + '</small>');
-                            }
-                        });
-                    } else if (xhr.status === 401) {
-                        // Invalid credentials
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Invalid Credentials',
-                            text: 'The email or password you entered is incorrect.'
-                        });
-                    } else {
-                        // Other errors
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops!',
-                            text: 'Something went wrong. Please try again later.'
-                        });
-                    }
-                }
-            });
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
+    });
+
+    $.ajax({
+        url: '{{ route('user.reserve.booking.login') }}',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            if (response.status === 'success') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Reservation Successful!',
+                    text: response.message ?? 'Your booking has been confirmed.',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    window.location.reload();
+                });
+            } else if (response.status === 'error') {
+                // For backend custom errors (like tenant insufficient balance, seats unavailable, etc.)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Reservation Failed',
+                    text: response.message ?? 'Unable to process your booking. Please try again.'
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            // Remove previous validation errors
+            $('#multi-step-form .text-danger').remove();
+
+            if (xhr.status === 422 && xhr.responseJSON?.errors) {
+                // Laravel validation errors — display below inputs
+                const errors = xhr.responseJSON.errors;
+                $.each(errors, function(fieldName, messages) {
+                    const input = $('#multi-step-form [name="' + fieldName + '"]');
+                    if (input.length > 0) {
+                        input.after('<small class="text-danger">' + messages[0] + '</small>');
+                    }
+                });
+            } else if (xhr.status === 401) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Credentials',
+                    text: 'The email or password you entered is incorrect.'
+                });
+            }else if (xhr.status === 403) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Reservation Failed',
+                    text: 'No tenant has sufficient inventory matching your selection.'
+                });
+            } else if (xhr.responseJSON?.message) {
+                // Other custom error messages
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: xhr.responseJSON.message
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Something went wrong. Please try again later.'
+                });
+            }
+        }
+    });
+}
+
 
         function signIn() {
             var form = $('#loginForm')[0];
