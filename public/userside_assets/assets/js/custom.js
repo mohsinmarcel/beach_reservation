@@ -41,3 +41,14 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
 });
+
+const checkbox = document.getElementById('more_addons');
+const addonsContainer = document.querySelector('.addons-container');
+
+  checkbox.addEventListener('change', () => {
+    if (checkbox.checked) {
+      addonsContainer.style.display = 'block';
+    } else {
+      addonsContainer.style.display = 'none';
+    }
+  });
