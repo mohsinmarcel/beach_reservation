@@ -197,7 +197,7 @@ class TenantController extends Controller
                     'tenant_user_id' => session('tenant')['current_user']['id'],
                     'serial_no'           => $seat['code'],
                     'row'            => $seat['row'],
-                    'category'       => $seat['category'],
+                    // 'category'       => $seat['category'],
                     'price'          => $seat['price'], // Store the price field
                     'status'         => 'available',
                     'type' => 'seat',

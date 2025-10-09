@@ -101,7 +101,7 @@
                             </a>
                         </div>
                         <h4 class="mb-2">Welcome to Online Beach Seat Reservation! 👋</h4>
-                        <p class="mb-4">Please sign-in to your Tenant account</p>
+                        <p class="mb-4">Please sign-in to your HOA account</p>
                         <form id="tenantLogin" class="mb-3">
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
@@ -129,10 +129,10 @@
                                 <button type="button" class="btn btn-primary d-grid w-100"  onclick="signIn()">Sign in</button>
                             </div>
                         </form>
-                        <p class="text-center">
+                        {{-- <p class="text-center">
                             <span>New on our platform?</span>
                             <a href="{{ route('tenant.register') }}"><span>Create an account</span></a>
-                        </p>
+                        </p> --}}
                     </div>
                 </div>
             </div>

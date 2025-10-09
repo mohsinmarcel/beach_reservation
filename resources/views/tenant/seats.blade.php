@@ -23,24 +23,13 @@
                 <div class="col-md-2">
                     <select name="seats[0][row]" class="form-control">
                         <option value="">-- Select Row --</option>
-                        <option value="first">First Row</option>
-                        <option value="second">Second Row</option>
-                        <option value="third">Third Row</option>
-                        <option value="fourth">Fourth Row</option>
-                        <option value="fifth">Fifth Row</option>
+                        <option value="east_tower">East Tower</option>
+                        <option value="west_tower">West Tower</option>
                     </select>
                 </div>
 
                 <div class="col-md-2">
-                    <select name="seats[0][category]" class="form-control">
-                        <option value="">-- Select Category --</option>
-                        <option value="normal">Normal</option>
-                        <option value="executive">Executive</option>
-                    </select>
-                </div>
-
-                <div class="col-md-2">
-                    <input type="number" step="0.01" name="seats[0][price]" class="form-control" placeholder="Price">
+                    <input type="number" name="seats[0][price]" value="" class="form-control" placeholder="Price">
                 </div>
 
                 <div class="col-md-2 d-flex align-items-center">
@@ -62,7 +51,6 @@
                 <tr>
                     <th>Code</th>
                     <th>Row</th>
-                    <th>Category</th>
                     <th>Price</th>
                     <th>Status</th>
                 </tr>
@@ -71,8 +59,7 @@
                 @foreach ($tenantInventorySeats as $seat)
                 <tr>
                     <td>{{ $seat->serial_no }}</td>
-                    <td>{{ ucfirst($seat->row) }}</td>
-                    <td>{{ ucfirst($seat->category) }}</td>
+                    <td>{{ str_replace('_',' ',ucWords($seat->row)) }}</td>
                     <td>${{ number_format($seat->price, 2) }}</td>
                     <td><span class="badge bg-{{ $seat->status == 'available' ? 'success' : 'danger' }}">{{ ucfirst($seat->status) }}</span></td>
                 </tr>
@@ -103,13 +90,6 @@
                            value="" readonly placeholder="UM-{{session('tenant')['tenant']['id']}}-001">
                 </div>
                 <div class="col-md-2">
-                    <select name="umbrellas[0][category]" class="form-control">
-                        <option value="">-- Select Category --</option>
-                        <option value="normal">Normal</option>
-                        <option value="executive">Executive</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
                     <input type="number" step="0.01" name="umbrellas[0][price]" class="form-control" placeholder="Price">
                 </div>
                 <div class="col-md-2 d-flex align-items-center">
@@ -130,7 +110,7 @@
             <thead>
                 <tr>
                     <th>Number</th>
-                    <th>Category</th>
+                    {{-- <th>Category</th> --}}
                     <th>Price</th>
                     <th>Status</th>
                 </tr>
@@ -139,7 +119,7 @@
                 @foreach ($tenantInventoryUmbrellas as $umbrella)
                 <tr>
                     <td>{{ $umbrella->serial_no }}</td>
-                    <td>{{ ucfirst($umbrella->category) }}</td>
+                    {{-- <td>{{ ucfirst($umbrella->category) }}</td> --}}
                     <td>${{ number_format($umbrella->price, 2) }}</td>
                     <td><span class="badge bg-{{ $umbrella->status == 'available' ? 'success' : 'danger' }}">{{ ucfirst($umbrella->status) }}</span></td>
                 </tr>
