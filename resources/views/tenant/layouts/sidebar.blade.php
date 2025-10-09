@@ -62,7 +62,15 @@
                             <li class="menu-item">
                             <a href="{{route('tenant.seats')}}" class="menu-link">
                                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                                <div data-i18n="Analytics">Seats</div>
+                                <div data-i18n="Analytics">Seats & Umbrellas</div>
+                            </a>
+                            </li>
+                        @endif
+                        @if (in_array('tenant.seats.store', session('tenant')['permissions']))
+                            <li class="menu-item">
+                            <a href="{{route('tenant.inventory.pricing')}}" class="menu-link">
+                                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                                <div data-i18n="Analytics">Pricing (Seasonal)</div>
                             </a>
                             </li>
                         @endif

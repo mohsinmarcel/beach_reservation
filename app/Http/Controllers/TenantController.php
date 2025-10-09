@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Permission;
+use App\Models\Pricing;
 use App\Models\Role;
 use App\Models\RolePermission;
 use App\Models\Tenant;
@@ -406,4 +407,41 @@ class TenantController extends Controller
             'message' => 'Tenant user updated successfully',
         ], 200);
     }
+
+    public function tenantInventoryPricing()
+    {
+        $pricing = Pricing::all();
+        return view ('tenant.pricing',compact('pricing'));
+    }
+
+    public function tenantPricingStore(Request $request)
+    {
+        $validated = $request->validate([
+            'season_name' => 'required|string|max:255',
+            'price_per_seat' => 'required|numeric',
+            'price_per_umbrella' => 'required|numeric',
+        ]);
+
+        Pricing::create([
+            'name' => $validated['season_name'],
+            'price_per_seat' => $validated['price_per_seat'],
+            'price_per_umbrella' => $validated['price_per_umbrella'],
+        ]);
+
+        return response()->json(['message' => 'Season added successfully']);
+    }
+
+    public function tenantPricingUpdate(Request $request,$id)
+    {
+        $pricing = Pricing::find($id);
+        if (!$pricing) {
+            return redirect()->back()->with('error', 'Pricing not found');
+        }
+
+        $tenantInventorySeats = TenantInventory::where('type', 'seat')->update(['price' => $pricing->price_per_seat]);
+        $tenantInventoryUmbrellas = TenantInventory::where('type', 'umbrella')->update(['price' => $pricing->price_per_umbrella]);
+        return redirect()->back()->with('success', 'Pricing updated successfully');
+
+    }
+
 }
