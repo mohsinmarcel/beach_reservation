@@ -206,22 +206,31 @@
                 <!-- Filters End -->
                 <!-- Card Rows Start -->
                 <div class="booking-card-row row mt-5" id="cardRow">
-                   <div class="col-12 card-block mb-3" data-guests="12" data-time="9am-to-10am" data-date="26/09/2025">
+                    <div class="col-12 card-block mb-3" data-guests="12" data-time="9am-to-10am"
+                        data-date="26/09/2025">
                         <div class="card border-0 bg-white shadow">
                             <div class="row align-items-center">
                                 <div class="col-lg-6">
                                     <a href="#" class="img-anchor p-2 text-decoration-none d-inline-block">
-                                        <img src="{{asset('userside_assets/assets/images/img-1.webp')}}" class="img-fluid rounded" alt="image">
+                                        <img src="{{ asset('userside_assets/assets/images/img-1.webp') }}"
+                                            class="img-fluid rounded" alt="image">
                                     </a>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="card-content p-3">
                                         <h3 class="card-title fw-bold lh-sm mb-3">Beach Set – Perfect for Two</h3>
-                                        <p class="card-short-berif fw-ligth lh-sm mb-2 text-black">Enjoy your relaxing day by the sea with our premium beach set — includes 2 comfortable sunbeds and 1 umbrella for perfect shade.</p>
-                                        <p class="card-short-berif fw-ligth lh-sm mb-2 text-black">Spend quality time with your partner or friend while soaking up the sun and the view.</p>
-                                        <p class="card-price fs-6 fw-semibold lh-sm mb-2 text-black">Starting From <span class="currency-symbol">$</span><span class="currency">65</span> / Set</p>
-                                        <p class="card-short-berif fw-ligth lh-sm my-4 text-black">☀️ Limited slots available — book early to reserve your spot!</p>
-                                        <button type="button" class="btn btn-outline-primary rounded-pill w-50 p-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                        <p class="card-short-berif fw-ligth lh-sm mb-2 text-black">Enjoy your relaxing
+                                            day by the sea with our premium beach set — includes 2 comfortable sunbeds
+                                            and 1 umbrella for perfect shade.</p>
+                                        <p class="card-short-berif fw-ligth lh-sm mb-2 text-black">Spend quality time
+                                            with your partner or friend while soaking up the sun and the view.</p>
+                                        <p class="card-price fs-6 fw-semibold lh-sm mb-2 text-black">Starting From
+                                            <span class="currency-symbol">$</span><span class="currency">65</span> /
+                                            Set</p>
+                                        <p class="card-short-berif fw-ligth lh-sm my-4 text-black">☀️ Limited slots
+                                            available — book early to reserve your spot!</p>
+                                        <button type="button" class="btn btn-outline-primary rounded-pill w-50 p-3"
+                                            data-bs-toggle="modal" data-bs-target="#exampleModal">
                                             Book Now
                                         </button>
                                     </div>
@@ -302,196 +311,246 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-3 pt-4">
-                <div class="progress px-1" style="height: 3px;">
-                    <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <div class="step-container d-flex justify-content-between">
-                    <div class="step-circle" onclick="displayStep(1)">1</div>
-                    <div class="step-circle" onclick="displayStep(2)">2</div>
-                    <div class="step-circle" onclick="displayStep(3)">3</div>
-                    <div class="step-circle" onclick="displayStep(4)">4</div>
-                </div>
-                <form id="multi-step-form">
-                    <div class="step step-1">
-                    <!-- Step 1 form fields here -->
-                    <div class="mb-3">
-                        <div class="berif-content">
-                            <h3 class="fs-3 fw-bold">Beach Set – Perfect for Two</h3>
-                            <p style="font-size: 14px;">Enjoy your relaxing day by the sea with our premium beach set — includes 2 comfortable sunbeds and 1 umbrella for perfect shade.</p>
-                            <p style="font-size: 14px;">Spend quality time with your partner or friend while soaking up the sun and the view.</p>
-                            <p style="font-size: 14px;">☀️ Limited slots available — book early to reserve your spot!</p>
-                            <img src="{{asset('userside_assets/assets/images/img-1.webp')}}" class="img-fluid rounded mb-3" alt="img">
-                            <div class="fw-normal mb-3 text-black" style="font-size: 14px;">
-                                Enjoy a Complete Beach Set (2 Seats and 1 Umbrella) for Perfect Shade.
-                            </div>
-                            <div class="">
-                                <div class="mb-3 d-flex align-items-center gap-2">
-                                    <label for="how_many_set" class="form-label fw-medium" style="font-size: 14px;">How many sets do you want to reserve?</label>
-                                    <input type="number" class="form-control w-25" id="how_many_set" placeholder="No of sets" style="font-size: 14px;">
-                                </div>
-                                <div class="more-seats">
-                                    <input type="checkbox" class="form-check-input me-1" value="" id="more_addons">
-                                    <label for="more_addons" class="form-label fw-normal" style="font-size: 14px;">More seats and umbrella?</label>
-                                </div>
-                                <div class="addons-container" style="display:none;">
-                                    <div class="d-flex align-item-center gap-2" >
-                                        <div class="addon-seats">
-                                            <label for="addon_seats" class="form-label" style="font-size: 14px;">Number of Seats</label>
-                                            <input type="number" class="form-control w-25" id="addon_seats">
+                    <div class="progress px-1" style="height: 3px;">
+                        <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0"
+                            aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="step-container d-flex justify-content-between">
+                        <div class="step-circle" onclick="displayStep(1)">1</div>
+                        <div class="step-circle" onclick="displayStep(2)">2</div>
+                        <div class="step-circle" onclick="displayStep(3)">3</div>
+                        <div class="step-circle" onclick="displayStep(4)">4</div>
+                    </div>
+                    <form id="multi-step-form">
+                        @csrf
+                        <div class="step step-1">
+                            <!-- Step 1 form fields here -->
+                            <div class="mb-3">
+                                <div class="berif-content">
+                                    <h3 class="fs-3 fw-bold">Beach Set – Perfect for Two</h3>
+                                    <p style="font-size: 14px;">Enjoy your relaxing day by the sea with our premium
+                                        beach set — includes 2 comfortable sunbeds and 1 umbrella for perfect shade.</p>
+                                    <p style="font-size: 14px;">Spend quality time with your partner or friend while
+                                        soaking up the sun and the view.</p>
+                                    <p style="font-size: 14px;">☀️ Limited slots available — book early to reserve your
+                                        spot!</p>
+                                    <img src="{{ asset('userside_assets/assets/images/img-1.webp') }}"
+                                        class="img-fluid rounded mb-3" alt="img">
+                                    <div class="fw-normal mb-3 text-black" style="font-size: 14px;">
+                                        Enjoy a Complete Beach Set (2 Seats and 1 Umbrella) for Perfect Shade.
+                                    </div>
+                                    <div class="">
+                                        <div class="mb-3 d-flex align-items-center gap-2">
+                                            <label for="how_many_set" class="form-label fw-medium"
+                                                style="font-size: 14px;">How many sets do you want to reserve?</label>
+                                            <input type="number" class="form-control w-25" id="how_many_set"
+                                                placeholder="No of sets" style="font-size: 14px;" name="no_of_sets">
                                         </div>
-                                        <div class="addon-umberella">
-                                            <label for="addon_umbrella" class="form-label" style="font-size: 14px;">Number of Umbrella</label>
-                                            <input type="number" class="form-control w-25" id="addon_umbrella">
+                                        <div class="more-seats">
+                                            <input type="checkbox" class="form-check-input me-1" value=""
+                                                id="more_addons">
+                                            <label for="more_addons" class="form-label fw-normal"
+                                                style="font-size: 14px;">More seats and umbrella?</label>
+                                        </div>
+                                        <div class="addons-container" style="display:none;">
+                                            <div class="d-flex align-item-center gap-2">
+                                                <div class="addon-seats">
+                                                    <label for="addon_seats" class="form-label"
+                                                        style="font-size: 14px;">Number of Seats</label>
+                                                    <input type="number" class="form-control w-50" id="addon_seats"
+                                                        name="addon_seats">
+                                                </div>
+                                                <div class="addon-umberella">
+                                                    <label for="addon_umbrella" class="form-label"
+                                                        style="font-size: 14px;">Number of Umbrella</label>
+                                                    <input type="number" class="form-control w-50"
+                                                        id="addon_umbrella" name="addon_umbrella">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="text-end">
-                        <button type="button" class="btn btn-primary next-step">Next</button>
-                    </div>
-                    </div>
-                    <div class="step step-2">
-                        <!-- Step 2 form fields here -->
-                        <h3>Your Details</h3>
-                        <div class="row">
-                            <div class="col-lg-6 mb-3">
-                                <label for="fname" class="form-label fw-semibold mb-1" style="font-size: 13px;">First Name:</label>
-                                <input type="text" class="form-control" id="fname" name="field2">
-                            </div>
-                            <div class="col-lg-6 mb-3">
-                                <label for="lname" class="form-label fw-semibold mb-1" style="font-size: 13px;">Last Name:</label>
-                                <input type="text" class="form-control" id="lname" name="field2">
-                            </div>
-                            <div class="col-lg-6 mb-3">
-                                <label for="email" class="form-label fw-semibold mb-1" style="font-size: 13px;">Email:</label>
-                                <input type="email" class="form-control" id="email" name="field2">
-                            </div>
-                            <div class="col-lg-6 mb-3">
-                                <label for="phoneNum" class="form-label fw-semibold mb-1" style="font-size: 13px;">Phone Number:</label>
-                                <input type="number" class="form-control" id="phoneNum" name="field2">
-                            </div>
-                            <div class="col-lg-6 mb-3">
-                                <label for="city" class="form-label fw-semibold mb-1" style="font-size: 13px;">City:</label>
-                                <input type="text" class="form-control" id="city" name="field2">
-                            </div>
-                            <div class="col-lg-6 mb-3">
-                                <label for="state" class="form-label fw-semibold mb-1" style="font-size: 13px;">State:</label>
-                                <input type="text" class="form-control" id="state" name="field2">
-                            </div>
-                            <div class="col-12 mb-3">
-                                <label for="address" class="form-label fw-semibold mb-1" style="font-size: 13px;">Address:</label>
-                                <textarea class="form-control" rows="3"></textarea>
+                            <div class="text-end">
+                                <button type="button" class="btn btn-primary next-step">Next</button>
                             </div>
                         </div>
-                        <div class="text-end">
-                            <button type="button" class="btn btn-primary prev-step">Previous</button>
-                            <button type="button" class="btn btn-primary next-step">Next</button>
-                        </div>
-                    </div>
-                    <div class="step step-3">
-                        <!-- Step 3 form fields here -->
-                        <h3>Card info & Final Step</h3>
-                        <div class="row">
-                            <div class="col-12 mb-3">
-                                <label for="cardNum" class="form-label fw-semibold mb-1" style="font-size: 13px;">Dabit / Credit Card Number</label>
-                                <input type="text" class="form-control" id="cardNum" name="cardNum">
+                        <div class="step step-2">
+                            <!-- Step 2 form fields here -->
+                            <h3>Your Details</h3>
+                            <div class="row">
+                                <div class="col-lg-6 mb-3">
+                                    <label for="fname" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">First Name:</label>
+                                    <input type="text" class="form-control" id="fname" name="first_name">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="lname" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">Last Name:</label>
+                                    <input type="text" class="form-control" id="lname" name="last_name">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="email" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">Email:</label>
+                                    <input type="email" class="form-control" id="email" name="email">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="phoneNum" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">Phone Number:</label>
+                                    <input type="number" class="form-control" id="phoneNum" name="phone_number">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="city" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">City:</label>
+                                    <input type="text" class="form-control" id="city" name="city">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="state" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">State:</label>
+                                    <input type="text" class="form-control" id="state" name="state">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="room" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">Room Number:</label>
+                                    <input type="text" class="form-control" id="room_number" name="room_number">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="date" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">Booking Date:</label>
+                                    <input type="date" class="form-control" id="booking_date"
+                                        name="booking_date">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="time" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">Booking Time:</label>
+                                    <input type="date" class="form-control" id="booking_time"
+                                        name="booking_time">
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label for="address" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">Address:</label>
+                                    <textarea class="form-control" rows="3" name="address"></textarea>
+                                </div>
                             </div>
-                            <div class="col-lg-6 mb-3">
-                                <label for="expDate" class="form-label fw-semibold mb-1" style="font-size: 13px;">Expiration date</label>
-                                <input type="text" class="form-control" id="expDate" name="expDate">
-                            </div>
-                            <div class="col-lg-6 mb-3">
-                                <label for="securityCode" class="form-label fw-semibold mb-1" style="font-size: 13px;">Security code</label>
-                                <input type="number" class="form-control" id="securityCode" name="securityCode">
-                            </div>
-                            <div class="col-12 mb-3">
-                                <label for="country" class="form-label fw-semibold mb-1" style="font-size: 13px;">Country</label>
-                                <input type="text" class="form-control" id="country" name="country">
-                            </div>
-                            <!-- <div class="col-9 mb-3">
-                                <label for="promoCode" class="form-label fw-semibold mb-1" style="font-size: 13px;">Promo Code</label>
-                                <input type="text" class="form-control" id="promoCode" name="promoCode">
-                            </div>
-                            <div class="col-3 mb-3 d-flex align-items-end">
-                                <button class="btn btn-primary w-100 mt-auto d-block">Apply</button>
-                            </div> -->
-                        </div>
-                        <div class="text-end">
-                            <button type="button" class="btn btn-primary prev-step">Previous</button>
-                            <button type="button" class="btn btn-primary next-step">Next</button>
-                        </div>
-                    </div>
-                    <div class="step step-4">
-                        <!-- Step 3 form fields here -->
-                        <h3>Review & Billing Summary</h3>
-                        <div class="content-info mt-4">
-                            <h5>Contact info</h5>
-                            <div class="d-flex justify-content-between">
-                                <p class="mb-1">Name</p>
-                                <p class="mb-1">Jonh Cena</p>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <p class="mb-1">Email</p>
-                                <p class="mb-1">jonhcena@gmail.com</p>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <p class="mb-1">Mobile Phone</p>
-                                <p class="mb-1">+1*************</p>
-                            </div>
-                        </div>
-                        <div class="billing-info mt-4">
-                            <h5>Your Booking</h5>
-                            <div class="d-flex justify-content-between">
-                                <p class="mb-1">Beach Set</p>
-                                <p class="mb-1">1 Set</p>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <p class="mb-1">Additional Seats</p>
-                                <p class="mb-1">2</p>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <p class="mb-1">Additional Umbrella</p>
-                                <p class="mb-1">1</p>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <p class="mb-1">Date</p>
-                                <p class="mb-1">15 Oct 2025</p>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <p class="mb-1">Time Slot</p>
-                                <p class="mb-1">10:00 AM</p>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <p class="mb-1">Room Number</p>
-                                <p class="mb-1">10-E</p>
+                            <div class="text-end">
+                                <button type="button" class="btn btn-primary prev-step">Previous</button>
+                                <button type="button" class="btn btn-primary next-step">Next</button>
                             </div>
                         </div>
-                        <div class="billing-info my-4">
-                            <h5>Billing Details</h5>
-                            <div class="d-flex justify-content-between">
-                                <p class="mb-1">Base Price (1 Set)</p>
-                                <p class="mb-1">$65</p>
+                        <div class="step step-3">
+                            <!-- Step 3 form fields here -->
+                            <h3>Card info & Final Step</h3>
+                            <div class="row">
+                                <div class="col-12 mb-3">
+                                    <label for="cardNum" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">Name On Card</label>
+                                    <input type="text" class="form-control" id="cardNum" name="name_on_card">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="expDate" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">Card Number</label>
+                                    <input type="text" class="form-control" id="card_number" name="card_number">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="expDate" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">CVC</label>
+                                    <input type="text" class="form-control" id="cvc" name="cvc">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="expDate" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">Expiry Month</label>
+                                    <input type="text" class="form-control" id="expiry_month"
+                                        name="expiry_month">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="expDate" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">Expiry Year</label>
+                                    <input type="text" class="form-control" id="expiry_year" name="expiry_year">
+                                </div>
                             </div>
-                            <div class="d-flex justify-content-between">
-                                <p class="mb-1">Add-ons</p>
-                                <p class="mb-1">$25</p>
+                            <div class="text-end">
+                                <button type="button" class="btn btn-primary prev-step">Previous</button>
+                                <button type="button" class="btn btn-primary next-step">Next</button>
+                            </div>
+                        </div>
+                        <div class="step step-4">
+                            <!-- Step 3 form fields here -->
+                            <h3>Review & Billing Summary</h3>
+                            <div class="content-info mt-4">
+                                <h5>Contact info</h5>
+                                <div class="d-flex justify-content-between">
+                                    <p class="mb-1">Name</p>
+                                    <p class="mb-1 review-name">-</p>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <p class="mb-1">Email</p>
+                                    <p class="mb-1 review-email">-</p>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <p class="mb-1">Mobile Phone</p>
+                                    <p class="mb-1 review-phone">-</p>
+                                </div>
                             </div>
 
-                            <div class="d-flex justify-content-between">
-                                <p class="fs-5 mb-1 fw-semibold">Subtotal</p>
-                                <p class="fs-5 mb-1 fw-semibold">$90</p>
+                            <div class="billing-info mt-4">
+                                <h5>Your Booking</h5>
+                                <div class="d-flex justify-content-between">
+                                    <p class="mb-1">Beach Set</p>
+                                    <p class="mb-1 review-sets">-</p>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <p class="mb-1">Additional Seats</p>
+                                    <p class="mb-1 review-seats">-</p>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <p class="mb-1">Additional Umbrella</p>
+                                    <p class="mb-1 review-umbrella">-</p>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <p class="mb-1">Date</p>
+                                    <p class="mb-1 review-date">-</p>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <p class="mb-1">Time Slot</p>
+                                    <p class="mb-1 review-time">-</p>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <p class="mb-1">Room Number</p>
+                                    <p class="mb-1 review-room">-</p>
+                                </div>
+                            </div>
+
+                            <div class="billing-info my-4">
+                                <h5>Billing Details</h5>
+                                <div class="d-flex justify-content-between">
+                                    <p class="mb-1">Base Price (Sets)</p>
+                                    <p class="mb-1 review-base">$0</p>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <p class="mb-1">Add-ons</p>
+                                    <p class="mb-1 review-addons">$0</p>
+                                </div>
+
+                                <div class="d-flex justify-content-between">
+                                    <p class="fs-5 mb-1 fw-semibold">Subtotal</p>
+                                    <p class="fs-5 mb-1 fw-semibold review-total">$0</p>
+                                </div>
+                            </div>
+                            <input type="hidden" name="pricing_id" class="pricingId">
+                            <input type="hidden" name="total_price" class="totalPrice">
+
+
+                            <div class="alert alert-warning" style="font-size: 13px;">Please review your booking
+                                details carefully before confirming. Once you submit, you’ll receive a confirmation
+                                email with your slot details.</div>
+                            <div class="text-end">
+                                <button type="button" class="btn btn-primary prev-step">Previous</button>
+                                <button type="button" class="btn btn-primary" onclick="reserve()">Confirm &
+                                    Submit</button>
                             </div>
                         </div>
-                        <div class="alert alert-warning" style="font-size: 13px;">Please review your booking details carefully before confirming. Once you submit, you’ll receive a confirmation email with your slot details.</div>
-                        <div class="text-end">
-                            <button type="button" class="btn btn-primary prev-step">Previous</button>
-                            <button type="button" class="btn btn-primary">Confirm & Submit</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
+                    </form>
+                </div>
                 <!-- <div class="modal-footer">
                 <button type="button" class="btn btn-primary next-step">Next</button>
             </div> -->
@@ -637,150 +696,103 @@
             const myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
             myModal.show();
             document.getElementById('category_selected').value = itemType;
-            if(itemType === 'chair_with_umbrella' ){
+            if (itemType === 'chair_with_umbrella') {
                 $('.umbrellasInputDiv').removeClass('d-none');
             } else {
                 $('.umbrellasInputDiv').addClass('d-none');
-        }}
-
-        // function reserve() {
-        //     var form = $('#multi-step-form')[0];
-        //     var formData = new FormData(form);
-
-        //     $.ajaxSetup({
-        //         headers: {
-        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //         }
-        //     });
-
-        //     $.ajax({
-        //         url: '{{ route('user.reserve.booking.login') }}', // Replace with your login route
-        //         type: 'POST',
-        //         data: formData,
-        //         processData: false,
-        //         contentType: false,
-        //         success: function(response) {
-        //             if (response.status === 'success') {
-        //                 Swal.fire({
-        //                     icon: 'success',
-        //                     title: 'Reservation Successful!',
-        //                     showConfirmButton: false,
-        //                     timer: 1500
-        //                 }).then(() => {
-        //                     window.location.reload();
-        //                 });
-        //             }
-        //         },
-        //         error: function(xhr, status, error) {
-        //             // Remove old validation messages
-        //             $('#multi-step-form .text-danger').remove();
-
-        //             if (xhr.status === 422 && xhr.responseJSON?.errors) {
-        //                 // Laravel validation errors (missing email/password)
-        //                 const errors = xhr.responseJSON.errors;
-        //                 $.each(errors, function(fieldName, messages) {
-        //                     const input = $('#multi-step-form [name="' + fieldName + '"]');
-        //                     if (input.length > 0) {
-        //                         input.after('<small class="text-danger">' + messages[0] + '</small>');
-        //                     }
-        //                 });
-        //             } else if (xhr.status === 401) {
-        //                 // Invalid credentials
-        //                 Swal.fire({
-        //                     icon: 'error',
-        //                     title: 'Invalid Credentials',
-        //                     text: 'The email or password you entered is incorrect.'
-        //                 });
-        //             } else {
-        //                 // Other errors
-        //                 Swal.fire({
-        //                     icon: 'error',
-        //                     title: 'Oops!',
-        //                     text: 'Something went wrong. Please try again later.'
-        //                 });
-        //             }
-        //         }
-        //     });
-        // }
+            }
+        }
 
         function reserve() {
-    var form = $('#multi-step-form')[0];
-    var formData = new FormData(form);
+            var form = $('#multi-step-form')[0];
+            var formData = new FormData(form);
 
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
 
-    $.ajax({
-        url: '{{ route('user.reserve.booking.login') }}',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            if (response.status === 'success') {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Reservation Successful!',
-                    text: response.message ?? 'Your booking has been confirmed.',
-                    showConfirmButton: false,
-                    timer: 1500
-                }).then(() => {
-                    window.location.reload();
-                });
-            } else if (response.status === 'error') {
-                // For backend custom errors (like tenant insufficient balance, seats unavailable, etc.)
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Reservation Failed',
-                    text: response.message ?? 'Unable to process your booking. Please try again.'
-                });
-            }
-        },
-        error: function(xhr, status, error) {
-            // Remove previous validation errors
-            $('#multi-step-form .text-danger').remove();
-
-            if (xhr.status === 422 && xhr.responseJSON?.errors) {
-                // Laravel validation errors — display below inputs
-                const errors = xhr.responseJSON.errors;
-                $.each(errors, function(fieldName, messages) {
-                    const input = $('#multi-step-form [name="' + fieldName + '"]');
-                    if (input.length > 0) {
-                        input.after('<small class="text-danger">' + messages[0] + '</small>');
+            $.ajax({
+                url: '{{ route('user.reserve.booking.login') }}',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Reservation Successful!',
+                            text: response.message ?? 'Your booking has been confirmed.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else if (response.status === 'error') {
+                        // For backend custom errors (like tenant insufficient balance, seats unavailable, etc.)
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Reservation Failed',
+                            text: response.message ??
+                                'Unable to process your booking. Please try again.'
+                        });
                     }
-                });
-            } else if (xhr.status === 401) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Invalid Credentials',
-                    text: 'The email or password you entered is incorrect.'
-                });
-            }else if (xhr.status === 403) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Reservation Failed',
-                    text: 'No tenant has sufficient inventory matching your selection.'
-                });
-            } else if (xhr.responseJSON?.message) {
-                // Other custom error messages
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: xhr.responseJSON.message
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops!',
-                    text: 'Something went wrong. Please try again later.'
-                });
-            }
+                },
+                error: function(xhr, status, error) {
+                    // Remove previous validation errors
+                    $('#multi-step-form .text-danger').remove();
+
+                    if (xhr.status === 422 && xhr.responseJSON?.errors) {
+                        // Laravel validation errors — display below inputs
+                        const errors = xhr.responseJSON.errors;
+                        $.each(errors, function(fieldName, messages) {
+                            const input = $('#multi-step-form [name="' + fieldName + '"]');
+                            if (input.length > 0) {
+                                input.after('<small class="text-danger">' + messages[0] + '</small>');
+                            }
+                        });
+                    } else if (xhr.status === 401) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Invalid Credentials',
+                            text: 'The email or password you entered is incorrect.'
+                        });
+                    } else if (xhr.status === 403) {
+                        // 👇 Extract counts if present
+                        const seats = xhr.responseJSON?.available_seats ?? 0;
+                        const umbrellas = xhr.responseJSON?.available_umbrellas ?? 0;
+                        const msg = xhr.responseJSON?.errors ??
+                            'No tenant has sufficient inventory matching your selection.';
+
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Reservation Failed',
+                            html: `
+                        <p>${msg}</p>
+                        <hr>
+                        <p><strong>Available Seats:</strong> ${seats}</p>
+                        <p><strong>Available Umbrellas:</strong> ${umbrellas}</p>
+                    `
+                        });
+                    } else if (xhr.responseJSON?.message) {
+                        // Other custom error messages
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: xhr.responseJSON.message
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops!',
+                            text: 'Something went wrong. Please try again later.'
+                        });
+                    }
+                }
+            });
         }
-    });
-}
 
 
         function signIn() {
@@ -845,6 +857,66 @@
             });
         }
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Simple mapping between form fields and review section elements ---
+            const fieldMap = {
+                fname: ".review-name",
+                email: ".review-email",
+                phoneNum: ".review-phone",
+                how_many_set: ".review-sets",
+                addon_seats: ".review-seats",
+                addon_umbrella: ".review-umbrella",
+                booking_date: ".review-date",
+                booking_time: ".review-time",
+                room_number: ".review-room"
+            };
+
+            // Attach event listeners to each input
+            Object.keys(fieldMap).forEach(id => {
+                const input = document.getElementById(id);
+                if (input) {
+                    ['keyup', 'change'].forEach(evt => {
+                        input.addEventListener(evt, () => {
+                            document.querySelector(fieldMap[id]).innerText = input.value ||
+                                '-';
+                            calculateTotal();
+                        });
+                    });
+                }
+            });
+
+            // --- Fetch pricing from backend ---
+            let pricing = {
+                base_set: 65,
+                seat: 10,
+                umbrella: 5
+            }; // default
+            fetch('/get-active-pricing')
+                .then(res => res.json())
+                .then(data => pricing = data)
+                .catch(err => console.error(err));
+
+            // --- Calculate subtotal dynamically ---
+            function calculateTotal() {
+                const sets = parseInt(document.getElementById('how_many_set').value) || 0;
+                const addonSeats = parseInt(document.getElementById('addon_seats').value) || 0;
+                const addonUmbrella = parseInt(document.getElementById('addon_umbrella').value) || 0;
+
+                const basePrice = sets * pricing.base_set;
+                const addonPrice = addonSeats * pricing.seat + addonUmbrella * pricing.umbrella;
+                const subtotal = basePrice + addonPrice;
+                $('.pricingId').val(pricing.priceId);
+                $('.totalPrice').val(subtotal);
+
+                document.querySelector('.review-base').innerText = `$${basePrice}`;
+                document.querySelector('.review-addons').innerText = `$${addonPrice}`;
+                document.querySelector('.review-total').innerText = `$${subtotal}`;
+            }
+        });
+    </script>
+
 </body>
 
 </html>

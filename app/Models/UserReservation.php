@@ -20,5 +20,9 @@ class UserReservation extends Model
         'number_of_umbrellas',
         'number_of_seats',
         'provider_tenant_id',
+        'number_of_sets',
+        'addon_seats',
+        'addon_umbrellas',
+        'pricing_id',
     ];
 }
