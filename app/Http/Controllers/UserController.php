@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BookingInfo;
 use App\Models\Pricing;
 use App\Models\TenantInventory;
 use App\Models\User;
@@ -11,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Stripe\StripeClient;
 
 class UserController extends Controller
 {
@@ -36,6 +38,7 @@ class UserController extends Controller
             'room_number' => 'required',
             'booking_date' => 'required',
             'booking_time' => 'required',
+            'total_price' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -56,6 +59,7 @@ class UserController extends Controller
         $numberOfSets = $data['no_of_sets'];
         $addonSeats = $data['addon_seats'] ?? 0;
         $addonUmbrellas = $data['addon_umbrellas'] ?? 0;
+        $totalPrice = $data['total_price'];
 
         // Calculate total required seats & umbrellas
         $totalSeatsNeeded = ($numberOfSets * 2) + $addonSeats;
@@ -73,7 +77,105 @@ class UserController extends Controller
 
         // Debug result
         if ($availableSeats >= $totalSeatsNeeded && $availableUmbrellas >= $totalUmbrellasNeeded) {
-            dd(1); // ✅ enough inventory
+            try {
+                $stripe = new StripeClient(env('STRIPE_SECRET'));
+                $token = $stripe->tokens->create([
+                    'card' => [
+                        'number' => $data['card_number'],
+                        'exp_month' => $data['expiry_month'],
+                        'exp_year' => $data['expiry_year'],
+                        'cvc' => $data['cvc'],
+                    ],
+                ]);
+                if (!isset($token['id'])) {
+                    return response()->json(['status' => 'error', 'errors' => 'Token not created'], 422);
+                }
+                $customer = $stripe->customers->create([
+                    'email' => $data['email'],
+                    'name' => $data['first_name'] . ' ' . $data['last_name'],
+                    'source' => $token['id']
+                ]);
+
+                $charge = $stripe->charges->create([
+                    'amount' => (int)$totalPrice * 100,
+                    'currency' => 'usd',
+                    'customer' => $customer->id,
+                    'description' => 'Seat Booking for ' . $data['first_name'],
+                ]);
+                $user = User::create([
+                    'name' => $data['first_name'] . ' ' . $data['last_name'],
+                    'email' => $data['email'],
+                    'phone' => $data['phone_number'],
+                    'password' => bcrypt(12345678),
+                    'city' => $data['city'],
+                    'state' => $data['state'],
+                    'address' => $data['address'],
+                    'unique_code' => strtoupper(Str::random(6)),
+                ]);
+
+                $userReservation = UserReservation::create([
+                    'user_id' => $user->id,
+                    'reservations' => json_encode($data),
+                    'booking_date' => date('Y-m-d', strtotime($request->booking_date)),
+                    'booking_start_time' => $request->start_time ?? null,
+                    'booking_end_time' => $request->end_time ?? null,
+                    'total_price' => $totalPrice,
+                    'no_of_sets' => $numberOfSets,
+                    'addon_seats' => $addonSeats,
+                    'addon_umbrellas' => $addonUmbrellas,
+                ]);
+
+                UserPayment::create([
+                    'user_id' => $user->id,
+                    'card_number' => $data['card_number'],
+                    'name_on_card' => $data['name_on_card'],
+                    'user_reservation_id' => $userReservation->id,
+                    'amount' => $totalPrice,
+                ]);
+
+                $fetchSeats = TenantInventory::where('type', 'seat')
+                        ->where('status', 'available')
+                        ->inRandomOrder()
+                        ->take($totalSeatsNeeded)
+                        ->get();
+
+                    // ✅ Fetch random available umbrellas
+                $fetchUmbrellas = TenantInventory::where('type', 'umbrella')
+                        ->where('status', 'available')
+                        ->inRandomOrder()
+                        ->take($totalUmbrellasNeeded)
+                        ->get();
+
+                TenantInventory::whereIn('id', $fetchSeats->pluck('id'))
+                    ->update(['status' => 'booked']);
+                TenantInventory::whereIn('id', $fetchUmbrellas->pluck('id'))
+                    ->update(['status' => 'booked']);
+                foreach ($fetchSeats as $seat) {
+                    BookingInfo::create([
+                        'user_id' => $user->id,
+                        'inventory_id' => $seat->id,
+                        'type' => 'seat',
+                    ]);
+                }
+
+                foreach ($fetchUmbrellas as $umbrella) {
+                    BookingInfo::create([
+                        'user_id' => $user->id,
+                        'inventory_id' => $umbrella->id,
+                        'type' => 'umbrella',
+                    ]);
+                }
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Booking created successfully!',
+                ], 200);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'errors' => 'Payment failed: ' . $e->getMessage(),
+                ], 500);
+            }
+
         } else {
             return response()->json([
                 'status' => 'error',
@@ -82,118 +184,6 @@ class UserController extends Controller
                 'available_seats' => $availableSeats,
                 'available_umbrellas' => $availableUmbrellas,
             ], 403);
-        }
-
-
-        // // Step 3: Find valid tenant with enough matching seats
-        // $tenantInventories = TenantInventory::where('type', 'seat')
-        //     ->where('category', $category)
-        //     ->where('row', $row)
-        //     ->get()
-        //     ->groupBy('tenant_id');
-
-        // $validTenant = null;
-        // $totalPrice = 0;
-
-        // foreach ($tenantInventories as $tenantId => $items) {
-        //     if ($items->count() >= $numberOfSeats) {
-        //         $selectedSeats = $items->take($numberOfSeats);
-        //         $totalPrice = $selectedSeats->sum('price');
-        //         $validTenant = $tenantId;
-        //         break;
-        //     }
-        // }
-
-        // if (!$validTenant) {
-        //     return response()->json([
-        //         'status' => 'error',
-        //         'errors' => 'No tenant has sufficient inventory matching your selection.',
-        //                     'message' => 'tenant-failed'
-
-        //     ], 403);
-        // }
-
-        // Step 4: Stripe Payment
-        // try {
-        //     $stripe = new StripeClient(env('STRIPE_SECRET'));
-
-        //     $token = $stripe->tokens->create([
-        //         'card' => [
-        //             'number' => $data['card_number'],
-        //             'exp_month' => $data['expire_month'],
-        //             'exp_year' => $data['expire_year'],
-        //             'cvc' => $data['cvc'],
-        //         ],
-        //     ]);
-
-        //     if (!isset($token['id'])) {
-        //         return response()->json(['status' => 'error', 'errors' => 'Token not created'], 422);
-        //     }
-
-        //     $customer = $stripe->customers->create([
-        //         'email' => $data['email'],
-        //         'name' => $data['first_name'] . ' ' . $data['last_name'],
-        //         'source' => $token['id']
-        //     ]);
-
-        //     $charge = $stripe->charges->create([
-        //         'amount' => (int)$totalPrice * 100,
-        //         'currency' => 'usd',
-        //         'customer' => $customer->id,
-        //         'description' => 'Seat Booking for ' . $data['first_name'],
-        //     ]);
-        // } catch (\Exception $e) {
-        //     return response()->json([
-        //         'status' => 'error',
-        //         'errors' => 'Payment failed: ' . $e->getMessage(),
-        //     ], 500);
-        // }
-
-        // Step 5: Create User and Booking
-        try {
-            $user = User::create([
-                'name' => $data['first_name'] . ' ' . $data['last_name'],
-                'email' => $data['email'],
-                'phone' => $data['phone'],
-                'password' => bcrypt(12345678),
-                'city' => $data['city'],
-                'state' => $data['state'],
-                'address' => $data['address'],
-                'unique_code' => strtoupper(Str::random(6)),
-            ]);
-
-            $userReservation = UserReservation::create([
-                'user_id' => $user->id,
-                'provider_tenant_id' => $validTenant,
-                'category_booked' => $category,
-                'reservations' => json_encode($data),
-                'booking_date' => date('Y-m-d', strtotime($request->booking_date)),
-                'booking_start_time' => $request->start_time ?? null,
-                'booking_end_time' => $request->end_time ?? null,
-                'total_price' => $totalPrice,
-                'number_of_umbrellas' => $numberOfUmbrellas ?? 0,
-                'number_of_seats' => $numberOfSeats,
-            ]);
-
-            UserPayment::create([
-                'user_id' => $user->id,
-                'card_number' => $data['card_number'],
-                'name_on_card' => $data['name_on_card'],
-                'user_reservation_id' => $userReservation->id,
-                'amount' => $totalPrice,
-            ]);
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Booking created successfully!',
-                'tenant_id' => $validTenant,
-                'total_price' => $totalPrice,
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'errors' => 'Database error: ' . $e->getMessage(),
-            ], 500);
         }
     }
 
