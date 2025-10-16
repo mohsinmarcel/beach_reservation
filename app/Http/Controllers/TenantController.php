@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BookingInfo;
 use App\Models\Permission;
 use App\Models\Pricing;
 use App\Models\Role;
@@ -9,6 +10,7 @@ use App\Models\RolePermission;
 use App\Models\Tenant;
 use App\Models\TenantInventory;
 use App\Models\TenantUser;
+use App\Models\UserReservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
@@ -442,6 +444,25 @@ class TenantController extends Controller
         $tenantInventoryUmbrellas = TenantInventory::where('type', 'umbrella')->update(['price' => $pricing->price_per_umbrella]);
         return redirect()->back()->with('success', 'Pricing updated successfully');
 
+    }
+
+    public function tenantUserReservations()
+    {
+        $reservations = UserReservation::with('user','pricing')->where('status','requested')->get();
+        return view ('tenant.reservations',compact('reservations'));
+    }
+
+    public function tenantUserReservationMarkComplete($id)
+    {
+        $inventoriesUsed = BookingInfo::where('user_reservation_id',$id)->pluck('inventory_id')->toArray();
+        // dd($inventoriesUsed);
+        TenantInventory::whereIn('id', $inventoriesUsed)
+            ->update(['status' => 'available']);
+
+        // Mark reservation as completed
+        UserReservation::where('id', $id)
+            ->update(['status' => 'completed']);
+        return redirect()->back();
     }
 
 }

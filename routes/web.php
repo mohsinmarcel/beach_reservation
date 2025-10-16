@@ -100,6 +100,8 @@ Route::group(['middleware' => 'tenant.auth'], function () {
     Route::get('/hoa/inventory/pricing', [TenantController::class, 'tenantInventoryPricing'])->name('tenant.inventory.pricing');
     Route::post('/hoa/pricing/store', [TenantController::class, 'tenantPricingStore'])->name('tenant.pricing.store');
     Route::get('/hoa/pricing/update/{id}', [TenantController::class, 'tenantPricingUpdate'])->name('tenant.pricing.update');
+    Route::get('/hoa/user/reservations', [TenantController::class, 'tenantUserReservations'])->name('tenant.user.reservations');
+    Route::get('/hoa/user/reservation/mark/{id}', [TenantController::class, 'tenantUserReservationMarkComplete'])->name('tenant.user.reservation.mark.complete');
 
 });
 

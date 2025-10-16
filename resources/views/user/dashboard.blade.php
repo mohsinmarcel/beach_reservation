@@ -423,8 +423,17 @@
                                 <div class="col-lg-6 mb-3">
                                     <label for="time" class="form-label fw-semibold mb-1"
                                         style="font-size: 13px;">Booking Time:</label>
-                                    <input type="date" class="form-control" id="booking_time"
+                                    <input type="time" class="form-control" id="booking_time"
                                         name="booking_time">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="time" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">Tower:</label>
+                                    <select name="tower" class="form-control form-select">
+                                        <option value="east_tower">East Tower</option>
+                                        <option value="west_tower">West Tower</option>
+
+                                    <select>
                                 </div>
                                 <div class="col-12 mb-3">
                                     <label for="address" class="form-label fw-semibold mb-1"

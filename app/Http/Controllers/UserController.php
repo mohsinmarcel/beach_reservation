@@ -39,6 +39,8 @@ class UserController extends Controller
             'booking_date' => 'required',
             'booking_time' => 'required',
             'total_price' => 'required',
+            'pricing_id' => 'required',
+            'tower' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -117,12 +119,16 @@ class UserController extends Controller
                     'user_id' => $user->id,
                     'reservations' => json_encode($data),
                     'booking_date' => date('Y-m-d', strtotime($request->booking_date)),
-                    'booking_start_time' => $request->start_time ?? null,
-                    'booking_end_time' => $request->end_time ?? null,
+                    'booking_start_time' => date('H:i:s', strtotime($request->booking_time)),
+                    // 'booking_end_time' => $request->end_time ?? null,
                     'total_price' => $totalPrice,
                     'no_of_sets' => $numberOfSets,
                     'addon_seats' => $addonSeats,
                     'addon_umbrellas' => $addonUmbrellas,
+                    'status' => 'requested',
+                    'pricing_id' => $data['pricing_id'],
+                    'room_number' => $data['room_number'],
+                    'tower_preference' => $data['tower'],
                 ]);
 
                 UserPayment::create([
@@ -154,6 +160,7 @@ class UserController extends Controller
                     BookingInfo::create([
                         'user_id' => $user->id,
                         'inventory_id' => $seat->id,
+                        'user_reservation_id' => $userReservation->id,
                         'type' => 'seat',
                     ]);
                 }
@@ -162,6 +169,7 @@ class UserController extends Controller
                     BookingInfo::create([
                         'user_id' => $user->id,
                         'inventory_id' => $umbrella->id,
+                        'user_reservation_id' => $userReservation->id,
                         'type' => 'umbrella',
                     ]);
                 }

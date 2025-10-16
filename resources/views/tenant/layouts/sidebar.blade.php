@@ -90,6 +90,14 @@
                         </a>
                         </li>
                         @endif
+                        {{-- @if (in_array('tenant.user.reservations', session('tenant')['permissions'])) --}}
+                        <li class="menu-item">
+                        <a href="{{route('tenant.user.reservations')}}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                            <div data-i18n="Analytics">Reservations</div>
+                        </a>
+                        </li>
+                        {{-- @endif --}}
                         <li class="menu-item">
                         <a href="{{route('tenant.logout')}}" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-home-circle"></i>
