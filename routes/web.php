@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\TenantController;
 use App\Http\Controllers\UserController;
+use App\Models\Permission;
+use App\Models\RolePermission;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,8 +54,19 @@ Route::get('test-route', function () {
                     ]
                 );
 
+
             }
         }
+
+    }
+    $permissions = Permission::all();
+    RolePermission::where('role_id',1)->delete();
+    foreach($permissions as $permission)
+    {
+        RolePermission::create([
+            'role_id' => 1,
+            'permission_id' => $permission->id
+        ]);
     }
 });
 

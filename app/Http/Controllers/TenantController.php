@@ -255,7 +255,7 @@ class TenantController extends Controller
 
     public function tenantUsersList()
     {
-        $tenantUsers = TenantUser::where('tenant_id', session('tenant')['current_user']['tenant_id'])->get();
+        $tenantUsers = TenantUser::where('tenant_id', session('tenant')['current_user']['tenant_id'])->where('is_admin','!=',1)->get();
         return view('tenant.tenant_users.list', compact('tenantUsers'));
     }
 
@@ -439,6 +439,11 @@ class TenantController extends Controller
         if (!$pricing) {
             return redirect()->back()->with('error', 'Pricing not found');
         }
+        // 🔹 Set all pricings to inactive first
+        Pricing::query()->update(['is_active' => 0]);
+
+        // 🔹 Activate the selected pricing
+        $pricing->update(['is_active' => 1]);
 
         $tenantInventorySeats = TenantInventory::where('type', 'seat')->update(['price' => $pricing->price_per_seat]);
         $tenantInventoryUmbrellas = TenantInventory::where('type', 'umbrella')->update(['price' => $pricing->price_per_umbrella]);

@@ -66,7 +66,7 @@
                             </a>
                             </li>
                         @endif
-                        @if (in_array('tenant.seats.store', session('tenant')['permissions']))
+                        @if (in_array('tenant.inventory.pricing', session('tenant')['permissions']))
                             <li class="menu-item">
                             <a href="{{route('tenant.inventory.pricing')}}" class="menu-link">
                                 <i class="menu-icon tf-icons bx bx-home-circle"></i>

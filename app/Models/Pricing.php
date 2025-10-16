@@ -13,5 +13,6 @@ class Pricing extends Model
         'name',
         'price_per_seat',
         'price_per_umbrella',
+        'is_active',
     ];
 }

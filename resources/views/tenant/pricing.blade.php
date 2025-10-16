@@ -27,9 +27,16 @@
                                     <td>{{ $user->name }}</td>
                                    <td>${{ number_format($user->price_per_seat, 2) }}</td>
                                       <td>${{ number_format($user->price_per_umbrella, 2) }}</td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-primary" onclick="window.location.href='{{route('tenant.pricing.update',$user->id)}}'">Update Pricings</button>
-                                    </td>
+                                      @if ($user->is_active == 1)
+                                      <td class="text-center">
+                                        <button type="button" class="btn btn-success" >Applied</button>
+                                        </td>
+                                        @else
+                                        <td class="text-center">
+                                        <button type="button" class="btn btn-primary" onclick="window.location.href='{{route('tenant.pricing.update',$user->id)}}'">Apply New Rate To Inventory</button>
+                                        </td>
+                                      @endif
+
                                 </tr>
                             @endforeach
                         @endif

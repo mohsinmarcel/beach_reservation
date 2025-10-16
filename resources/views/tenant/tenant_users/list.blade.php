@@ -2,9 +2,11 @@
 @section('main-content')
     <div class="main w-100 pt-4 pe-4">
         <div class="container">
+            @if (in_array('tenant.roles', session('tenant')['permissions']))
             <a href="{{ route('tenant.users.create') }}" class="btn btn-primary">Add New User</a>
+            @endif
             <div class="d-flex justify-content-between my-4">
-                <h1 class="mb-0">All Users</h1>
+                <h1 class="mb-0">All HOA Users</h1>
                 <input type="search" class="form-control w-25" id="userSearch" placeholder="Search user...">
             </div>
             <div class="table-responsive">
@@ -21,6 +23,7 @@
                         </tr>
                     </thead>
                     <tbody class="table-group-divider">
+                        {{-- @dd(session('tenant')) --}}
                         @if (!empty($tenantUsers) && $tenantUsers->count() > 0)
                             @foreach ($tenantUsers as $index => $user)
                                 <tr>
@@ -37,7 +40,9 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
+                                        @if (in_array('tenant.user.edit', session('tenant')['permissions']))
                                         <button type="button" class="btn btn-primary" onclick="window.location.href='{{route('tenant.user.edit',$user->id)}}'">Edit</button>
+                                        @endif
                                         {{-- <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                                             data-bs-target="#editDelete">Delete</button> --}}
                                     </td>
