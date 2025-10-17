@@ -696,6 +696,26 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+
+        // --- Global SweetAlert Loader Helper ---
+       Swal.loader = {
+            show: function(message = 'Processing...') {
+                Swal.fire({
+                    title: message,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            },
+            hide: function() {
+                Swal.close();
+            }
+        };
+
+
         function bookNow(itemType) {
             const modalTitle = document.getElementById('exampleModalLabel');
             modalTitle.textContent = `Book Now - ${itemType.replace(/_/g, ' ').toUpperCase()}`;
@@ -721,7 +741,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-
+            Swal.loader.show('Processing Reservation...');
             $.ajax({
                 url: '{{ route('user.reserve.booking.login') }}',
                 type: 'POST',
@@ -730,6 +750,8 @@
                 contentType: false,
                 success: function(response) {
                     if (response.status === 'success') {
+                            Swal.loader.hide();
+
                         Swal.fire({
                             icon: 'success',
                             title: 'Reservation Successful!',
@@ -740,6 +762,7 @@
                             window.location.reload();
                         });
                     } else if (response.status === 'error') {
+                            Swal.loader.hide();
                         // For backend custom errors (like tenant insufficient balance, seats unavailable, etc.)
                         Swal.fire({
                             icon: 'error',
@@ -750,6 +773,7 @@
                     }
                 },
                 error: function(xhr, status, error) {
+                        Swal.loader.hide();
                     // Remove previous validation errors
                     $('#multi-step-form .text-danger').remove();
 
@@ -805,6 +829,7 @@
 
 
         function signIn() {
+            Swal.loader.show('Please Wait');
             var form = $('#loginForm')[0];
             var formData = new FormData(form);
 
@@ -822,6 +847,7 @@
                 contentType: false,
                 success: function(response) {
                     if (response.status === 'success') {
+                        Swal.loader.hide();
                         Swal.fire({
                             icon: 'success',
                             title: 'Login Successful!',
@@ -833,6 +859,7 @@
                     }
                 },
                 error: function(xhr, status, error) {
+                        Swal.loader.hide();
                     // Remove old validation messages
                     $('#loginForm .text-danger').remove();
 

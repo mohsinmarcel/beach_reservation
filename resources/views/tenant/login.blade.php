@@ -153,6 +153,23 @@
      <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
      <script>
+     Swal.loader = {
+        show: function(message = 'Processing...') {
+            Swal.fire({
+                title: message,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        },
+        hide: function() {
+            Swal.close();
+        }
+    };
+
         function signIn() {
             var form = $('#tenantLogin')[0];
             var formData = new FormData(form);
@@ -162,7 +179,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-
+            Swal.loader.show('Please Wait');
             $.ajax({
                 url: '{{ route('tenant.login.process') }}', // Replace with your login route
                 type: 'POST',
@@ -171,6 +188,7 @@
                 contentType: false,
                 success: function(response) {
                     if (response.status === 'success') {
+                        Swal.loader.hide();
                         Swal.fire({
                             icon: 'success',
                             title: 'Login Successful!',
@@ -192,6 +210,7 @@
                     }
                 },
                 error: function(xhr, status, error) {
+                                Swal.loader.hide();
                     // Remove old validation messages
                     $('#tenantLogin .text-danger').remove();
 
