@@ -19,6 +19,7 @@
                             <th scope="col">Price Applied</th>
                             <th scope="col">Price Total</th>
                             <th scope="col">Booking Date & Time</th>
+                            <th scope="col">Room Number</th>
                             <th scope="col" class="text-center">Click To Mark Completed</th>
                         </tr>
                     </thead>
@@ -34,8 +35,13 @@
                                     <td>{{ $user->pricing->name }}</td>
                                     <td>${{ $user->total_price }}</td>
                                     <td>{{ \Carbon\Carbon::parse($user->booking_date)->format('d M Y') }}</td>
+                                    <td>{{ $user->room_number ?? 'N/A' }}</td>
+                                    {{-- @dd(session('tenant')) --}}
+
                                     <td>
+                                        @if (in_array('tenant.user.reservation.mark.complete', session('tenant')['permissions']))
                                         <a href="{{route('tenant.user.reservation.mark.complete',$user->id)}}" class="badge text-white bg-success">Booking Requested</a>
+                                        @endif
                                     </td>
 
                                 </tr>

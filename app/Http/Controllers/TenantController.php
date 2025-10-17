@@ -167,7 +167,9 @@ class TenantController extends Controller
     {
         $tenantInventorySeats = TenantInventory::where('tenant_id', session('tenant')['current_user']['tenant_id'])->where('type', 'seat')->get();
         $tenantInventoryUmbrellas = TenantInventory::where('tenant_id', session('tenant')['current_user']['tenant_id'])->where('type', 'umbrella')->get();
-        return view('tenant.seats', compact('tenantInventorySeats', 'tenantInventoryUmbrellas'));
+        $pricing = Pricing::where('is_active',1)->first();
+        // dd($pricing);
+        return view('tenant.seats', compact('tenantInventorySeats', 'tenantInventoryUmbrellas','pricing'));
     }
 
     public function tenantSeatsStore(Request $request)

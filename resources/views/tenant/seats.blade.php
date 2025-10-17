@@ -29,7 +29,7 @@
                 </div>
 
                 <div class="col-md-2">
-                    <input type="number" name="seats[0][price]" value="" class="form-control" placeholder="Price">
+                    <input type="number" name="seats[0][price]" class="form-control" placeholder="Price" value="{{$pricing->price_per_seat}}" readonly>
                 </div>
 
                 <div class="col-md-2 d-flex align-items-center">
@@ -90,7 +90,7 @@
                            value="" readonly placeholder="UM-{{session('tenant')['tenant']['id']}}-001">
                 </div>
                 <div class="col-md-2">
-                    <input type="number" step="0.01" name="umbrellas[0][price]" class="form-control" placeholder="Price">
+                    <input type="number" step="0.01" name="umbrellas[0][price]" class="form-control" placeholder="Price" value="{{$pricing->price_per_umbrella}}" readonly>
                 </div>
                 <div class="col-md-2 d-flex align-items-center">
                     <button type="button" class="btn btn-danger ms-1 removeUmbrellaRow d-none">❌</button>
@@ -131,119 +131,120 @@
     <p class="mt-3">No umbrellas have been added yet.</p>
     @endif
 </div>
-
 <script>
-    // --- Data Initialization from PHP ---
     const tenantId = "{{ session('tenant')['tenant']['id'] }}";
     const existingSeats = @json($tenantInventorySeats ?? []);
     const existingUmbrellas = @json($tenantInventoryUmbrellas ?? []);
 
+    // --- Helpers ---
     function calculateStartingIndex(existingItems, prefix) {
         let maxSerial = 0;
         const regex = new RegExp(`^${prefix}-\\d+-(\\d{3})$`);
         existingItems.forEach(item => {
-            const code = item.serial_no; // <-- use serial_no from DB
+            const code = item.serial_no;
             const match = code.match(regex);
             if (match && match[1]) {
                 const serial = parseInt(match[1], 10);
-                if (serial > maxSerial) {
-                    maxSerial = serial;
-                }
+                if (serial > maxSerial) maxSerial = serial;
             }
         });
         return maxSerial;
     }
 
     function generateNewCode(prefix, index) {
-        return prefix + "-" + tenantId + "-" + String(index).padStart(3, '0');
+        return `${prefix}-${tenantId}-${String(index).padStart(3, "0")}`;
     }
 
-    // --- Initialize next available indexes ---
-    let seatIndex = calculateStartingIndex(existingSeats, 'S') + 1;
-    let umbrellaIndex = calculateStartingIndex(existingUmbrellas, 'UM') + 1;
+    let seatSerial = calculateStartingIndex(existingSeats, "S") + 1;
+    let umbrellaSerial = calculateStartingIndex(existingUmbrellas, "UM") + 1;
 
-    // --- Set initial codes on page load ---
-    document.addEventListener('DOMContentLoaded', () => {
-        const initialSeatCodeInput = document.querySelector('.seatRow .seatCode');
-        if (initialSeatCodeInput) {
-            initialSeatCodeInput.value = generateNewCode('S', seatIndex++);
-        }
-        const initialUmbrellaCodeInput = document.querySelector('.umbrellaRow .umbrellaNumber');
-        if (initialUmbrellaCodeInput) {
-            initialUmbrellaCodeInput.value = generateNewCode('UM', umbrellaIndex++);
-        }
+    // --- Assign initial codes ---
+    document.addEventListener("DOMContentLoaded", () => {
+        const firstSeat = document.querySelector(".seatRow .seatCode");
+        if (firstSeat) firstSeat.value = generateNewCode("S", seatSerial++);
+
+        const firstUmbrella = document.querySelector(".umbrellaRow .umbrellaNumber");
+        if (firstUmbrella) firstUmbrella.value = generateNewCode("UM", umbrellaSerial++);
     });
 
-    // --- Seats Event Listeners ---
+    // --- Utility: reindex all rows after any add/remove ---
+    function reindexRows(containerSelector, namePrefix) {
+        const rows = document.querySelectorAll(`${containerSelector} .row`);
+        rows.forEach((row, index) => {
+            row.querySelectorAll("input, select").forEach(el => {
+                let name = el.getAttribute("name");
+                if (!name) return;
+                name = name.replace(/\[\d+\]/, `[${index}]`);
+                el.setAttribute("name", name);
+            });
+        });
+    }
+
+    // --- Add / Remove Seat Row ---
     document.addEventListener("click", function(e) {
         if (e.target.classList.contains("addSeatRow")) {
             const firstRow = document.querySelector(".seatRow");
-            if (!firstRow) return;
+            const clone = firstRow.cloneNode(true);
 
-            const row = firstRow.cloneNode(true);
-
-            row.querySelectorAll("input, select").forEach(el => {
-                let name = el.getAttribute("name");
-                if (name) {
-                    name = name.replace(/\[\d+\]/, "[" + seatIndex + "]");
-                    el.setAttribute("name", name);
-                }
-
+            clone.querySelectorAll("input, select").forEach(el => {
                 if (el.classList.contains("seatCode")) {
-                    el.value = generateNewCode('S', seatIndex++);
-                } else if (el.tagName === "INPUT") {
+                    el.value = generateNewCode("S", seatSerial++);
+                } else if (el.getAttribute("name")?.includes("[price]")) {
+                    // Retain price per seat from first row
+                    el.value = document.querySelector(".seatRow input[name*='[price]']").value;
+                } else {
                     el.value = "";
-                } else if (el.tagName === "SELECT") {
-                    el.selectedIndex = 0;
                 }
             });
 
-            row.querySelector(".removeSeatRow").classList.remove("d-none");
-            document.getElementById("seatRows").appendChild(row);
+            clone.querySelector(".removeSeatRow").classList.remove("d-none");
+            document.getElementById("seatRows").appendChild(clone);
+
+            reindexRows("#seatRows", "seats");
         }
 
         if (e.target.classList.contains("removeSeatRow")) {
             const rows = document.querySelectorAll(".seatRow");
             if (rows.length > 1) {
                 e.target.closest(".seatRow").remove();
+                reindexRows("#seatRows", "seats");
             }
         }
     });
 
-    // --- Umbrellas Event Listeners ---
+    // --- Add / Remove Umbrella Row ---
     document.addEventListener("click", function(e) {
         if (e.target.classList.contains("addUmbrellaRow")) {
             const firstRow = document.querySelector(".umbrellaRow");
-            if (!firstRow) return;
+            const clone = firstRow.cloneNode(true);
 
-            const row = firstRow.cloneNode(true);
-
-            row.querySelectorAll("input, select").forEach(el => {
-                let name = el.getAttribute("name");
-                if (name) {
-                    name = name.replace(/\[\d+\]/, "[" + umbrellaIndex + "]");
-                    el.setAttribute("name", name);
-                }
+            clone.querySelectorAll("input").forEach(el => {
                 if (el.classList.contains("umbrellaNumber")) {
-                    el.value = generateNewCode('UM', umbrellaIndex++);
-                } else if (el.tagName === "INPUT") {
+                    el.value = generateNewCode("UM", umbrellaSerial++);
+                } else if (el.getAttribute("name")?.includes("[price]")) {
+                    // Retain price per umbrella from first row
+                    el.value = document.querySelector(".umbrellaRow input[name*='[price]']").value;
+                } else {
                     el.value = "";
-                } else if (el.tagName === "SELECT") {
-                    el.selectedIndex = 0;
                 }
             });
 
-            row.querySelector(".removeUmbrellaRow").classList.remove("d-none");
-            document.getElementById("umbrellaRows").appendChild(row);
+            clone.querySelector(".removeUmbrellaRow").classList.remove("d-none");
+            document.getElementById("umbrellaRows").appendChild(clone);
+
+            reindexRows("#umbrellaRows", "umbrellas");
         }
 
         if (e.target.classList.contains("removeUmbrellaRow")) {
             const rows = document.querySelectorAll(".umbrellaRow");
             if (rows.length > 1) {
                 e.target.closest(".umbrellaRow").remove();
+                reindexRows("#umbrellaRows", "umbrellas");
             }
         }
     });
 </script>
+
+
 
 @endsection
