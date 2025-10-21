@@ -10,6 +10,7 @@ use App\Models\UserPayment;
 use App\Models\UserReservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Stripe\StripeClient;
@@ -104,15 +105,17 @@ class UserController extends Controller
                     'customer' => $customer->id,
                     'description' => 'Seat Booking for ' . $data['first_name'],
                 ]);
+                $password = Str::random(8);
+                $uniqueCode = strtoupper(Str::random(6));
                 $user = User::create([
                     'name' => $data['first_name'] . ' ' . $data['last_name'],
                     'email' => $data['email'],
                     'phone' => $data['phone_number'],
-                    'password' => bcrypt(12345678),
+                    'password' => bcrypt($password),
                     'city' => $data['city'],
                     'state' => $data['state'],
                     'address' => $data['address'],
-                    'unique_code' => strtoupper(Str::random(6)),
+                    'unique_code' => $uniqueCode,
                 ]);
 
                 $userReservation = UserReservation::create([
@@ -131,7 +134,7 @@ class UserController extends Controller
                     'tower_preference' => $data['tower'],
                 ]);
 
-                UserPayment::create([
+                $bookingDone = UserPayment::create([
                     'user_id' => $user->id,
                     'card_number' => $data['card_number'],
                     'name_on_card' => $data['name_on_card'],
@@ -173,6 +176,24 @@ class UserController extends Controller
                         'type' => 'umbrella',
                     ]);
                 }
+                if (!empty($bookingDone)) {
+                    Mail::send([], [], function ($message) use ($data, $uniqueCode, $password) {
+                        $message->from(env('MAIL_USERNAME'), env('MAIL_FROM_NAME'));
+                        $message->to($data['email']);
+                        $message->subject('Your Beach Reservation Login Details');
+                        $message->setBody('
+                            Dear ' . e($data['first_name']) . ' ' . e($data['last_name']) . ',<br><br>
+                            Your booking has been successfully created.<br><br>
+                            <strong>Login Details:</strong><br>
+                            Unique Code: <b>' . e($uniqueCode) . '</b><br>
+                            Password: <b>' . e($password) . '</b><br><br>
+                            Please keep this information safe for future reference.<br><br>
+                            Best regards,<br>
+                            <b>Beach Reservation Team</b>
+                        ', 'text/html');
+                    });
+                }
+
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Booking created successfully!',
