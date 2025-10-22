@@ -144,22 +144,32 @@
                 calculateTotal();
             });
 
-            // Fetch active pricing
+            // Default pricing (fallback)
             window.pricing = {
                 base_set: 65,
                 seat: 10,
                 umbrella: 5
             };
-            fetch('/get-active-pricing')
-                .then(res => res.json())
-                .then(data => {
-                    window.pricing = data;
-                })
-                .catch(err => console.error(err));
+
+            // Get active pricing via AJAX
+            $.ajax({
+                url: '/get-active-pricing',
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    if (data) {
+                        window.pricing = data;
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching pricing:', error);
+                }
+            });
 
             // Recalculate total whenever numbers change
             $('#how_many_set, #addon_seats, #addon_umbrella').on('input', calculateTotal);
         });
+
 
         function calculateTotal() {
             const sets = parseInt($('#how_many_set').val()) || 0;
@@ -215,123 +225,129 @@
         }
 
         function saveReservation() {
-    const form = $('#beach-booking-form')[0];
-    const formData = new FormData(form);
+            const form = $('#beach-booking-form')[0];
+            const formData = new FormData(form);
 
-    $.ajaxSetup({
-        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
-    });
-
-    Swal.fire({
-        title: 'Processing Reservation...',
-        html: 'Please wait while we confirm your booking.',
-        allowOutsideClick: false,
-        didOpen: () => Swal.showLoading()
-    });
-
-    $.ajax({
-        url: '{{ route('tenant.save.manual.reservation') }}',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function (response) {
-            Swal.close();
-
-            if (response.status === 'success') {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Reservation Successful!',
-                    text: response.message ?? 'Your booking has been confirmed.',
-                    showConfirmButton: false,
-                    timer: 1800
-                }).then(() => {
-                    window.location.href = '{{ route('tenant.user.reservations') }}';
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Reservation Failed',
-                    text: response.message ?? 'Unable to process your booking. Please try again.'
-                });
-            }
-        },
-        error: function (xhr) {
-            Swal.close();
-
-            // Remove old inline validation errors
-            $('#beach-booking-form .text-danger').remove();
-
-            // Laravel validation error (422)
-            if (xhr.status === 422 && xhr.responseJSON?.errors) {
-                const errors = xhr.responseJSON.errors;
-
-                $.each(errors, function (field, messages) {
-                    const input = $(`[name="${field}"]`);
-                    if (input.length > 0) {
-                        input.after(`<small class="text-danger d-block mt-1">${messages[0]}</small>`);
-                    }
-                });
-
-                // Scroll to first invalid field
-                const firstErrorField = Object.keys(errors)[0];
-                const firstInput = $(`[name="${firstErrorField}"]`);
-                if (firstInput.length > 0) {
-                    $('html, body').animate({ scrollTop: firstInput.offset().top - 100 }, 600);
-                    firstInput.focus();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
-                return; // stop here, don't show Swal for 422
-            }
+            });
 
-            // 401: Invalid credentials
-            if (xhr.status === 401) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Invalid Credentials',
-                    text: 'The email or password you entered is incorrect.'
-                });
-                return;
-            }
+            Swal.fire({
+                title: 'Processing Reservation...',
+                html: 'Please wait while we confirm your booking.',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
 
-            // 403: Not enough inventory or permission issue
-            if (xhr.status === 403) {
-                const seats = xhr.responseJSON?.available_seats ?? 0;
-                const umbrellas = xhr.responseJSON?.available_umbrellas ?? 0;
-                const msg = xhr.responseJSON?.errors ??
-                    'No tenant has sufficient inventory matching your selection.';
+            $.ajax({
+                url: '{{ route('tenant.save.manual.reservation') }}',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    Swal.close();
 
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Reservation Failed',
-                    html: `
+                    if (response.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Reservation Successful!',
+                            text: response.message ?? 'Your booking has been confirmed.',
+                            showConfirmButton: false,
+                            timer: 1800
+                        }).then(() => {
+                            window.location.href = '{{ route('tenant.user.reservations') }}';
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Reservation Failed',
+                            text: response.message ??
+                                'Unable to process your booking. Please try again.'
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    Swal.close();
+
+                    // Remove old inline validation errors
+                    $('#beach-booking-form .text-danger').remove();
+
+                    // Laravel validation error (422)
+                    if (xhr.status === 422 && xhr.responseJSON?.errors) {
+                        const errors = xhr.responseJSON.errors;
+
+                        $.each(errors, function(field, messages) {
+                            const input = $(`[name="${field}"]`);
+                            if (input.length > 0) {
+                                input.after(
+                                    `<small class="text-danger d-block mt-1">${messages[0]}</small>`
+                                    );
+                            }
+                        });
+
+                        // Scroll to first invalid field
+                        const firstErrorField = Object.keys(errors)[0];
+                        const firstInput = $(`[name="${firstErrorField}"]`);
+                        if (firstInput.length > 0) {
+                            $('html, body').animate({
+                                scrollTop: firstInput.offset().top - 100
+                            }, 600);
+                            firstInput.focus();
+                        }
+                        return; // stop here, don't show Swal for 422
+                    }
+
+                    // 401: Invalid credentials
+                    if (xhr.status === 401) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Invalid Credentials',
+                            text: 'The email or password you entered is incorrect.'
+                        });
+                        return;
+                    }
+
+                    // 403: Not enough inventory or permission issue
+                    if (xhr.status === 403) {
+                        const seats = xhr.responseJSON?.available_seats ?? 0;
+                        const umbrellas = xhr.responseJSON?.available_umbrellas ?? 0;
+                        const msg = xhr.responseJSON?.errors ??
+                            'No tenant has sufficient inventory matching your selection.';
+
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Reservation Failed',
+                            html: `
                         <p>${msg}</p>
                         <hr>
                         <p><strong>Available Seats:</strong> ${seats}</p>
                         <p><strong>Available Umbrellas:</strong> ${umbrellas}</p>
                     `
-                });
-                return;
-            }
+                        });
+                        return;
+                    }
 
-            // Custom backend message
-            if (xhr.responseJSON?.message) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: xhr.responseJSON.message
-                });
-                return;
-            }
+                    // Custom backend message
+                    if (xhr.responseJSON?.message) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: xhr.responseJSON.message
+                        });
+                        return;
+                    }
 
-            // Default fallback
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops!',
-                text: 'Something went wrong. Please try again later.'
+                    // Default fallback
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        text: 'Something went wrong. Please try again later.'
+                    });
+                }
             });
         }
-    });
-}
-
     </script>
 @endsection
