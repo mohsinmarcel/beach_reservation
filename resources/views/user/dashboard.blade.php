@@ -121,7 +121,7 @@
         </section>
         <!-- Hero End -->
         <!-- About Start -->
-        <section class="about-block pt-5">
+        {{-- <section class="about-block pt-5">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-lg-5">
@@ -151,7 +151,7 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> --}}
         <!-- About End -->
         <!-- Booking Start -->
         <section class="booking-block py-5">
@@ -220,9 +220,9 @@
                                     <div class="card-content p-3">
                                         <h3 class="card-title fw-bold lh-sm mb-3">Beach Set – Perfect for Two</h3>
                                         <p class="card-short-berif fw-ligth lh-sm mb-2 text-black">Enjoy your day at
-                                            the beach with reserved beach chairs and umbrellas!.</p>
+                                            the beach with reserved beach chairs and umbrellas!</p>
                                         <p class="card-short-berif fw-ligth lh-sm mb-2 text-black">Each beach set
-                                            includes 2 chairs and 1 umbrella..</p>
+                                            includes 2 chairs and 1 umbrella.</p>
                                         {{-- <p class="card-price fs-6 fw-semibold lh-sm mb-2 text-black">Starting From
                                             <span class="currency-symbol">$</span><span class="currency">65</span> /
                                             Set</p> --}}
@@ -274,8 +274,8 @@
                                     <h3 class="fs-3 fw-bold">Beach Set – Perfect for Two</h3>
                                     <p style="font-size: 14px;">Enjoy your relaxing day by the sea with our premium
                                         beach set — includes 2 comfortable sunbeds and 1 umbrella for perfect shade.</p>
-                                    <p style="font-size: 14px;">Spend quality time with your partner or friend while
-                                        soaking up the sun and the view.</p>
+                                    {{-- <p style="font-size: 14px;">Spend quality time with your partner or friend while
+                                        soaking up the sun and the view.</p> --}}
                                     {{-- <p style="font-size: 14px;">☀️ Limited slots available — book early to reserve your
                                         spot!</p> --}}
                                     <img src="{{ asset('userside_assets/assets/images/img-1.webp') }}"
@@ -294,7 +294,7 @@
                                             <input type="checkbox" class="form-check-input me-1" value=""
                                                 id="more_addons">
                                             <label for="more_addons" class="form-label fw-normal"
-                                                style="font-size: 14px;">More an extra seat or umbrella?</label>
+                                                style="font-size: 14px;">An extra seat or umbrella?</label>
                                         </div>
                                         <div class="addons-container" style="display:none;">
                                             <div class="d-flex align-item-center gap-2">
