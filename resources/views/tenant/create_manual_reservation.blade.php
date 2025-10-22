@@ -245,7 +245,9 @@
                     text: response.message ?? 'Your booking has been confirmed.',
                     showConfirmButton: false,
                     timer: 1800
-                }).then(() => window.location.reload());
+                }).then(() => {
+                    window.location.href = '{{ route('tenant.user.reservations') }}';
+                });
             } else {
                 Swal.fire({
                     icon: 'error',
