@@ -2,7 +2,7 @@
 @section('main-content')
     <div class="main w-100 pt-4 pe-4">
         <div class="container">
-            {{-- <a href="{{ route('tenant.users.create') }}" class="btn btn-primary">Add New User</a> --}}
+            <a href="{{ route('tenant.create.manual.reservation') }}" class="btn btn-primary">Add Manual Reservation</a>
             <div class="d-flex justify-content-between my-4">
                 <h1 class="mb-0">All Reservations</h1>
                 {{-- <input type="search" class="form-control w-25" id="userSearch" placeholder="Search user..."> --}}

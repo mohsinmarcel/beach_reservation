@@ -14,6 +14,7 @@ class UserReservation extends Model
         'category_booked',
         'reservations',
         'booking_date',
+        'end_booking_date',
         'booking_start_time',
         'booking_end_time',
         'total_price',
@@ -27,6 +28,8 @@ class UserReservation extends Model
         'status',
         'room_number',
         'tower_preference',
+        'notes',
+        'booked_by',
 
     ];
 

@@ -155,7 +155,7 @@
         <!-- About End -->
         <!-- Booking Start -->
         <section class="booking-block py-5">
-            <h2 class="text-center mb-4">Book Your Slot</h2>
+            <h2 class="text-center mb-4">Book Your Beach Setups!</h2>
             <div class="container">
                 <!-- Filters Start -->
                 {{-- <div id="filterContainer" class="row position-relative bg-white shadow p-4 rounded">
@@ -219,14 +219,13 @@
                                 <div class="col-lg-6">
                                     <div class="card-content p-3">
                                         <h3 class="card-title fw-bold lh-sm mb-3">Beach Set – Perfect for Two</h3>
-                                        <p class="card-short-berif fw-ligth lh-sm mb-2 text-black">Enjoy your relaxing
-                                            day by the sea with our premium beach set — includes 2 comfortable sunbeds
-                                            and 1 umbrella for perfect shade.</p>
-                                        <p class="card-short-berif fw-ligth lh-sm mb-2 text-black">Spend quality time
-                                            with your partner or friend while soaking up the sun and the view.</p>
-                                        <p class="card-price fs-6 fw-semibold lh-sm mb-2 text-black">Starting From
+                                        <p class="card-short-berif fw-ligth lh-sm mb-2 text-black">Enjoy your day at
+                                            the beach with reserved beach chairs and umbrellas!.</p>
+                                        <p class="card-short-berif fw-ligth lh-sm mb-2 text-black">Each beach set
+                                            includes 2 chairs and 1 umbrella..</p>
+                                        {{-- <p class="card-price fs-6 fw-semibold lh-sm mb-2 text-black">Starting From
                                             <span class="currency-symbol">$</span><span class="currency">65</span> /
-                                            Set</p>
+                                            Set</p> --}}
                                         <p class="card-short-berif fw-ligth lh-sm my-4 text-black">☀️ Limited slots
                                             available — book early to reserve your spot!</p>
                                         <button type="button" class="btn btn-outline-primary rounded-pill w-50 p-3"
@@ -244,62 +243,7 @@
             </div>
         </section>
         <!-- Booking End -->
-        <!-- Review Start -->
-        {{-- <section class="reviews-block position-relative" style="background-image: url({{asset('userside_assets/assets/images/img-1.webp')}});">
-            <div class="container">
-                <h2 class="fw-semibold text-white text-center">Reviews</h2>
-                <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        <!-- SLIDE 1 -->
-                        <div class="carousel-item active">
-                            <div class="row g-3">
-                                <div class="col-12 col-md-6 py-4">
-                                    <div class="p-4 text-center bg-white border rounded">
-                                        <img src="{{asset('userside_assets/assets/images/user-default-img.png')}}" class="rounded-circle mb-3" width="80" height="80" alt="Client">
-                                        <p>"Great service, fast delivery!"</p>
-                                        <h6>- John Doe</h6>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-6 py-4">
-                                    <div class="p-4 text-center bg-white border rounded">
-                                        <img src="{{asset('userside_assets/assets/images/user-default-img.png')}}" class="rounded-circle mb-3" width="80" height="80" alt="Client">
-                                        <p>"Amazing experience!"</p>
-                                        <h6>- Sarah Smith</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- SLIDE 2 -->
-                        <div class="carousel-item">
-                            <div class="row g-3">
-                                <div class="col-12 col-md-6 py-4">
-                                <div class="p-4 text-center bg-white border rounded">
-                                    <img src="{{asset('userside_assets/assets/images/user-default-img.png')}}" class="rounded-circle mb-3" width="80" height="80" alt="Client">
-                                    <p>"Excellent support and service!"</p>
-                                    <h6>- Emma Watson</h6>
-                                </div>
-                                </div>
-                                <div class="col-12 col-md-6 py-4">
-                                <div class="p-4 text-center bg-white border rounded">
-                                    <img src="{{asset('userside_assets/assets/images/user-default-img.png')}}" class="rounded-circle mb-3" width="80" height="80" alt="Client">
-                                    <p>"Highly recommend to everyone."</p>
-                                    <h6>- Chris Brown</h6>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon"></span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
-                            <span class="carousel-control-next-icon"></span>
-                        </button>
-            </div>
-        </section> --}}
-        <!-- Review End -->
     </main>
     <!-- Modal Start -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
@@ -307,7 +251,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Book Your Beach Setup !</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-3 pt-4">
@@ -332,12 +276,12 @@
                                         beach set — includes 2 comfortable sunbeds and 1 umbrella for perfect shade.</p>
                                     <p style="font-size: 14px;">Spend quality time with your partner or friend while
                                         soaking up the sun and the view.</p>
-                                    <p style="font-size: 14px;">☀️ Limited slots available — book early to reserve your
-                                        spot!</p>
+                                    {{-- <p style="font-size: 14px;">☀️ Limited slots available — book early to reserve your
+                                        spot!</p> --}}
                                     <img src="{{ asset('userside_assets/assets/images/img-1.webp') }}"
                                         class="img-fluid rounded mb-3" alt="img">
                                     <div class="fw-normal mb-3 text-black" style="font-size: 14px;">
-                                        Enjoy a Complete Beach Set (2 Seats and 1 Umbrella) for Perfect Shade.
+                                        Reserve your Beach Setup (2 Seats and 1 Umbrella) for Perfect Shade..
                                     </div>
                                     <div class="">
                                         <div class="mb-3 d-flex align-items-center gap-2">
@@ -350,19 +294,19 @@
                                             <input type="checkbox" class="form-check-input me-1" value=""
                                                 id="more_addons">
                                             <label for="more_addons" class="form-label fw-normal"
-                                                style="font-size: 14px;">More seats and umbrella?</label>
+                                                style="font-size: 14px;">More an extra seat or umbrella?</label>
                                         </div>
                                         <div class="addons-container" style="display:none;">
                                             <div class="d-flex align-item-center gap-2">
                                                 <div class="addon-seats">
                                                     <label for="addon_seats" class="form-label"
-                                                        style="font-size: 14px;">Number of Seats</label>
+                                                        style="font-size: 14px;">Number of Extra Seats</label>
                                                     <input type="number" class="form-control w-50" id="addon_seats"
                                                         name="addon_seats">
                                                 </div>
                                                 <div class="addon-umberella">
                                                     <label for="addon_umbrella" class="form-label"
-                                                        style="font-size: 14px;">Number of Umbrella</label>
+                                                        style="font-size: 14px;">Number of Extra Umbrellas</label>
                                                     <input type="number" class="form-control w-50"
                                                         id="addon_umbrella" name="addon_umbrella">
                                                 </div>
@@ -411,20 +355,8 @@
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label for="room" class="form-label fw-semibold mb-1"
-                                        style="font-size: 13px;">Room Number:</label>
+                                        style="font-size: 13px;">Unit Number:</label>
                                     <input type="text" class="form-control" id="room_number" name="room_number">
-                                </div>
-                                <div class="col-lg-6 mb-3">
-                                    <label for="date" class="form-label fw-semibold mb-1"
-                                        style="font-size: 13px;">Booking Date:</label>
-                                    <input type="date" class="form-control" id="booking_date"
-                                        name="booking_date">
-                                </div>
-                                <div class="col-lg-6 mb-3">
-                                    <label for="time" class="form-label fw-semibold mb-1"
-                                        style="font-size: 13px;">Booking Time:</label>
-                                    <input type="time" class="form-control" id="booking_time"
-                                        name="booking_time">
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label for="time" class="form-label fw-semibold mb-1"
@@ -433,11 +365,24 @@
                                         <option value="east_tower">East Tower</option>
                                         <option value="west_tower">West Tower</option>
 
-                                    <select>
+                                        <select>
                                 </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="date" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">Start Booking Date:</label>
+                                    <input type="date" class="form-control" id="booking_date"
+                                        name="booking_date">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="time" class="form-label fw-semibold mb-1"
+                                        style="font-size: 13px;">End Booking Date:</label>
+                                    <input type="date" class="form-control" id="end_booking_date"
+                                        name="end_booking_date">
+                                </div>
+
                                 <div class="col-12 mb-3">
                                     <label for="address" class="form-label fw-semibold mb-1"
-                                        style="font-size: 13px;">Address:</label>
+                                        style="font-size: 13px;">Notes For Beach Attendants:</label>
                                     <textarea class="form-control" rows="3" name="address"></textarea>
                                 </div>
                             </div>
@@ -462,18 +407,18 @@
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label for="expDate" class="form-label fw-semibold mb-1"
-                                        style="font-size: 13px;">CVC</label>
+                                        style="font-size: 13px;">Security Code</label>
                                     <input type="text" class="form-control" id="cvc" name="cvc">
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label for="expDate" class="form-label fw-semibold mb-1"
-                                        style="font-size: 13px;">Expiry Month</label>
+                                        style="font-size: 13px;">Expiration Month</label>
                                     <input type="text" class="form-control" id="expiry_month"
                                         name="expiry_month">
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label for="expDate" class="form-label fw-semibold mb-1"
-                                        style="font-size: 13px;">Expiry Year</label>
+                                        style="font-size: 13px;">Expiration Year</label>
                                     <input type="text" class="form-control" id="expiry_year" name="expiry_year">
                                 </div>
                             </div>
@@ -516,15 +461,15 @@
                                     <p class="mb-1 review-umbrella">-</p>
                                 </div>
                                 <div class="d-flex justify-content-between">
-                                    <p class="mb-1">Date</p>
+                                    <p class="mb-1">Start Booking Date</p>
                                     <p class="mb-1 review-date">-</p>
                                 </div>
                                 <div class="d-flex justify-content-between">
-                                    <p class="mb-1">Time Slot</p>
+                                    <p class="mb-1">End Booking Date</p>
                                     <p class="mb-1 review-time">-</p>
                                 </div>
                                 <div class="d-flex justify-content-between">
-                                    <p class="mb-1">Room Number</p>
+                                    <p class="mb-1">Unit Number</p>
                                     <p class="mb-1 review-room">-</p>
                                 </div>
                             </div>
@@ -696,6 +641,25 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        // --- Global SweetAlert Loader Helper ---
+        Swal.loader = {
+            show: function(message = 'Processing...') {
+                Swal.fire({
+                    title: message,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            },
+            hide: function() {
+                Swal.close();
+            }
+        };
+
+
         function bookNow(itemType) {
             const modalTitle = document.getElementById('exampleModalLabel');
             modalTitle.textContent = `Book Now - ${itemType.replace(/_/g, ' ').toUpperCase()}`;
@@ -721,7 +685,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-
+            Swal.loader.show('Processing Reservation...');
             $.ajax({
                 url: '{{ route('user.reserve.booking.login') }}',
                 type: 'POST',
@@ -730,6 +694,8 @@
                 contentType: false,
                 success: function(response) {
                     if (response.status === 'success') {
+                        Swal.loader.hide();
+
                         Swal.fire({
                             icon: 'success',
                             title: 'Reservation Successful!',
@@ -740,6 +706,7 @@
                             window.location.reload();
                         });
                     } else if (response.status === 'error') {
+                        Swal.loader.hide();
                         // For backend custom errors (like tenant insufficient balance, seats unavailable, etc.)
                         Swal.fire({
                             icon: 'error',
@@ -750,6 +717,7 @@
                     }
                 },
                 error: function(xhr, status, error) {
+                    Swal.loader.hide();
                     // Remove previous validation errors
                     $('#multi-step-form .text-danger').remove();
 
@@ -805,6 +773,7 @@
 
 
         function signIn() {
+            Swal.loader.show('Please Wait');
             var form = $('#loginForm')[0];
             var formData = new FormData(form);
 
@@ -822,6 +791,7 @@
                 contentType: false,
                 success: function(response) {
                     if (response.status === 'success') {
+                        Swal.loader.hide();
                         Swal.fire({
                             icon: 'success',
                             title: 'Login Successful!',
@@ -833,6 +803,7 @@
                     }
                 },
                 error: function(xhr, status, error) {
+                    Swal.loader.hide();
                     // Remove old validation messages
                     $('#loginForm .text-danger').remove();
 
@@ -878,7 +849,7 @@
                 addon_seats: ".review-seats",
                 addon_umbrella: ".review-umbrella",
                 booking_date: ".review-date",
-                booking_time: ".review-time",
+                end_booking_date: ".review-time",
                 room_number: ".review-room"
             };
 
@@ -923,6 +894,21 @@
                 document.querySelector('.review-addons').innerText = `$${addonPrice}`;
                 document.querySelector('.review-total').innerText = `$${subtotal}`;
             }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            const startDate = document.getElementById('booking_date');
+            const endDate = document.getElementById('end_booking_date');
+
+            startDate.min = today;
+            endDate.min = today;
+
+            // Optional: prevent end date earlier than start date
+            startDate.addEventListener('change', function() {
+                endDate.min = this.value;
+            });
         });
     </script>
 

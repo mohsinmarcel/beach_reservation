@@ -95,6 +95,27 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+          // --- Global SweetAlert Loader Helper ---
+        Swal.loader = {
+            show: function(message = 'Processing...') {
+                Swal.fire({
+                    title: message,
+                    html: '<div class="spinner-border text-primary" role="status"></div><br><small>Please wait...</small>',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            },
+            hide: function() {
+                Swal.close();
+            }
+        };
+    </script>
+    @stack('scripts')
 </body>
 
 </html>

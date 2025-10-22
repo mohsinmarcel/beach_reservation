@@ -10,6 +10,7 @@ use App\Models\UserPayment;
 use App\Models\UserReservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Stripe\StripeClient;
@@ -37,7 +38,8 @@ class UserController extends Controller
             'cvc' => 'required|string|max:4',
             'room_number' => 'required',
             'booking_date' => 'required',
-            'booking_time' => 'required',
+            'end_booking_date' => 'required',
+            // 'booking_time' => 'required',
             'total_price' => 'required',
             'pricing_id' => 'required',
             'tower' => 'required',
@@ -104,22 +106,25 @@ class UserController extends Controller
                     'customer' => $customer->id,
                     'description' => 'Seat Booking for ' . $data['first_name'],
                 ]);
+                $password = Str::random(8);
+                $uniqueCode = strtoupper(Str::random(6));
                 $user = User::create([
                     'name' => $data['first_name'] . ' ' . $data['last_name'],
                     'email' => $data['email'],
                     'phone' => $data['phone_number'],
-                    'password' => bcrypt(12345678),
+                    'password' => bcrypt($password),
                     'city' => $data['city'],
                     'state' => $data['state'],
                     'address' => $data['address'],
-                    'unique_code' => strtoupper(Str::random(6)),
+                    'unique_code' => $uniqueCode,
                 ]);
 
                 $userReservation = UserReservation::create([
                     'user_id' => $user->id,
                     'reservations' => json_encode($data),
                     'booking_date' => date('Y-m-d', strtotime($request->booking_date)),
-                    'booking_start_time' => date('H:i:s', strtotime($request->booking_time)),
+                    'end_booking_date' => date('Y-m-d', strtotime($request->end_booking_date)),
+                    // 'booking_start_time' => date('H:i:s', strtotime($request->booking_time)),
                     // 'booking_end_time' => $request->end_time ?? null,
                     'total_price' => $totalPrice,
                     'no_of_sets' => $numberOfSets,
@@ -129,9 +134,11 @@ class UserController extends Controller
                     'pricing_id' => $data['pricing_id'],
                     'room_number' => $data['room_number'],
                     'tower_preference' => $data['tower'],
+                    'notes' => $data['address'],
+                    'booked_by' => 'user-self',
                 ]);
 
-                UserPayment::create([
+                $bookingDone = UserPayment::create([
                     'user_id' => $user->id,
                     'card_number' => $data['card_number'],
                     'name_on_card' => $data['name_on_card'],
@@ -173,6 +180,24 @@ class UserController extends Controller
                         'type' => 'umbrella',
                     ]);
                 }
+                if (!empty($bookingDone)) {
+                    Mail::send([], [], function ($message) use ($data, $uniqueCode, $password) {
+                        $message->from(env('MAIL_USERNAME'), env('MAIL_FROM_NAME'));
+                        $message->to($data['email']);
+                        $message->subject('Your Beach Reservation Login Details');
+                        $message->setBody('
+                            Dear ' . e($data['first_name']) . ' ' . e($data['last_name']) . ',<br><br>
+                            Your booking has been successfully created.<br><br>
+                            <strong>Login Details:</strong><br>
+                            Unique Code: <b>' . e($uniqueCode) . '</b><br>
+                            Password: <b>' . e($password) . '</b><br><br>
+                            Please keep this information safe for future reference.<br><br>
+                            Best regards,<br>
+                            <b>Beach Reservation Team</b>
+                        ', 'text/html');
+                    });
+                }
+
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Booking created successfully!',
@@ -257,7 +282,7 @@ class UserController extends Controller
     public function userCancellations()
     {
         $user = session('user');
-        $cancellations = null;
+        $cancellations = UserReservation::where('user_id', $user->id)->orderBy('created_at', 'desc')->where('status','cancelled')->get();
         return view('user.cancellations', compact('cancellations'));
     }
     public function userReminders()
@@ -269,7 +294,7 @@ class UserController extends Controller
     public function userBookings()
     {
         $user = session('user');
-        $bookings = null;
+        $bookings = UserReservation::where('user_id', $user->id)->orderBy('created_at', 'desc')->where('status','requested')->get();
         return view('user.booking', compact('bookings'));
     }
 
@@ -287,5 +312,40 @@ class UserController extends Controller
             'umbrella' => $umbrellaPrice,
             'priceId' => $pricing->id,
         ]);
+    }
+
+    public function cancelUserReservation($reservationId)
+    {
+        $user = session('user');
+        $reservation = UserReservation::where('id', $reservationId)
+            ->where('user_id', $user->id)
+            ->where('status', 'requested')
+            ->first();
+
+        if (!$reservation) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Reservation not found or cannot be cancelled.'
+            ], 404);
+        }
+
+        // Update reservation status to 'cancelled'
+        $reservation->status = 'cancelled';
+        $reservation->save();
+
+        // Release booked inventory items
+        $bookedItems = BookingInfo::where('user_reservation_id', $reservation->id)->get();
+        foreach ($bookedItems as $item) {
+            $inventory = TenantInventory::find($item->inventory_id);
+            if ($inventory) {
+                $inventory->status = 'available';
+                $inventory->save();
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Reservation cancelled successfully.'
+        ], 200);
     }
 }

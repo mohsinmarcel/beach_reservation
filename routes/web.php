@@ -29,6 +29,7 @@ Route::get('/user/cancellations', [UserController::class, 'userCancellations'])-
 Route::get('/user/reminders', [UserController::class, 'userReminders'])->name('user.reminders');
 Route::get('/user/bookings', [UserController::class, 'userBookings'])->name('user.bookings');
 Route::get('/get-active-pricing', [UserController::class, 'getActivePricing'])->name('user.active.pricings');;
+Route::post('/cancel/user/reservation/{reservationId}', [UserController::class, 'cancelUserReservation'])->name('user.cancel.reservation');
 
 
 Route::get('test-route', function () {
@@ -115,6 +116,8 @@ Route::group(['middleware' => 'tenant.auth'], function () {
     Route::get('/hoa/pricing/update/{id}', [TenantController::class, 'tenantPricingUpdate'])->name('tenant.pricing.update');
     Route::get('/hoa/user/reservations', [TenantController::class, 'tenantUserReservations'])->name('tenant.user.reservations');
     Route::get('/hoa/user/reservation/mark/{id}', [TenantController::class, 'tenantUserReservationMarkComplete'])->name('tenant.user.reservation.mark.complete');
+    Route::get('/hoa/create/manaual/reservation', [TenantController::class, 'tenantCreateManualReservation'])->name('tenant.create.manual.reservation');
+    Route::post('/hoa/save/manaual/reservation', [TenantController::class, 'tenantSaveManualReservation'])->name('tenant.save.manual.reservation');
 
 });
 
