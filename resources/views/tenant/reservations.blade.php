@@ -18,7 +18,8 @@
                             <th scope="col">Addon Umbrellas</th>
                             <th scope="col">Price Applied</th>
                             <th scope="col">Price Total</th>
-                            <th scope="col">Booking Date & Time</th>
+                            <th scope="col">Booking Date</th>
+                            <th scope="col">End Booking Date</th>
                             <th scope="col">Room Number</th>
                             <th scope="col" class="text-center">Click To Mark Completed</th>
                         </tr>
@@ -35,6 +36,7 @@
                                     <td>{{ $user->pricing->name }}</td>
                                     <td>${{ $user->total_price }}</td>
                                     <td>{{ \Carbon\Carbon::parse($user->booking_date)->format('d M Y') }}</td>
+                                     <td>{{ \Carbon\Carbon::parse($user->end_booking_date)->format('d M Y') }}</td>
                                     <td>{{ $user->room_number ?? 'N/A' }}</td>
                                     {{-- @dd(session('tenant')) --}}
 
