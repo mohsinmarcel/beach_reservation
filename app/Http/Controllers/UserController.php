@@ -134,6 +134,8 @@ class UserController extends Controller
                     'pricing_id' => $data['pricing_id'],
                     'room_number' => $data['room_number'],
                     'tower_preference' => $data['tower'],
+                    'notes' => $data['address'],
+                    'booked_by' => 'user-self',
                 ]);
 
                 $bookingDone = UserPayment::create([

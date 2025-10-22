@@ -15,6 +15,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use App\Models\User;
+use App\Models\UserPayment;
+use Illuminate\Support\Facades\Mail;
 
 class TenantController extends Controller
 {
@@ -478,9 +482,201 @@ class TenantController extends Controller
         return view('tenant.create_manual_reservation', compact('pricings'));
     }
 
-    public function tenantSaveManualReservation(Request $request)
+     public function tenantSaveManualReservation(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
+        // Step 1: Validate request manually so we can return JSON
+        $validator = Validator::make($request->all(), [
+            'no_of_sets' => 'required|integer|min:1',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone_number' => 'required|string|max:20',
+            'city' => 'required|string|max:100',
+            'state' => 'required|string|max:100',
+            'address' => 'required|string|max:500',
+            'room_number' => 'required',
+            'booking_date' => 'required',
+            'end_booking_date' => 'required',
+            // 'booking_time' => 'required',
+            'total_price' => 'required',
+            'pricing_id' => 'required',
+            'tower' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => $validator->errors(),
+                'message' => 'Validation failed'
+            ], 422);
+        }
+
+        // Step 2: Extract validated data
+        $data = $validator->validated();
+
+        $numberOfSets = $data['no_of_sets'];
+        $addonSeats = $data['addon_seats'] ?? 0;
+        $addonUmbrellas = $data['addon_umbrellas'] ?? 0;
+
+        $numberOfSets = $data['no_of_sets'];
+        $addonSeats = $data['addon_seats'] ?? 0;
+        $addonUmbrellas = $data['addon_umbrellas'] ?? 0;
+        $totalPrice = $data['total_price'];
+
+        // Calculate total required seats & umbrellas
+        $totalSeatsNeeded = ($numberOfSets * 2) + $addonSeats;
+        $totalUmbrellasNeeded = ($numberOfSets * 1) + $addonUmbrellas;
+        // dd($totalSeatsNeeded , $totalUmbrellasNeeded);
+        // Fetch available seat inventory for this category & row
+        $availableSeats = TenantInventory::where('type', 'seat')
+            ->where('status', 'available')
+            ->count();
+
+        // Fetch available umbrella inventory for this category & row
+        $availableUmbrellas = TenantInventory::where('type', 'umbrella')
+            ->where('status', 'available')
+            ->count();
+
+        // Debug result
+        if ($availableSeats >= $totalSeatsNeeded && $availableUmbrellas >= $totalUmbrellasNeeded) {
+            try {
+                // $stripe = new StripeClient(env('STRIPE_SECRET'));
+                // $token = $stripe->tokens->create([
+                //     'card' => [
+                //         'number' => $data['card_number'],
+                //         'exp_month' => $data['expiry_month'],
+                //         'exp_year' => $data['expiry_year'],
+                //         'cvc' => $data['cvc'],
+                //     ],
+                // ]);
+                // if (!isset($token['id'])) {
+                //     return response()->json(['status' => 'error', 'errors' => 'Token not created'], 422);
+                // }
+                // $customer = $stripe->customers->create([
+                //     'email' => $data['email'],
+                //     'name' => $data['first_name'] . ' ' . $data['last_name'],
+                //     'source' => $token['id']
+                // ]);
+
+                // $charge = $stripe->charges->create([
+                //     'amount' => (int)$totalPrice * 100,
+                //     'currency' => 'usd',
+                //     'customer' => $customer->id,
+                //     'description' => 'Seat Booking for ' . $data['first_name'],
+                // ]);
+                $password = Str::random(8);
+                $uniqueCode = strtoupper(Str::random(6));
+                $user = User::create([
+                    'name' => $data['first_name'] . ' ' . $data['last_name'],
+                    'email' => $data['email'],
+                    'phone' => $data['phone_number'],
+                    'password' => bcrypt($password),
+                    'city' => $data['city'],
+                    'state' => $data['state'],
+                    'address' => $data['address'],
+                    'unique_code' => $uniqueCode,
+                ]);
+
+                $userReservation = UserReservation::create([
+                    'user_id' => $user->id,
+                    'reservations' => json_encode($data),
+                    'booking_date' => date('Y-m-d', strtotime($request->booking_date)),
+                    'end_booking_date' => date('Y-m-d', strtotime($request->end_booking_date)),
+                    // 'booking_start_time' => date('H:i:s', strtotime($request->booking_time)),
+                    // 'booking_end_time' => $request->end_time ?? null,
+                    'total_price' => $totalPrice,
+                    'no_of_sets' => $numberOfSets,
+                    'addon_seats' => $addonSeats,
+                    'addon_umbrellas' => $addonUmbrellas,
+                    'status' => 'requested',
+                    'pricing_id' => $data['pricing_id'],
+                    'room_number' => $data['room_number'],
+                    'tower_preference' => $data['tower'],
+                    'notes' => $data['address'],
+                    'booked_by' => 'beach-manager',
+                ]);
+
+                $bookingDone = UserPayment::create([
+                    'user_id' => $user->id,
+                    'card_number' => $data['card_number'] ?? 'beach-manager',
+                    'name_on_card' => $data['name_on_card'] ?? 'beach-manager',
+                    'user_reservation_id' => $userReservation->id,
+                    'amount' => $totalPrice,
+                ]);
+
+                $fetchSeats = TenantInventory::where('type', 'seat')
+                        ->where('status', 'available')
+                        ->inRandomOrder()
+                        ->take($totalSeatsNeeded)
+                        ->get();
+
+                    // ✅ Fetch random available umbrellas
+                $fetchUmbrellas = TenantInventory::where('type', 'umbrella')
+                        ->where('status', 'available')
+                        ->inRandomOrder()
+                        ->take($totalUmbrellasNeeded)
+                        ->get();
+
+                TenantInventory::whereIn('id', $fetchSeats->pluck('id'))
+                    ->update(['status' => 'booked']);
+                TenantInventory::whereIn('id', $fetchUmbrellas->pluck('id'))
+                    ->update(['status' => 'booked']);
+                foreach ($fetchSeats as $seat) {
+                    BookingInfo::create([
+                        'user_id' => $user->id,
+                        'inventory_id' => $seat->id,
+                        'user_reservation_id' => $userReservation->id,
+                        'type' => 'seat',
+                    ]);
+                }
+
+                foreach ($fetchUmbrellas as $umbrella) {
+                    BookingInfo::create([
+                        'user_id' => $user->id,
+                        'inventory_id' => $umbrella->id,
+                        'user_reservation_id' => $userReservation->id,
+                        'type' => 'umbrella',
+                    ]);
+                }
+                if (!empty($bookingDone)) {
+                    Mail::send([], [], function ($message) use ($data, $uniqueCode, $password) {
+                        $message->from(env('MAIL_USERNAME'), env('MAIL_FROM_NAME'));
+                        $message->to($data['email']);
+                        $message->subject('Your Beach Reservation Login Details');
+                        $message->setBody('
+                            Dear ' . e($data['first_name']) . ' ' . e($data['last_name']) . ',<br><br>
+                            Your booking has been successfully created.<br><br>
+                            <strong>Login Details:</strong><br>
+                            Unique Code: <b>' . e($uniqueCode) . '</b><br>
+                            Password: <b>' . e($password) . '</b><br><br>
+                            Please keep this information safe for future reference.<br><br>
+                            Best regards,<br>
+                            <b>Beach Reservation Team</b>
+                        ', 'text/html');
+                    });
+                }
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Booking created successfully!',
+                ], 200);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'errors' => 'Payment failed: ' . $e->getMessage(),
+                ], 500);
+            }
+
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'errors' => 'We cannot offer you the required number of sets.',
+                'message' => 'tenant-failed',
+                'available_seats' => $availableSeats,
+                'available_umbrellas' => $availableUmbrellas,
+            ], 403);
+        }
     }
 
 }

@@ -29,6 +29,7 @@ class UserReservation extends Model
         'room_number',
         'tower_preference',
         'notes',
+        'booked_by',
 
     ];
 
