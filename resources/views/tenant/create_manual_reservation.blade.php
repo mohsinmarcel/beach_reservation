@@ -1,6 +1,11 @@
 @extends('tenant.layouts.master')
 
 @section('main-content')
+    @php
+        $pricing = App\Helpers\Helper::getActivePricing(); // 👈 Directly fetch server-side pricing
+        // dd($pricing); // 👈 Debugging line to inspect pricing data
+    @endphp
+
     <div class="container py-4">
         <h2 class="mb-4 fw-bold">Book Your Beach Setup!</h2>
 
@@ -144,32 +149,17 @@
                 calculateTotal();
             });
 
-            // Default pricing (fallback)
+            // ✅ Pricing loaded directly from Laravel helper
             window.pricing = {
-                base_set: 65,
-                seat: 10,
-                umbrella: 5
+                priceId: "{{ $pricing['priceId'] }}",
+                base_set: {{ $pricing['base_set'] }},
+                seat: {{ $pricing['seat'] }},
+                umbrella: {{ $pricing['umbrella'] }}
             };
-
-            // Get active pricing via AJAX
-            $.ajax({
-                url: '/get-active-pricing',
-                method: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    if (data) {
-                        window.pricing = data;
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error fetching pricing:', error);
-                }
-            });
 
             // Recalculate total whenever numbers change
             $('#how_many_set, #addon_seats, #addon_umbrella').on('input', calculateTotal);
         });
-
 
         function calculateTotal() {
             const sets = parseInt($('#how_many_set').val()) || 0;
@@ -200,22 +190,21 @@
             const name = `${$('input[name="first_name"]').val()} ${$('input[name="last_name"]').val()}`;
             const tower = $('select[name="tower"]').val();
 
-            // Review modal
             Swal.fire({
                 title: 'Review Your Reservation',
                 html: `
-            <div class="text-start">
-                <p><strong>Name:</strong> ${name}</p>
-                <p><strong>Tower:</strong> ${tower}</p>
-                <p><strong>Booking Dates:</strong> ${start} → ${end}</p>
-                <hr>
-                <p><strong>Sets:</strong> ${sets}</p>
-                <p><strong>Extra Seats:</strong> ${addonSeats}</p>
-                <p><strong>Extra Umbrellas:</strong> ${addonUmbrella}</p>
-                <hr>
-                <p><strong>Total Amount:</strong> $${total}</p>
-            </div>
-        `,
+                    <div class="text-start">
+                        <p><strong>Name:</strong> ${name}</p>
+                        <p><strong>Tower:</strong> ${tower}</p>
+                        <p><strong>Booking Dates:</strong> ${start} → ${end}</p>
+                        <hr>
+                        <p><strong>Sets:</strong> ${sets}</p>
+                        <p><strong>Extra Seats:</strong> ${addonSeats}</p>
+                        <p><strong>Extra Umbrellas:</strong> ${addonUmbrella}</p>
+                        <hr>
+                        <p><strong>Total Amount:</strong> $${total}</p>
+                    </div>
+                `,
                 icon: 'info',
                 showCancelButton: true,
                 confirmButtonText: 'Confirm & Submit',
@@ -264,43 +253,33 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Reservation Failed',
-                            text: response.message ??
-                                'Unable to process your booking. Please try again.'
+                            text: response.message ?? 'Unable to process your booking. Please try again.'
                         });
                     }
                 },
                 error: function(xhr) {
                     Swal.close();
 
-                    // Remove old inline validation errors
                     $('#beach-booking-form .text-danger').remove();
 
-                    // Laravel validation error (422)
                     if (xhr.status === 422 && xhr.responseJSON?.errors) {
                         const errors = xhr.responseJSON.errors;
-
                         $.each(errors, function(field, messages) {
                             const input = $(`[name="${field}"]`);
                             if (input.length > 0) {
-                                input.after(
-                                    `<small class="text-danger d-block mt-1">${messages[0]}</small>`
-                                    );
+                                input.after(`<small class="text-danger d-block mt-1">${messages[0]}</small>`);
                             }
                         });
 
-                        // Scroll to first invalid field
                         const firstErrorField = Object.keys(errors)[0];
                         const firstInput = $(`[name="${firstErrorField}"]`);
                         if (firstInput.length > 0) {
-                            $('html, body').animate({
-                                scrollTop: firstInput.offset().top - 100
-                            }, 600);
+                            $('html, body').animate({ scrollTop: firstInput.offset().top - 100 }, 600);
                             firstInput.focus();
                         }
-                        return; // stop here, don't show Swal for 422
+                        return;
                     }
 
-                    // 401: Invalid credentials
                     if (xhr.status === 401) {
                         Swal.fire({
                             icon: 'error',
@@ -310,27 +289,24 @@
                         return;
                     }
 
-                    // 403: Not enough inventory or permission issue
                     if (xhr.status === 403) {
                         const seats = xhr.responseJSON?.available_seats ?? 0;
                         const umbrellas = xhr.responseJSON?.available_umbrellas ?? 0;
-                        const msg = xhr.responseJSON?.errors ??
-                            'No tenant has sufficient inventory matching your selection.';
+                        const msg = xhr.responseJSON?.errors ?? 'No tenant has sufficient inventory matching your selection.';
 
                         Swal.fire({
                             icon: 'warning',
                             title: 'Reservation Failed',
                             html: `
-                        <p>${msg}</p>
-                        <hr>
-                        <p><strong>Available Seats:</strong> ${seats}</p>
-                        <p><strong>Available Umbrellas:</strong> ${umbrellas}</p>
-                    `
+                                <p>${msg}</p>
+                                <hr>
+                                <p><strong>Available Seats:</strong> ${seats}</p>
+                                <p><strong>Available Umbrellas:</strong> ${umbrellas}</p>
+                            `
                         });
                         return;
                     }
 
-                    // Custom backend message
                     if (xhr.responseJSON?.message) {
                         Swal.fire({
                             icon: 'error',
@@ -340,7 +316,6 @@
                         return;
                     }
 
-                    // Default fallback
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops!',
