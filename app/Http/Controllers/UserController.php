@@ -282,7 +282,7 @@ class UserController extends Controller
     public function userCancellations()
     {
         $user = session('user');
-        $cancellations = null;
+        $cancellations = UserReservation::where('user_id', $user->id)->orderBy('created_at', 'desc')->where('status','cancelled')->get();
         return view('user.cancellations', compact('cancellations'));
     }
     public function userReminders()

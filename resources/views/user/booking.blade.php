@@ -111,7 +111,7 @@
         </section>
         @if (!empty($bookings))
             @foreach ($bookings as $booking)
-                <section class="booking-list-block py-5">
+                <section class="booking-list-block py-3">
                     <div class="container w-50 mw-100">
                         <div class="row">
                             <div class="col-12 bg-white rounded-3 shadow mb-3">

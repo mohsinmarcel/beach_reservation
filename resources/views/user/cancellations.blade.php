@@ -55,7 +55,7 @@
                 <button type="button" class="btn btn-outline-light rounded-pill" data-bs-toggle="modal" data-bs-target="#userModal">Login</button>
             @endif
             <!-- Modal -->
-            <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+            {{-- <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -90,17 +90,18 @@
                         </form>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </nav>
     <main class="booking-page">
         <section class="page-header-block position-relative d-flex align-items-center justify-content-center" style="background-image: url({{asset('userside_assets/assets/images/about-img.jpeg')}});">
             <div class="text-center page-header-content mt-5">
                 <h1 class="position-relative text-white fs-1 fw-bold text-uppercase">Your Cancellation</h1>
-                <p class="text-white fs-6 fw-normal">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quod suscipit tempore nam quas deserunt eum dolor, aliquam, maiores quasi voluptatibus sint.</p>
+                <p class="text-white fs-6 fw-normal">Below are your cancelled reservations.
+These bookings are no longer active and the reserved items have been released back into availability..</p>
             </div>
         </section>
-        <section class="booking-list-block py-5">
+        {{-- <section class="booking-list-block py-5">
             <div class="container w-50 mw-100">
                 <div class="row">
                     <div class="col-12 alert alert-danger rounded-3 shadow mb-3">
@@ -122,7 +123,44 @@
 
                 </div>
             </div>
-        </section>
+        </section> --}}
+         @if (!empty($cancellations) && count($cancellations) > 0)
+            @foreach ($cancellations as $booking)
+                <section class="booking-list-block py-3">
+                    <div class="container w-50 mw-100">
+                        <div class="row">
+                            <div class="col-12 alert alert-danger rounded-3 shadow mb-3">
+                                <div class="row align-items-center">
+                                    <div class="col-md-4">
+                                        <img src="{{ asset('userside_assets/assets/images/img-1.webp') }}"
+                                            class="w-100 rounded" style="height: 220px;" alt="card-img">
+                                    </div>
+                                    <div class="col-md-8 p-3">
+                                        <h3 class="card-title fw-bold lh-sm mb-2">Beach Setup</h3>
+                                        <p class="card-guest fw-normal lh-sm mb-2 text-black">Number of Sets: <span
+                                                class="fw-semibold">{{$booking->no_of_sets}}</span></p>
+                                        @if (!empty($booking->addon_seats))
+                                            <p class="card-guest fw-normal lh-sm mb-2 text-black">Extra Seats: <span
+                                                class="fw-semibold">{{$booking->addon_seats}}</span></p>
+                                        @endif
+                                        @if (!empty($booking->addon_umbrellas))
+                                            <p class="card-guest fw-normal lh-sm mb-2 text-black">Extra Umbrellas: <span
+                                                class="fw-semibold">{{$booking->addon_umbrellas}}</span></p>
+                                        @endif
+                                        <p class="card-price fs-6 fw-normal lh-sm mb-2 text-black">Price <span
+                                                class="currency fw-semibold">{{$booking->total_price}}</span><span
+                                                class="currency-symbol fw-semibold">$</span></p>
+                                        <p class="card-description fw-normal lh-sm mb-4 text-black">Your reservation is cancelled on  {{ \Carbon\Carbon::parse($booking->updated_at)->format('d M Y ') }}.</p>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+            @endforeach
+        @endif
     </main>
     <footer class="pt-5 bg-black">
         <div class="container">
