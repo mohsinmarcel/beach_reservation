@@ -273,7 +273,7 @@
                                 <div class="berif-content">
                                     <h3 class="fs-3 fw-bold">Beach Set – Perfect for Two</h3>
                                     <p style="font-size: 14px;">Enjoy your relaxing day by the sea with our premium
-                                        beach set — includes 2 comfortable sunbeds and 1 umbrella for perfect shade.</p>
+                                        beach set — includes 2 comfortable chairs and 1 umbrella for perfect shade.</p>
                                     <p style="font-size: 14px;">Spend quality time with your friends or loved ones while soaking up the sun and view.</p>
                                     {{-- <p style="font-size: 14px;">☀️ Limited slots available — book early to reserve your
                                         spot!</p> --}}
