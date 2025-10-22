@@ -294,7 +294,7 @@ class UserController extends Controller
     public function userBookings()
     {
         $user = session('user');
-        $bookings = null;
+        $bookings = UserReservation::where('user_id', $user->id)->orderBy('created_at', 'desc')->where('status','requested')->get();
         return view('user.booking', compact('bookings'));
     }
 
@@ -312,5 +312,40 @@ class UserController extends Controller
             'umbrella' => $umbrellaPrice,
             'priceId' => $pricing->id,
         ]);
+    }
+
+    public function cancelUserReservation($reservationId)
+    {
+        $user = session('user');
+        $reservation = UserReservation::where('id', $reservationId)
+            ->where('user_id', $user->id)
+            ->where('status', 'requested')
+            ->first();
+
+        if (!$reservation) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Reservation not found or cannot be cancelled.'
+            ], 404);
+        }
+
+        // Update reservation status to 'cancelled'
+        $reservation->status = 'cancelled';
+        $reservation->save();
+
+        // Release booked inventory items
+        $bookedItems = BookingInfo::where('user_reservation_id', $reservation->id)->get();
+        foreach ($bookedItems as $item) {
+            $inventory = TenantInventory::find($item->inventory_id);
+            if ($inventory) {
+                $inventory->status = 'available';
+                $inventory->save();
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Reservation cancelled successfully.'
+        ], 200);
     }
 }

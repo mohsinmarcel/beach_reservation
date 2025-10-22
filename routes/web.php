@@ -29,6 +29,7 @@ Route::get('/user/cancellations', [UserController::class, 'userCancellations'])-
 Route::get('/user/reminders', [UserController::class, 'userReminders'])->name('user.reminders');
 Route::get('/user/bookings', [UserController::class, 'userBookings'])->name('user.bookings');
 Route::get('/get-active-pricing', [UserController::class, 'getActivePricing'])->name('user.active.pricings');;
+Route::post('/cancel/user/reservation/{reservationId}', [UserController::class, 'cancelUserReservation'])->name('user.cancel.reservation');
 
 
 Route::get('test-route', function () {
