@@ -472,4 +472,15 @@ class TenantController extends Controller
         return redirect()->back();
     }
 
+    public function tenantCreateManualReservation()
+    {
+        $pricings = Pricing::where('is_active',1)->get();
+        return view('tenant.create_manual_reservation', compact('pricings'));
+    }
+
+    public function tenantSaveManualReservation(Request $request)
+    {
+        dd($request->all());
+    }
+
 }
